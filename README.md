@@ -68,27 +68,37 @@ curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/
 >
 > **注意**: AnyTLS 的 URI 格式只定义了 `sni` 与 `insecure` 两个参数，无法表达 JLS 凭据，因此脚本输出的是一段 **`proxies:` 片段**而不是分享链接；客户端需手工导入，且必须是 mihomo >= 1.19.29（Clash Party / FlClash 表单已支持 `jls-opts`）。
 
-### 5. 服务端路由分流工具 (Mihomo Routing)
+### 5. Realm 端口转发 (独立服务)
+安装 [realm](https://github.com/zhboner/realm) 做纯 TCP/UDP 端口转发，与 Mihomo **并行运行**：独立的二进制（`/usr/local/bin/realm`）、配置目录（`/usr/local/etc/realm/`）和 systemd/OpenRC 服务单元，互不干扰。典型场景是把中转机的端口转发到落地机的 Mihomo 节点端口。
+```bash
+curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/main/install_realm.sh -o install_realm.sh && chmod +x install_realm.sh && sudo ./install_realm.sh
+```
+
+> **注意**: realm 是纯端口转发，本身不产生可导入的节点链接。客户端仍然使用原来的协议和凭据，只是把服务器地址换成中转机的 `IP:端口`。
+>
+> **为什么不并进卸载脚本**: `install_realm.sh` 有自己的卸载入口（菜单 4），`uninstall_mihomo.sh` 不会碰 realm 的文件，避免"卸 mihomo 把转发也删了"。
+
+### 6. 服务端路由分流工具 (Mihomo Routing)
 强大的服务端出口分流控制面板。支持解析 SS 和 VLESS 分享链接，可视化配置分流规则。
 ```bash
 curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/main/mihomo_routing.sh -o mihomo_routing.sh && chmod +x mihomo_routing.sh && sudo ./mihomo_routing.sh
 ```
 *安装后随时可用 `mihomo-routing` 命令唤起。*
 
-### 6. 备份与还原工具 (Mihomo Restore)
+### 7. 备份与还原工具 (Mihomo Restore)
 不小心改错了配置？想要迁移配置？使用此工具可以通过直链 URL 导入配置文件，或者打开控制台手动粘贴 `config.yaml`，自带安全测试防报错功能。
 ```bash
 curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/main/mihomo_restore.sh -o mihomo_restore.sh && chmod +x mihomo_restore.sh && sudo ./mihomo_restore.sh
 ```
 *安装后随时可用 `mihomo-restore` 命令唤起。*
 
-### 7. 完全卸载工具
+### 8. 完全卸载工具
 如果你遇到无法解决的严重问题，或者想要完全清理服务器，可以使用此脚本。它会极其干净地清理系统服务（Systemd/OpenRC）、二进制文件、日志以及残留配置。
 ```bash
 curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/main/uninstall_mihomo.sh -o uninstall_mihomo.sh && chmod +x uninstall_mihomo.sh && sudo ./uninstall_mihomo.sh
 ```
 
-### 8. 非交互式一键搭建 (Flag 模式)
+### 9. 非交互式一键搭建 (Flag 模式)
 适合批量部署或自动化脚本：直接用命令行参数搭建节点，不进入菜单（原有交互菜单不受影响）。所有参数均可省略，省略时使用默认值或随机生成。
 ```bash
 curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/main/mihomo_cli.sh -o mihomo_cli.sh && chmod +x mihomo_cli.sh
@@ -97,8 +107,10 @@ sudo ./mihomo_cli.sh reality   --port 443 --sni hk.art.museum [--uuid <UUID>]
 sudo ./mihomo_cli.sh ss        --port 2022 --method 2022-blake3-aes-256-gcm [--password <密码>]
 sudo ./mihomo_cli.sh vless-enc --port 40000 [--uuid <UUID>]
 sudo ./mihomo_cli.sh anytls    --port 8443 [--dest www.bing.com:443] [--mode jls|tls]
+sudo ./mihomo_cli.sh realm     --port 8443 --remote 10.0.0.2:8443 [--no-udp]
 sudo ./mihomo_cli.sh address   my.ddns.net     # 设置 NAT/DDNS 连接地址，auto 恢复自动获取
 ```
+* `realm` 额外参数：`--remote`（转发目标，必填）、`--listen-host`（默认 `0.0.0.0`）、`--no-udp`（只转 TCP）、`--no-tcp`（只转 UDP）、`--comment`（写入配置的注释）
 * `anytls` 额外参数：`--dest`（JLS 回落目标，默认 `www.bing.com:443`）、`--mode`（`jls` 默认 / `tls` 需配 `--cert` `--key`）、`--sni`、`--alpn`、`--jls-user`、`--jls-password`、`--proxy`（回落出站）、`--rate-limit`、`--padding-file`（自定义填充方案）
 * `--address <地址|auto>`：搭建前先设置连接地址，`auto` 为自动获取公网 IP，不传则沿用当前设置，例如 `sudo ./mihomo_cli.sh reality --address my.ddns.net`
 * `-q` / `--quiet`：成功时只输出分享链接，方便其他脚本捕获
@@ -114,6 +126,7 @@ sudo ./mihomo_cli.sh address   my.ddns.net     # 设置 NAT/DDNS 连接地址，
 | `install_vless_reality.sh` | `install_vless_reality.sh` | VLESS-Reality 节点管理 |
 | `install_ss2022.sh` | `install_ss2022.sh` | Shadowsocks 2022 节点管理 |
 | `——` | `install_anytls.sh` | AnyTLS (JLS 握手伪装) 节点管理 |
+| `——` | `install_realm.sh` | Realm 端口转发 (独立服务) |
 | `xray_manager.sh` | `mihomo_manager.sh` | 统一管理菜单 |
 | `xray_routing.sh` | `mihomo_routing.sh` | 服务端分流配置 |
 | `xray_restore.sh` | `mihomo_restore.sh` | 配置备份还原 |

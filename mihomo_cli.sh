@@ -68,7 +68,15 @@ Mihomo 非交互式一键搭建脚本
   address <地址|auto>
               设置分享链接使用的连接地址 (NAT/DDNS)，auto 表示恢复自动获取公网 IP
 
-通用参数 (用于 reality / ss / vless-enc / anytls):
+  realm       搭建 Realm 端口转发 (独立服务, 与 mihomo 并行)
+                --port <端口>       本机监听端口, 默认 8443
+                --remote <host:port> 转发目标, 必填
+                --listen-host <地址> 监听地址, 默认 0.0.0.0
+                --no-udp            只转发 TCP (默认 TCP+UDP 都转)
+                --no-tcp            只转发 UDP
+                --comment <备注>    写入配置文件的注释, 默认 realm-<port>
+
+通用参数 (用于 reality / ss / vless-enc / anytls / realm):
   --address <地址|auto>  搭建前先设置连接地址；auto 为自动获取公网 IP，不传则沿用当前设置
   -q, --quiet        安静模式，成功时只输出分享链接，便于脚本调用
   -h, --help         显示本帮助
@@ -188,6 +196,9 @@ main() {
         anytls)
             DEFAULT_PORT=8443
             run_installer "install_anytls.sh" "$@" ;;
+        realm)
+            DEFAULT_PORT=8443
+            run_installer "install_realm.sh" "$@" ;;
         address)
             [[ $# -ge 1 ]] || die "用法: $(basename "$0") address <地址|auto>"
             set_address "$1" ;;

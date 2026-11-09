@@ -77,7 +77,19 @@ curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/
 >
 > **注意**: AnyTLS の URI 形式は `sni` と `insecure` しか定義しておらず JLS の資格情報を表現できないため、出力は共有リンクではなく **`proxies:` スニペット**です。mihomo >= 1.19.29 のクライアント（Clash Party / FlClash は `jls-opts` に対応済み）へ手動で取り込んでください。
 
-### 5\. サーバー側ルーティングツール (Mihomo Routing)
+### 5\. Realm ポート転送 (独立サービス)
+
+[realm](https://github.com/zhboner/realm) による純粋な TCP/UDP ポート転送を、Mihomo と**並行して**動作する形で導入します。専用バイナリ（`/usr/local/bin/realm`）、設定ディレクトリ（`/usr/local/etc/realm/`）、systemd/OpenRC ユニットを持ち、互いに干渉しません。中継機のポートを落地機の Mihomo ノードポートへ転送するのが典型例です。
+
+```bash
+curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/main/install_realm.sh -o install_realm.sh && chmod +x install_realm.sh && sudo ./install_realm.sh
+```
+
+> **注意**: realm は純粋なポート転送であり、インポート可能なノードリンクは生成しません。クライアントは元のプロトコルと認証情報のまま、サーバーアドレスだけを中継機の `IP:ポート` に変更します。
+>
+> **アンインストーラに含めない理由**: `install_realm.sh` 自身がアンインストール項目（メニュー 4）を持ち、`uninstall_mihomo.sh` は realm のファイルに一切触れません。Mihomo の削除が転送設定を巻き込むことはありません。
+
+### 6\. サーバー側ルーティングツール (Mihomo Routing)
 
 強力なサーバー側のアウトバウンド（送信）ルーティングコントロールパネルです。SS や VLESS の共有リンクの解析をサポートし、ルーティングルールを視覚的に設定できます。
 
@@ -87,7 +99,7 @@ curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/
 
 *インストール後は、いつでも `mihomo-routing` コマンドで呼び出すことができます。*
 
-### 6\. バックアップと復元ツール (Mihomo Restore)
+### 7\. バックアップと復元ツール (Mihomo Restore)
 
 誤って設定を変更してしまった場合や、設定を移行したい場合に最適です。このツールを使用すると、直接の URL 経由で設定ファイルをインポートしたり、コンソールを開いて手動で `config.yaml` を貼り付けたりすることができます。エラーを防ぐ安全テスト機能が組み込まれています。
 
@@ -97,7 +109,7 @@ curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/
 
 *インストール後は、いつでも `mihomo-restore` コマンドで呼び出すことができます。*
 
-### 7\. 完全アンインストールツール
+### 8\. 完全アンインストールツール
 
 解決できない深刻な問題が発生した場合や、サーバーを完全にクリーンアップしたい場合は、このスクリプトを使用できます。システムサービス (Systemd/OpenRC)、バイナリファイル、ログ、および残留設定を極めてクリーンに消去します。
 
@@ -115,6 +127,7 @@ curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/
 | `install_vless_reality.sh` | `install_vless_reality.sh` | VLESS-Reality ノード管理 |
 | `install_ss2022.sh` | `install_ss2022.sh` | Shadowsocks 2022 ノード管理 |
 | `——` | `install_anytls.sh` | AnyTLS (JLS) ノード管理 |
+| `——` | `install_realm.sh` | Realm ポート転送 |
 | `xray_manager.sh` | `mihomo_manager.sh` | 統合管理メニュー |
 | `xray_routing.sh` | `mihomo_routing.sh` | サーバー側ルーティング設定 |
 | `xray_restore.sh` | `mihomo_restore.sh` | 設定のバックアップと復元 |

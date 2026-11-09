@@ -77,7 +77,19 @@ curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/
 >
 > **Примечание**: URI-схема AnyTLS определяет только `sni` и `insecure`, поэтому не может передать данные JLS. Скрипт выводит **фрагмент `proxies:`**, а не ссылку для общего доступа; импортируйте его вручную в клиент с mihomo >= 1.19.29 (в формах Clash Party и FlClash есть `jls-opts`).
 
-### 5\. Инструмент маршрутизации сервера (Mihomo Routing)
+### 5\. Проброс портов realm (отдельный сервис)
+
+Устанавливает [realm](https://github.com/zhboner/realm) для простого TCP/UDP-проброса портов, работающий **параллельно** с Mihomo: собственный бинарник (`/usr/local/bin/realm`), каталог конфигурации (`/usr/local/etc/realm/`) и юнит systemd/OpenRC, поэтому они не мешают друг другу. Типовой случай — проброс порта релейной машины на порт узла Mihomo на конечной машине.
+
+```bash
+curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/main/install_realm.sh -o install_realm.sh && chmod +x install_realm.sh && sudo ./install_realm.sh
+```
+
+> **Примечание**: realm — это чистый проброс портов, он не создаёт импортируемых ссылок на узлы. Клиенты сохраняют исходный протокол и учётные данные; меняется только адрес сервера на `IP:порт` релея.
+>
+> **Почему не включено в деинсталлятор**: у `install_realm.sh` есть собственный пункт удаления (меню 4), а `uninstall_mihomo.sh` никогда не трогает файлы realm, поэтому удаление Mihomo не может незаметно унести с собой проброс.
+
+### 6\. Инструмент маршрутизации сервера (Mihomo Routing)
 
 Мощная панель управления исходящим трафиком (маршрутами) сервера. Поддерживает парсинг ссылок SS и VLESS, а также визуальную настройку правил маршрутизации.
 
@@ -87,7 +99,7 @@ curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/
 
 *После установки инструмент можно в любой момент вызвать командой `mihomo-routing`.*
 
-### 6\. Инструмент резервного копирования и восстановления (Mihomo Restore)
+### 7\. Инструмент резервного копирования и восстановления (Mihomo Restore)
 
 Случайно испортили конфигурацию? Хотите перенести настройки на другой сервер? Этот инструмент позволяет импортировать конфигурационные файлы по прямой ссылке (URL) или вручную вставив `config.yaml` в консоль. Встроена функция проверки безопасности во избежание фатальных ошибок.
 
@@ -97,7 +109,7 @@ curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/
 
 *После установки инструмент можно в любой момент вызвать командой `mihomo-restore`.*
 
-### 7\. Инструмент полного удаления
+### 8\. Инструмент полного удаления
 
 Если вы столкнулись с неразрешимой проблемой или хотите полностью очистить сервер, используйте этот скрипт. Он максимально чисто удаляет системные службы (Systemd/OpenRC), бинарные файлы, логи и остаточные конфигурации.
 
@@ -115,6 +127,7 @@ curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/
 | `install_vless_reality.sh` | `install_vless_reality.sh` | Управление узлами VLESS-Reality |
 | `install_ss2022.sh` | `install_ss2022.sh` | Управление узлами Shadowsocks 2022 |
 | `——` | `install_anytls.sh` | Управление узлами AnyTLS (JLS) |
+| `——` | `install_realm.sh` | Проброс портов realm |
 | `xray_manager.sh` | `mihomo_manager.sh` | Единое меню управления |
 | `xray_routing.sh` | `mihomo_routing.sh` | Настройка маршрутизации сервера |
 | `xray_restore.sh` | `mihomo_restore.sh` | Резервное копирование и восстановление |

@@ -77,7 +77,19 @@ curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/
 >
 > **Note**: The AnyTLS URI scheme defines only `sni` and `insecure`, so it cannot carry JLS credentials. The script therefore prints a **`proxies:` snippet** instead of a share link; import it manually on a client that runs mihomo >= 1.19.29 (Clash Party and FlClash already expose `jls-opts` in their forms).
 
-### 5\. Server Routing Tool (Mihomo Routing)
+### 5\. Realm Port Forwarding (standalone service)
+
+Installs [realm](https://github.com/zhboner/realm) for pure TCP/UDP port forwarding, running **alongside** Mihomo: its own binary (`/usr/local/bin/realm`), config dir (`/usr/local/etc/realm/`) and systemd/OpenRC unit, so the two never interfere. The usual case is forwarding a relay machine's port to a Mihomo node port on the landing machine.
+
+```bash
+curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/main/install_realm.sh -o install_realm.sh && chmod +x install_realm.sh && sudo ./install_realm.sh
+```
+
+> **Note**: realm is pure port forwarding and produces no importable node link. Clients keep the original protocol and credentials; only the server address becomes the relay's `IP:port`.
+>
+> **Why it is not folded into the uninstaller**: `install_realm.sh` has its own uninstall entry (menu 4), and `uninstall_mihomo.sh` never touches realm's files, so uninstalling Mihomo cannot silently take the forwarding with it.
+
+### 6\. Server Routing Tool (Mihomo Routing)
 
 A powerful control panel for server outbound routing. Supports parsing SS and VLESS sharing links and allows visual configuration of routing rules.
 
@@ -87,7 +99,7 @@ curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/
 
 *Can be launched at any time after installation using the `mihomo-routing` command.*
 
-### 6\. Backup and Restore Tool (Mihomo Restore)
+### 7\. Backup and Restore Tool (Mihomo Restore)
 
 Accidentally messed up your configuration? Want to migrate your setup? This tool allows you to import configuration files via direct URLs or by manually pasting the `config.yaml` into the console, complete with built-in safety checks to prevent fatal errors.
 
@@ -97,7 +109,7 @@ curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/
 
 *Can be launched at any time after installation using the `mihomo-restore` command.*
 
-### 7\. Complete Uninstallation Tool
+### 8\. Complete Uninstallation Tool
 
 If you encounter unresolvable critical issues or simply want to clean your server completely, you can use this script. It cleanly wipes system services (Systemd/OpenRC), binaries, logs, and residual configurations.
 
@@ -115,6 +127,7 @@ curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/
 | `install_vless_reality.sh` | `install_vless_reality.sh` | VLESS-Reality Node Mgmt |
 | `install_ss2022.sh` | `install_ss2022.sh` | Shadowsocks 2022 Node Mgmt |
 | `——` | `install_anytls.sh` | AnyTLS (JLS) Node Mgmt |
+| `——` | `install_realm.sh` | Realm Port Forwarding |
 | `xray_manager.sh` | `mihomo_manager.sh` | Unified Management Menu |
 | `xray_routing.sh` | `mihomo_routing.sh` | Server Routing Config |
 | `xray_restore.sh` | `mihomo_restore.sh` | Config Backup & Restore |

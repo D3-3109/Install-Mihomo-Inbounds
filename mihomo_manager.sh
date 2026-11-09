@@ -145,15 +145,16 @@ show_menu() {
     echo -e "  ${GREEN}3.${PLAIN} 安装/管理 VLESS Reality"
     echo -e "  ${GREEN}4.${PLAIN} 安装/管理 VLESS Encryption (PQ)"
     echo -e "  ${GREEN}5.${PLAIN} 安装/管理 AnyTLS (JLS 握手伪装)"
-    echo -e "  ${YELLOW}6.${PLAIN} Mihomo 服务端分流配置 (Routing)"
-    echo -e "  ${RED}7.${PLAIN} 卸载 Mihomo 及相关文件"
-    echo -e "  ${CYAN}8.${PLAIN} 还原 Mihomo 配置 (Restore)"
+    echo -e "  ${GREEN}6.${PLAIN} 安装/管理 Realm 端口转发 (独立服务)"
+    echo -e "  ${YELLOW}7.${PLAIN} Mihomo 服务端分流配置 (Routing)"
+    echo -e "  ${RED}8.${PLAIN} 卸载 Mihomo 及相关文件"
+    echo -e "  ${CYAN}9.${PLAIN} 还原 Mihomo 配置 (Restore)"
     echo "-------------------------------------------------"
-    echo -e "  ${CYAN}9.${PLAIN} 更新此管理脚本"
+    echo -e "  ${CYAN}10.${PLAIN} 更新此管理脚本"
     echo -e "  ${CYAN}0.${PLAIN} 退出脚本"
     echo -e "${CYAN}=================================================${PLAIN}"
     
-    read -rp " 请输入选项 [0-9]: " choice
+    read -rp " 请输入选项 [0-10]: " choice
     
     case "$choice" in
         1) pull_and_run "update_geo.sh" "更新 GeoIP/GeoSite" ;;
@@ -161,10 +162,11 @@ show_menu() {
         3) pull_and_run "install_vless_reality.sh" "执行 VLESS Reality 安装向导" ;;
         4) pull_and_run "install_vless_encryption.sh" "执行 VLESS Encryption (PQ) 安装向导" ;;
         5) pull_and_run "install_anytls.sh" "执行 AnyTLS 安装向导" ;;
-        6) pull_and_run "mihomo_routing.sh" "进入分流配置工具" ;;
-        7) pull_and_run "uninstall_mihomo.sh" "执行卸载程序" ;;
-        8) pull_and_run "mihomo_restore.sh" "执行配置还原工具" ;;
-        9) update_self ;;
+        6) pull_and_run "install_realm.sh" "执行 Realm 转发安装向导" ;;
+        7) pull_and_run "mihomo_routing.sh" "进入分流配置工具" ;;
+        8) pull_and_run "uninstall_mihomo.sh" "执行卸载程序" ;;
+        9) pull_and_run "mihomo_restore.sh" "执行配置还原工具" ;;
+        10) update_self ;;
         0) echo -e "${GREEN}感谢使用此脚本，再见！${PLAIN}"; exit 0 ;;
         *) echo -e "${RED}无效输入，请重新选择。${PLAIN}"; sleep 1 ;;
     esac
