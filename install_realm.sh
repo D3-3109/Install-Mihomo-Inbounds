@@ -576,28 +576,103 @@ finally:
 PY
 }
 
-# realm 没有 -t 之类的校验模式, 坏配置只会在启动时 panic。
-# 用真实二进制做一次启动探测: 起在临时目录, 看它是否在短窗口内自行退出。
+# realm 没有 -t 之类的校验模式, 坏配置只在启动时 panic。
+# 不能直接拿真实配置起第二个实例: 已运行的服务 (或刚 setup_service 拉起的服务)
+# 已经占着同样的端口, 探测必然报 "Address in use"。
+# 更不能只看进程存活: bind 失败时 realm 只 panic 一个 tokio worker, 主进程还在。
+# 因此探测用一份把所有 listen 改到临时空闲端口的副本, 并检查日志里的失败标记。
+build_probe_config() {
+    local probe_dir=$1
+    local probe_conf="${probe_dir}/probe.toml"
+    # 改写端口会顺带绕掉原地址的合法性校验, 所以先自己验一遍所有 listen,
+    # 只有形如 host:port 的才允许被替换。
+    python3 - "$realm_config_path" "$probe_conf" <<'PY'
+import re, socket, sys
+
+src, dst = sys.argv[1:3]
+
+def free_port():
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    s.bind(('127.0.0.1', 0))
+    port = s.getsockname()[1]
+    s.close()
+    return port
+
+def listen_ok(addr):
+    # host:port 且 port 为 1-65535 的十进制; host 非空
+    if ':' not in addr:
+        return False
+    host, _, port = addr.rpartition(':')
+    host = host.strip('[]')
+    if not host or not port.isdigit():
+        return False
+    return 1 <= int(port) <= 65535
+
+with open(src, encoding='utf-8') as f:
+    lines = f.readlines()
+
+out = []
+bad = []
+for raw in lines:
+    m = re.match(r'^(\s*listen\s*=\s*)"([^"]*)"(\s*(?:#.*)?)$', raw)
+    if m:
+        original = m.group(2)
+        if not listen_ok(original):
+            bad.append(original)
+            out.append(raw)
+            continue
+        out.append(f'{m.group(1)}"127.0.0.1:{free_port()}"{m.group(3)}\n')
+    else:
+        out.append(raw)
+
+with open(dst, 'w', encoding='utf-8') as f:
+    f.writelines(out)
+
+if bad:
+    print("invalid listen address: " + ", ".join(bad), file=sys.stderr)
+    raise SystemExit(3)
+PY
+    [[ -s "$probe_conf" ]] || return 1
+    printf '%s\n' "$probe_conf"
+}
+
 probe_realm_config() {
     local probe_dir=$1
     [[ -x "$realm_binary_path" ]] || return 0
 
+    local probe_conf
+    probe_conf=$(build_probe_config "$probe_dir") || {
+        error "生成探测用临时配置失败。"
+        return 1
+    }
+
     local log_file="${probe_dir}/probe.log"
-    "$realm_binary_path" -c "$realm_config_path" >"$log_file" 2>&1 &
+    "$realm_binary_path" -c "$probe_conf" >"$log_file" 2>&1 &
     local pid=$!
     local waited=0
+    local alive=true
     while (( waited < 20 )); do
         if ! kill -0 "$pid" 2>/dev/null; then
-            # 进程已退出 -> 配置有问题
-            wait "$pid" 2>/dev/null || true
-            cat "$log_file" >&2
-            return 1
+            alive=false
+            break
         fi
         sleep 0.1
         waited=$((waited + 1))
     done
-    kill "$pid" 2>/dev/null || true
-    wait "$pid" 2>/dev/null || true
+
+    if [[ "$alive" == "true" ]]; then
+        kill "$pid" 2>/dev/null || true
+        wait "$pid" 2>/dev/null || true
+    else
+        wait "$pid" 2>/dev/null || true
+    fi
+
+    # 进程退出、或日志里出现 panic / bind 失败, 都视为配置不可用
+    if [[ "$alive" == "false" ]] || grep -qiE "panicked|failed to bind|invalid .*address|missing field" "$log_file" 2>/dev/null; then
+        cat "$log_file" >&2
+        return 1
+    fi
     return 0
 }
 
@@ -760,8 +835,9 @@ install_forward() {
     if [[ ! -x "$realm_binary_path" ]]; then
         install_realm_core || return 1
     fi
-    setup_service || return 1
 
+    # 顺序要紧: 探测必须早于 setup_service / restart_realm。
+    # 服务一旦起来就占住真实端口, 晚探测会和它抢端口误报失败。
     local probe_dir; probe_dir=$(mktemp -d) || return 1
     if ! probe_realm_config "$probe_dir"; then
         rm -rf "$probe_dir"
@@ -773,7 +849,18 @@ install_forward() {
     fi
     rm -rf "$probe_dir"
 
-    if ! restart_realm; then return 1; fi
+    setup_service || {
+        remove_endpoint "$listen_addr" >/dev/null 2>&1 || true
+        error "服务安装失败，已移除该转发。"
+        return 1
+    }
+
+    if ! restart_realm; then
+        remove_endpoint "$listen_addr" >/dev/null 2>&1 || true
+        service_restart >/dev/null 2>&1 || true
+        error "节点启动失败，已移除该转发。"
+        return 1
+    fi
     success "Realm 转发安装完成！"
     view_forward_info "$listen_addr"
 }
@@ -986,8 +1073,8 @@ main() {
         if [[ ! -x "$realm_binary_path" ]]; then
             install_realm_core || exit 1
         fi
-        setup_service || exit 1
 
+        # 顺序要紧: 探测必须早于 setup_service, 服务起来后会占住真实端口。
         local probe_dir; probe_dir=$(mktemp -d) || exit 1
         if ! probe_realm_config "$probe_dir"; then
             rm -rf "$probe_dir"
@@ -997,7 +1084,18 @@ main() {
         fi
         rm -rf "$probe_dir"
 
-        restart_realm || exit 1
+        if ! setup_service; then
+            remove_endpoint "$listen_addr" >/dev/null 2>&1 || true
+            error "服务安装失败，已移除该转发。"
+            exit 1
+        fi
+
+        if ! restart_realm; then
+            remove_endpoint "$listen_addr" >/dev/null 2>&1 || true
+            service_restart >/dev/null 2>&1 || true
+            error "节点启动失败，已移除该转发。"
+            exit 1
+        fi
         success "Realm 转发安装完成！"
         view_forward_info "$listen_addr"
     else
