@@ -166,6 +166,9 @@ remove_binary_and_misc() {
   rm -f /root/mihomo_ss_link_*.txt 2>/dev/null || true
   rm -f /root/mihomo_vless_reality_link_*.txt 2>/dev/null || true
   rm -f /root/mihomo_vless_encryption_link_*.txt 2>/dev/null || true
+  rm -f /root/mihomo_anytls_link_*.txt 2>/dev/null || true
+  rm -f /root/mihomo_anytls_proxies_*.yaml 2>/dev/null || true
+  rm -f /root/mihomo_anytls_node_*.json 2>/dev/null || true
   rm -f /root/mihomo_reality_pubkey_*.txt 2>/dev/null || true
   rm -f /root/inbound_address.txt 2>/dev/null || true
 }

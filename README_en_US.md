@@ -65,7 +65,19 @@ Supports blazing-fast next-generation encryption protocols like 2022-blake3-aes,
 curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/main/install_ss2022.sh -o install_ss2022.sh && chmod +x install_ss2022.sh && sudo ./install_ss2022.sh
 ```
 
-### 4\. Server Routing Tool (Mihomo Routing)
+### 4\. AnyTLS (JLS Handshake Camouflage) Node Management
+
+Uses Mihomo's `anytls` listener to serve AnyTLS, defaulting to JLS: connections that fail JLS authentication are relayed verbatim to a fallback destination (default `www.bing.com:443`), and the handshake is carried by a throwaway certificate the core generates itself — **no certificate of your own is needed**. A native TLS mode with your own certificate is also available.
+
+```bash
+curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/main/install_anytls.sh -o install_anytls.sh && chmod +x install_anytls.sh && sudo ./install_anytls.sh
+```
+
+> **Core requirement**: JLS support landed in mihomo **v1.19.29** (`feat: support jls for anytls outbound and listener`). The script checks the version and refuses to install on older cores rather than writing a config that silently fails.
+>
+> **Note**: The AnyTLS URI scheme defines only `sni` and `insecure`, so it cannot carry JLS credentials. The script therefore prints a **`proxies:` snippet** instead of a share link; import it manually on a client that runs mihomo >= 1.19.29 (Clash Party and FlClash already expose `jls-opts` in their forms).
+
+### 5\. Server Routing Tool (Mihomo Routing)
 
 A powerful control panel for server outbound routing. Supports parsing SS and VLESS sharing links and allows visual configuration of routing rules.
 
@@ -75,7 +87,7 @@ curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/
 
 *Can be launched at any time after installation using the `mihomo-routing` command.*
 
-### 5\. Backup and Restore Tool (Mihomo Restore)
+### 6\. Backup and Restore Tool (Mihomo Restore)
 
 Accidentally messed up your configuration? Want to migrate your setup? This tool allows you to import configuration files via direct URLs or by manually pasting the `config.yaml` into the console, complete with built-in safety checks to prevent fatal errors.
 
@@ -85,7 +97,7 @@ curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/
 
 *Can be launched at any time after installation using the `mihomo-restore` command.*
 
-### 6\. Complete Uninstallation Tool
+### 7\. Complete Uninstallation Tool
 
 If you encounter unresolvable critical issues or simply want to clean your server completely, you can use this script. It cleanly wipes system services (Systemd/OpenRC), binaries, logs, and residual configurations.
 
@@ -102,6 +114,7 @@ curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/
 | `install_vless_encryption.sh` | `install_vless_encryption.sh` | VLESS Encryption (PQ) Node Mgmt |
 | `install_vless_reality.sh` | `install_vless_reality.sh` | VLESS-Reality Node Mgmt |
 | `install_ss2022.sh` | `install_ss2022.sh` | Shadowsocks 2022 Node Mgmt |
+| `——` | `install_anytls.sh` | AnyTLS (JLS) Node Mgmt |
 | `xray_manager.sh` | `mihomo_manager.sh` | Unified Management Menu |
 | `xray_routing.sh` | `mihomo_routing.sh` | Server Routing Config |
 | `xray_restore.sh` | `mihomo_restore.sh` | Config Backup & Restore |

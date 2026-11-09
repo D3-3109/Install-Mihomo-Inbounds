@@ -50,10 +50,25 @@ Mihomo 非交互式一键搭建脚本
                 --port <端口>       默认 40000
                 --uuid <UUID>       默认随机生成
 
+  anytls      搭建 AnyTLS 节点 (默认 JLS 握手伪装, 需要 mihomo >= 1.19.29)
+                --port <端口>       默认 8443
+                --mode <jls|tls>    默认 jls; jls 无需证书, tls 需 --cert/--key
+                --dest <host:port>  JLS 回落目标, 默认 www.bing.com:443
+                --sni <域名>        JLS SNI, 默认由 dest 推导
+                --alpn <列表>       默认 h2,http/1.1
+                --password <密码>   AnyTLS 密码, 默认随机生成
+                --jls-user <名称>   JLS 用户名, 默认随机生成
+                --jls-password <密码> JLS 密码, 默认随机生成
+                --proxy <出站名>    回落流量走哪个 proxy, 默认 DIRECT
+                --rate-limit <bit/s> 回落转发限速, 0 表示不限速
+                --padding-file <文件> 自定义 padding-scheme (默认用内核内置方案)
+                --cert <路径>       tls 模式的证书 PEM
+                --key <路径>        tls 模式的私钥 PEM
+
   address <地址|auto>
               设置分享链接使用的连接地址 (NAT/DDNS)，auto 表示恢复自动获取公网 IP
 
-通用参数 (用于 reality / ss / vless-enc):
+通用参数 (用于 reality / ss / vless-enc / anytls):
   --address <地址|auto>  搭建前先设置连接地址；auto 为自动获取公网 IP，不传则沿用当前设置
   -q, --quiet        安静模式，成功时只输出分享链接，便于脚本调用
   -h, --help         显示本帮助
@@ -61,6 +76,7 @@ Mihomo 非交互式一键搭建脚本
 示例:
   $(basename "$0") reality --port 8443 --sni www.example.com --address my.ddns.net
   $(basename "$0") ss --method 2022-blake3-aes-128-gcm -q
+  $(basename "$0") anytls --port 8443 --dest www.apple.com:443 -q
 EOF
 }
 
@@ -169,6 +185,9 @@ main() {
         vless-enc|vless-encryption|vless-pq)
             DEFAULT_PORT=40000
             run_installer "install_vless_encryption.sh" "$@" ;;
+        anytls)
+            DEFAULT_PORT=8443
+            run_installer "install_anytls.sh" "$@" ;;
         address)
             [[ $# -ge 1 ]] || die "用法: $(basename "$0") address <地址|auto>"
             set_address "$1" ;;

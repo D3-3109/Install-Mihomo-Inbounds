@@ -65,7 +65,19 @@ curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/
 curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/main/install_ss2022.sh -o install_ss2022.sh && chmod +x install_ss2022.sh && sudo ./install_ss2022.sh
 ```
 
-### 4\. Инструмент маршрутизации сервера (Mihomo Routing)
+### 4\. Управление узлами AnyTLS (маскировка рукопожатия JLS)
+
+AnyTLS обслуживается через `anytls` listener Mihomo, по умолчанию в режиме JLS: соединения, не прошедшие аутентификацию JLS, передаются без изменений на fallback-адрес (по умолчанию `www.bing.com:443`), а рукопожатие несёт одноразовый сертификат, который ядро генерирует само — **свой сертификат не нужен**. Доступен и режим обычного TLS с вашим сертификатом.
+
+```bash
+curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/main/install_anytls.sh -o install_anytls.sh && chmod +x install_anytls.sh && sudo ./install_anytls.sh
+```
+
+> **Требование к ядру**: поддержка JLS появилась в mihomo **v1.19.29** (`feat: support jls for anytls outbound and listener`). Скрипт проверяет версию и отказывается устанавливать на старом ядре, вместо того чтобы записать конфигурацию, которая молча не работает.
+>
+> **Примечание**: URI-схема AnyTLS определяет только `sni` и `insecure`, поэтому не может передать данные JLS. Скрипт выводит **фрагмент `proxies:`**, а не ссылку для общего доступа; импортируйте его вручную в клиент с mihomo >= 1.19.29 (в формах Clash Party и FlClash есть `jls-opts`).
+
+### 5\. Инструмент маршрутизации сервера (Mihomo Routing)
 
 Мощная панель управления исходящим трафиком (маршрутами) сервера. Поддерживает парсинг ссылок SS и VLESS, а также визуальную настройку правил маршрутизации.
 
@@ -75,7 +87,7 @@ curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/
 
 *После установки инструмент можно в любой момент вызвать командой `mihomo-routing`.*
 
-### 5\. Инструмент резервного копирования и восстановления (Mihomo Restore)
+### 6\. Инструмент резервного копирования и восстановления (Mihomo Restore)
 
 Случайно испортили конфигурацию? Хотите перенести настройки на другой сервер? Этот инструмент позволяет импортировать конфигурационные файлы по прямой ссылке (URL) или вручную вставив `config.yaml` в консоль. Встроена функция проверки безопасности во избежание фатальных ошибок.
 
@@ -85,7 +97,7 @@ curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/
 
 *После установки инструмент можно в любой момент вызвать командой `mihomo-restore`.*
 
-### 6\. Инструмент полного удаления
+### 7\. Инструмент полного удаления
 
 Если вы столкнулись с неразрешимой проблемой или хотите полностью очистить сервер, используйте этот скрипт. Он максимально чисто удаляет системные службы (Systemd/OpenRC), бинарные файлы, логи и остаточные конфигурации.
 
@@ -102,6 +114,7 @@ curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/
 | `install_vless_encryption.sh` | `install_vless_encryption.sh` | Управление узлами VLESS Encryption (PQ) |
 | `install_vless_reality.sh` | `install_vless_reality.sh` | Управление узлами VLESS-Reality |
 | `install_ss2022.sh` | `install_ss2022.sh` | Управление узлами Shadowsocks 2022 |
+| `——` | `install_anytls.sh` | Управление узлами AnyTLS (JLS) |
 | `xray_manager.sh` | `mihomo_manager.sh` | Единое меню управления |
 | `xray_routing.sh` | `mihomo_routing.sh` | Настройка маршрутизации сервера |
 | `xray_restore.sh` | `mihomo_restore.sh` | Резервное копирование и восстановление |

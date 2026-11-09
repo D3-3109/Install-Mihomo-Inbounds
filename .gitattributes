@@ -1,0 +1,4 @@
+# Shell 脚本必须保持 LF: CRLF 会让 bash 在 Linux 上以
+# "bad interpreter: /bin/bash^M" 或语法错误直接失败。
+*.sh        text eol=lf
+*.md        text eol=lf

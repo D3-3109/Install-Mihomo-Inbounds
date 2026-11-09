@@ -65,7 +65,19 @@ curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/
 curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/main/install_ss2022.sh -o install_ss2022.sh && chmod +x install_ss2022.sh && sudo ./install_ss2022.sh
 ```
 
-### 4\. サーバー側ルーティングツール (Mihomo Routing)
+### 4\. AnyTLS (JLS ハンドシェイク偽装) ノード管理
+
+Mihomo の `anytls` listener で AnyTLS を提供します。既定は JLS で、JLS 認証に失敗した接続はフォールバック先（既定 `www.bing.com:443`）へそのまま転送され、ハンドシェイクはカーネルが生成する使い捨て証明書で行われます（**自前の証明書は不要**）。自前証明書を使うネイティブ TLS モードにも切り替えられます。
+
+```bash
+curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/main/install_anytls.sh -o install_anytls.sh && chmod +x install_anytls.sh && sudo ./install_anytls.sh
+```
+
+> **カーネル要件**: JLS サポートは mihomo **v1.19.29** で追加されました（`feat: support jls for anytls outbound and listener`）。スクリプトはバージョンを確認し、古いカーネルでは黙って失敗する設定を書かずにインストールを拒否します。
+>
+> **注意**: AnyTLS の URI 形式は `sni` と `insecure` しか定義しておらず JLS の資格情報を表現できないため、出力は共有リンクではなく **`proxies:` スニペット**です。mihomo >= 1.19.29 のクライアント（Clash Party / FlClash は `jls-opts` に対応済み）へ手動で取り込んでください。
+
+### 5\. サーバー側ルーティングツール (Mihomo Routing)
 
 強力なサーバー側のアウトバウンド（送信）ルーティングコントロールパネルです。SS や VLESS の共有リンクの解析をサポートし、ルーティングルールを視覚的に設定できます。
 
@@ -75,7 +87,7 @@ curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/
 
 *インストール後は、いつでも `mihomo-routing` コマンドで呼び出すことができます。*
 
-### 5\. バックアップと復元ツール (Mihomo Restore)
+### 6\. バックアップと復元ツール (Mihomo Restore)
 
 誤って設定を変更してしまった場合や、設定を移行したい場合に最適です。このツールを使用すると、直接の URL 経由で設定ファイルをインポートしたり、コンソールを開いて手動で `config.yaml` を貼り付けたりすることができます。エラーを防ぐ安全テスト機能が組み込まれています。
 
@@ -85,7 +97,7 @@ curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/
 
 *インストール後は、いつでも `mihomo-restore` コマンドで呼び出すことができます。*
 
-### 6\. 完全アンインストールツール
+### 7\. 完全アンインストールツール
 
 解決できない深刻な問題が発生した場合や、サーバーを完全にクリーンアップしたい場合は、このスクリプトを使用できます。システムサービス (Systemd/OpenRC)、バイナリファイル、ログ、および残留設定を極めてクリーンに消去します。
 
@@ -102,6 +114,7 @@ curl -L https://raw.githubusercontent.com/RomanovCaesar/Install-Mihomo-Inbounds/
 | `install_vless_encryption.sh` | `install_vless_encryption.sh` | VLESS Encryption (PQ) ノード管理 |
 | `install_vless_reality.sh` | `install_vless_reality.sh` | VLESS-Reality ノード管理 |
 | `install_ss2022.sh` | `install_ss2022.sh` | Shadowsocks 2022 ノード管理 |
+| `——` | `install_anytls.sh` | AnyTLS (JLS) ノード管理 |
 | `xray_manager.sh` | `mihomo_manager.sh` | 統合管理メニュー |
 | `xray_routing.sh` | `mihomo_routing.sh` | サーバー側ルーティング設定 |
 | `xray_restore.sh` | `mihomo_restore.sh` | 設定のバックアップと復元 |
