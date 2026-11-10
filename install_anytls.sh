@@ -422,7 +422,14 @@ is_port_in_use() {
     return 1
 }
 
-is_valid_domain() { local domain=$1; [[ "$domain" =~ ^[a-zA-Z0-9-]{1,63}(\.[a-zA-Z0-9-]{1,63})+$ ]] && [[ "$domain" != *--* ]]; }
+# DNS 标签允许连字符出现在任意位置, `d1--ov-gotcha207b.bilivideo.com` 这种中间
+# 带连续连字符的域名完全合法 (只有 xn-- 前缀才与 punycode 相关, 也不是禁则)。
+# 这里只排除真正非法的形式: 首尾连字符、空标签、连续点、超长。
+is_valid_domain() {
+    local domain=$1
+    [[ ${#domain} -le 253 ]] || return 1
+    [[ "$domain" =~ ^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+$ ]]
+}
 
 # dest 必须是 host:port, 且 host 为 IP 或域名。Mihomo 的 jls.NewServerConfig
 # 用 net.SplitHostPort 解析, 少了端口会直接报 invalid dest address。
