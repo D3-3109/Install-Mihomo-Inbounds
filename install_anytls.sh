@@ -863,8 +863,15 @@ ask_anytls_node() {
             if is_valid_dest "$dest"; then break; else error "格式必须是 host:port"; fi
         done
         while true; do
-            read -p "$(echo -e "JLS 伪装 SNI (留空则由 dest 推导, 一般直接回车): ")" sni
-            if [[ -z "$sni" ]]; then break; fi
+            read -p "$(echo -e "JLS 伪装 SNI (直接回车 = 用 dest 的域名): ")" sni
+            if [[ -z "$sni" ]]; then
+                # 与内核一致: sni 留空时取 dest 的 host, 并显式落盘,
+                # 否则服务端按 dest 推导、客户端却退回 server(IP), 握不上。
+                sni="${dest%:*}"
+                sni="${sni#[}"; sni="${sni%]}"
+                info "SNI 取 dest 的域名: ${cyan}${sni}${none}"
+                break
+            fi
             if is_valid_domain "$sni"; then break; else error "SNI 必须是域名"; fi
         done
         read -p "$(echo -e "JLS ALPN (默认: ${cyan}${default_alpn}${none}): ")" input_alpn
@@ -1049,6 +1056,15 @@ view_subscription_info() {
         mode="unknown"; password=""; jls_user=""; jls_password=""; dest=""; sni=""; alpn="$default_alpn"
     fi
 
+    # 服务端在 sni 留空时按 dest 的 host 推导 (transport/jls 的 NewServerConfig:
+    # `if sni == "" { sni = destHost }`)。客户端若不写 sni 会退回 server,
+    # 也就是中转机 IP, 两边握手参数对不上。这里对齐内核的推导规则。
+    if [[ -z "$sni" && "$mode" == "jls" && -n "$dest" ]]; then
+        sni="${dest%:*}"
+        sni="${sni#[}"; sni="${sni%]}"
+        [[ "$is_quiet" == false ]] && warn "JLS SNI 未显式配置，按内核规则从 dest 推导为: ${sni}"
+    fi
+
     local ip
     if [[ -f "$address_file" && -s "$address_file" ]]; then
         ip=$(cat "$address_file"); [[ -z "$ip" ]] && ip=$(get_public_ip)
@@ -1211,6 +1227,11 @@ modify_config() {
         alpn=$(load_node_state "$target_p" alpn)
         proxy=$(load_node_state "$target_p" proxy)
         rate_limit=$(load_node_state "$target_p" rate_limit)
+        # 老状态文件里 sni 可能是空的 (旧版未推导), 读取时同样兜底
+        if [[ -z "$sni" && "$mode" == "jls" && -n "$dest" ]]; then
+            sni="${dest%:*}"
+            sni="${sni#[}"; sni="${sni%]}"
+        fi
         echo -e "${yellow} 当前配置: mode=${mode} dest=${dest} sni=${sni} alpn=${alpn}${none}"
     else
         warn "未找到参数文件，将按默认值重建该节点 (原密码会失效)。"
@@ -1417,6 +1438,11 @@ main() {
             [[ -z "$rate_limit" ]] && rate_limit=0
             if [[ -z "$jls_user" ]]; then jls_user="jls$(generate_secret 6 | tr 'A-Z' 'a-z')"; fi
             if [[ -z "$jls_password" ]]; then jls_password=$(generate_secret 24); fi
+            # 与内核 NewServerConfig 一致: sni 留空时取 dest 的 host
+            if [[ -z "$sni" ]]; then
+                sni="${dest%:*}"
+                sni="${sni#[}"; sni="${sni%]}"
+            fi
         else
             if [[ -z "$cert_path" || -z "$key_path" ]]; then
                 error "--mode tls 需要同时提供 --cert 和 --key。"; exit 1
