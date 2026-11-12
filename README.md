@@ -1,1 +1,164 @@
-W+S4reaWh10oL1JFQURNRS5tZCkgfCBbRW5nbGlzaF0oL1JFQURNRV9lbl9VUy5tZCkgfCBb5pel5pys6KqeXSgvUkVBRE1FX2phX0pQLm1kKSB8IFvQoNGD0YHRgdC60LjQuV0oL1JFQURNRV9ydV9SVS5tZCkgCgojIENhZXNhciDonJzmsYEgTWlob21vIOS4gOmUruWuieijheS4jueuoeeQhuW3peWFt+eusSAoSW5zdGFsbC1NaWhvbW8tSW5ib3VuZHMpCgrov5nmmK/kuIDkuKrlip/og73lvLrlpKfjgIHpq5jluqbmqKHlnZfljJbkuJTmnoHlhbflhbzlrrnmgKfnmoQgTWlob21vIOiKgueCueWuieijheS4jueuoeeQhuiEmuacrOmbhuWQiOOAguS9v+eUqCBNaWhvbW8gKE1ldGEgS2VybmVsKSDmm7/ku6MgWHJheSDkvZzkuLrku6PnkIbmnI3liqHnq6/moLjlv4PvvIzop6PlhrMgWHJheSDlrZjlnKjnmoQgVENQIOi/nuaOpeaVsOazhOmcsumXrumimOOAguaUr+aMgeWcqOS4gOWPsOacjeWKoeWZqOS4iuWujOe+juWFseWtmOmDqOe9suWkmuenjeS4u+a1geWNj+iuru+8iFZMRVNTLVJlYWxpdHnjgIFWTEVTUyBFbmNyeXB0aW9u44CBU2hhZG93c29ja3MgMjAyMiDnrYnvvInvvIzlubbmj5Dkvpvkvr/mjbfnmoTphY3nva7lpIfku73jgIHot6/nlLHliIbmtYHnrqHnkIbku6Xlj4ogR2VvIOaVsOaNruabtOaWsOWKn+iDveOAggoKIyMg4pyoIOaguOW/g+eJueaApwoKKiAqKk1paG9tbyDmoLjlv4MqKu+8muS9v+eUqCBNaWhvbW8gKENsYXNoIE1ldGEpIOS9nOS4uuS7o+eQhuacjeWKoeerr++8jOino+WGsyBYcmF5IOeahCBUQ1Ag6L+e5o6l5pWw5rOE6ZyyIEJ1Z++8jOi1hOa6kOWNoOeUqOabtOS9ju+8jOeos+WumuaAp+abtOW8uuOAguWQjOaXtuaUr+aMgemSiOWvueiAgeaXpyBDUFUg55qEIGBhbWQ2NC1jb21wYXRpYmxlYCDmnrbmnoTmjIfku6Tpm4bpmY3nuqfpgILphY3jgIIKKiAqKuaKl+mHj+WtkOWKoOWvhuaUr+aMgSoq77ya5peg57yd5pSv5oyBIFhyYXkg6aaW5Yib55qEIFZMRVNTIEVuY3J5cHRpb24gKE1MLUtFTS03NjgsIFBvc3QtUXVhbnR1bSkg54m55oCn77yM5bm25o+Q5L6b6auY5bqm5YW85a6555qE5a+G6ZKl6Ieq5Yqo6L2s5o2i55Sf5oiQ44CCCiogKirlpJrljY/orq7mmbrog73lhbHlrZgqKu+8mumHh+eUqCBQeXRob24g6Kej5p6QIFlBTUwg6YWN572u5bm25pm66IO96L+95YqgIGxpc3RlbmVyc++8jOmaj+W/g+aJgOassuWuieijheWkmuS4quS4jeWQjOWNj+iuruaIluWkmuerr+WPo+iKgueCue+8jCoq57ud5a+55LiN5Lya6KaG55uWKirljp/mnInoioLngrnphY3nva7jgIIKKiAqKuaegeiHtOeahOezu+e7n+WFvOWuuSoq77ya5LiN5LuF5a6M576O5pSv5oyBIERlYmlhbiAvIFVidW50dSDnrYnln7rkuo4gU3lzdGVtZCDnmoTkuLvmtYHns7vnu5/vvIzmm7QqKua3seW6puWFvOWuuSBBbHBpbmUgTGludXggKE9wZW5SQykqKu+8jOWvueaegeWFtueyvueugOeahOi9u+mHj+e6p+ezu+e7n+WQjOagt+WPi+WlveOAggoqICoqTkFUIC8gREROUyDlj4vlpb0qKu+8muWGhee9rueLrOeri+i/nuaOpeWcsOWdgOiHquWumuS5ieWKn+iDve+8jOaXoOiuuuS9oOaYr+S9v+eUqCBOQVQg5Yqo5oCB56uv5Y+j5py677yM6L+Y5piv6YCa6L+HIERETlMg5Z+f5ZCN6Kej5p6Q77yM6YO96IO95LiA6ZSu55Sf5oiQ5q2j56Gu55qE5YiG5Lqr6ZO+5o6l44CCCiogKirkuIDnq5nlvI/nrqHnkIYqKu+8muaPkOS+m+WFqOWxgOe7n+S4gOeahOeuoeeQhuiPnOWNlSAoYG1paG9tby1tYW5hZ2VyYCnjgIHot6/nlLHliIbmtYHphY3nva7lt6XlhbcgKGBtaWhvbW8tcm91dGluZ2ApIOS7peWPiumFjee9ruWkh+S7vei/mOWOn+W3peWFtyAoYG1paG9tby1yZXN0b3JlYCnjgIIKKiAqKuWuieWFqOeyvuWHhuWIoOmZpCoq77ya5pSv5oyB5oyJ56uv5Y+j5ZKM5Y2P6K6u57K+5YeG6K+G5Yir5bm25Yig6Zmk54m55a6a6IqC54K56YWN572u77yM57ud5LiN6K+v5Lyk5peg6L6c6YWN572u44CCCgotLS0KCiMjIPCfmoAg5b+r6YCf5byA5aeL77yI5o6o6I2Q77yJCgrlpoLmnpzkvaDmg7PkvZPpqozmnIDlrozmlbTnmoTnrqHnkIblip/og73vvIzmjqjojZDnm7TmjqXlronoo4UqKue7n+S4gOeuoeeQhuS4reW/g++8iE1paG9tbyBNYW5hZ2Vy77yJKirjgIIKCuaJp+ihjOS7peS4i+WRveS7pOWNs+WPr+S4i+i9veW5tuWUpOWHuuWFqOWxgOeuoeeQhuiPnOWNle+8mgoKYGBgYmFzaApjdXJsIC1MIGh0dHBzOi8vcmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbS9EMy0zMTA5L0luc3RhbGwtTWlob21vLUluYm91bmRzL21haW4vbWlob21vX21hbmFnZXIuc2ggLW8gbWlob21vX21hbmFnZXIuc2ggJiYgY2htb2QgK3ggbWlob21vX21hbmFnZXIuc2ggJiYgc3VkbyAuL21paG9tb19tYW5hZ2VyLnNoCmBgYAoKKirwn5KhIOi0tOW/g+aPkOekuu+8mioqCue7n+S4gOeuoeeQhuW3peWFt+WuieijheWujOaIkOWQju+8jOS8muiHquWKqOazqOWGjOWFqOWxgOWRveS7pOOAguS7peWQjuS9oOmaj+aXtuWPr+S7pemAmui/h+WcqOe7iOerr+i+k+WFpeS7peS4i+WRveS7pOadpeW/q+mAn+WUpOmGkuS4u+iPnOWNle+8mgpgYGBiYXNoCm1paG9tby1tYW5hZ2VyCmBgYAoK5ZyoIGBtaWhvbW8tbWFuYWdlcmAg6I+c5Y2V5Lit77yM5L2g5Y+v5Lul55u05o6l5LiA6ZSu6LCD55So5Lul5LiL5omA5pyJ54us56uL5Yqf6IO977yM5peg6ZyA5YaN5Y2V54us5LiL6L296ISa5pys44CCCgotLS0KCiMjIPCfk6Yg5ZCE5Yqf6IO95qih5Z2X54us56uL5a6J6KOF5oyH5Y2XCgrlpoLmnpzkvaDlj6rmg7Pkvb/nlKjmnKzpobnnm67nmoTmn5DkuIDkuKrnibnlrprlip/og73vvIzkuZ/lj6/ku6Xnm7TmjqXkvb/nlKjku6XkuIvni6znq4vlronoo4Xlkb3ku6TjgIIKCiMjIyAxLiBWTEVTUyBFbmNyeXB0aW9uIChQb3N0LVF1YW50dW0pIOiKgueCueeuoeeQhgrmlK/mjIHmnIDmlrDkuIDku6MgTUwtS0VNLTc2OCDmipfph4/lrZDliqDlr4bmioDmnK/vvIzmipvlvIPlhpfmnYLphY3nva7vvIzku4XpnIDmj6HmiYvlr4bpkqXljbPlj6/lu7rnq4vlronlhajov57mjqXjgIIKYGBgYmFzaApjdXJsIC1MIGh0dHBzOi8vcmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbS9EMy0zMTA5L0luc3RhbGwtTWlob21vLUluYm91bmRzL21haW4vaW5zdGFsbF92bGVzc19lbmNyeXB0aW9uLnNoIC1vIGluc3RhbGxfdmxlc3NfZW5jcnlwdGlvbi5zaCAmJiBjaG1vZCAreCBpbnN0YWxsX3ZsZXNzX2VuY3J5cHRpb24uc2ggJiYgc3VkbyAuL2luc3RhbGxfdmxlc3NfZW5jcnlwdGlvbi5zaApgYGAKCiMjIyAyLiBWTEVTUy1SZWFsaXR5IChWaXNpb24pIOiKgueCueeuoeeQhgrmlK/mjIHoh6rliqjnlJ/miJAgWDI1NTE5IOWvhumSpeWvue+8jOm7mOiupOS9v+eUqCBgeHRscy1ycHJ4LXZpc2lvbmAg5rWB5o6n77yM5L2/55SoIE1paG9tbyDnmoQgbGlzdGVuZXJzIOaOpeWFpeOAggpgYGBiYXNoCmN1cmwgLUwgaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL0QzLTMxMDkvSW5zdGFsbC1NaWhvbW8tSW5ib3VuZHMvbWFpbi9pbnN0YWxsX3ZsZXNzX3JlYWxpdHkuc2ggLW8gaW5zdGFsbF92bGVzc19yZWFsaXR5LnNoICYmIGNobW9kICt4IGluc3RhbGxfdmxlc3NfcmVhbGl0eS5zaCAmJiBzdWRvIC4vaW5zdGFsbF92bGVzc19yZWFsaXR5LnNoCmBgYAoKIyMjIDMuIFNoYWRvd3NvY2tzIDIwMjIgJiDkvKDnu58gU1Mg6IqC54K5566h55CGCuaUr+aMgeaegemAn+eahCAyMDIyLWJsYWtlMy1hZXMg562J5paw5LiA5Luj5Yqg5a+G5Y2P6K6u77yM5bm25ZCR5LiL5YW85a655Lyg57uf55qEIGFlcy1nY20g5Yqg5a+G77yM6Ieq5Yqo55Sf5oiQ5by66ZqP5py65a+G56CB44CCCmBgYGJhc2gKY3VybCAtTCBodHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vRDMtMzEwOS9JbnN0YWxsLU1paG9tby1JbmJvdW5kcy9tYWluL2luc3RhbGxfc3MyMDIyLnNoIC1vIGluc3RhbGxfc3MyMDIyLnNoICYmIGNobW9kICt4IGluc3RhbGxfc3MyMDIyLnNoICYmIHN1ZG8gLi9pbnN0YWxsX3NzMjAyMi5zaApgYGAKCiMjIyA0LiBBbnlUTFMgKEpMUyDmj6HmiYvkvKroo4UpIOiKgueCueeuoeeQhgrkvb/nlKggTWlob21vIOeahCBgYW55dGxzYCBsaXN0ZW5lciDmib/ovb0gQW55VExT77yM6buY6K6k6LWwIEpMU++8muacqumAmui/hyBKTFMg6K6k6K+B55qE6L+e5o6l5Lya6KKr5Y6f5qC36L2s5Y+R5Yiw5Zue6JC955uu5qCH77yI6buY6K6kIGB3d3cuYmluZy5jb206NDQzYO+8ie+8jOaPoeaJi+eUseWGheaguOeUn+aIkOeahOS4gOasoeaAp+ivgeS5puaJv+i9ve+8jCoq5peg6ZyA6Ieq5aSH6K+B5LmmKirjgILkuZ/lj6/liIfmjaLliLDljp/nlJ8gVExTIOaooeW8j+Whq+iHquW3seeahOivgeS5puOAggpgYGBiYXNoCmN1cmwgLUwgaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL0QzLTMxMDkvSW5zdGFsbC1NaWhvbW8tSW5ib3VuZHMvbWFpbi9pbnN0YWxsX2FueXRscy5zaCAtbyBpbnN0YWxsX2FueXRscy5zaCAmJiBjaG1vZCAreCBpbnN0YWxsX2FueXRscy5zaCAmJiBzdWRvIC4vaW5zdGFsbF9hbnl0bHMuc2gKYGBgCgo+ICoq5YaF5qC46KaB5rGCKio6IEpMUyDmlK/mjIHpmo8gbWlob21vICoqdjEuMTkuMjkqKiDlvJXlhaXvvIhgZmVhdDogc3VwcG9ydCBqbHMgZm9yIGFueXRscyBvdXRib3VuZCBhbmQgbGlzdGVuZXJg77yJ44CC6ISa5pys5Lya5qOA5p+l54mI5pys77yM5L2O54mI5pys55u05o6l5ouS57ud5a6J6KOF77yM6ICM5LiN5piv5YaZ5Ye65LiA5Lu96Z2Z6buY5aSx5pWI55qE6YWN572u44CCCj4KPiAqKuazqOaEjyoqOiBBbnlUTFMg55qEIFVSSSDmoLzlvI/lj6rlrprkuYnkuoYgYHNuaWAg5LiOIGBpbnNlY3VyZWAg5Lik5Liq5Y+C5pWw77yM5peg5rOV6KGo6L6+IEpMUyDlh63mja7vvIzlm6DmraTohJrmnKzovpPlh7rnmoTmmK/kuIDmrrUgKipgcHJveGllczpgIOeJh+autSoq6ICM5LiN5piv5YiG5Lqr6ZO+5o6l77yb5a6i5oi356uv6ZyA5omL5bel5a+85YWl77yM5LiU5b+F6aG75pivIG1paG9tbyA+PSAxLjE5LjI577yIQ2xhc2ggUGFydHkgLyBGbENsYXNoIOihqOWNleW3suaUr+aMgSBgamxzLW9wdHNg77yJ44CCCgojIyMgNS4gUmVhbG0g56uv5Y+j6L2s5Y+RICjni6znq4vmnI3liqEpCuWuieijhSBbcmVhbG1dKGh0dHBzOi8vZ2l0aHViLmNvbS96aGJvbmVyL3JlYWxtKSDlgZrnuq8gVENQL1VEUCDnq6/lj6Povazlj5HvvIzkuI4gTWlob21vICoq5bm26KGM6L+Q6KGMKirvvJrni6znq4vnmoTkuozov5vliLbvvIhgL3Vzci9sb2NhbC9iaW4vcmVhbG1g77yJ44CB6YWN572u55uu5b2V77yIYC91c3IvbG9jYWwvZXRjL3JlYWxtL2DvvInlkowgc3lzdGVtZC9PcGVuUkMg5pyN5Yqh5Y2V5YWD77yM5LqS5LiN5bmy5omw44CC5YW45Z6L5Zy65pmv5piv5oqK5Lit6L2s5py655qE56uv5Y+j6L2s5Y+R5Yiw6JC95Zyw5py655qEIE1paG9tbyDoioLngrnnq6/lj6PjgIIKYGBgYmFzaApjdXJsIC1MIGh0dHBzOi8vcmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbS9EMy0zMTA5L0luc3RhbGwtTWlob21vLUluYm91bmRzL21haW4vaW5zdGFsbF9yZWFsbS5zaCAtbyBpbnN0YWxsX3JlYWxtLnNoICYmIGNobW9kICt4IGluc3RhbGxfcmVhbG0uc2ggJiYgc3VkbyAuL2luc3RhbGxfcmVhbG0uc2gKYGBgCgo+ICoq5rOo5oSPKio6IHJlYWxtIOaYr+e6r+err+WPo+i9rOWPke+8jOacrOi6q+S4jeS6p+eUn+WPr+WvvOWFpeeahOiKgueCuemTvuaOpeOAguWuouaIt+err+S7jeeEtuS9v+eUqOWOn+adpeeahOWNj+iuruWSjOWHreaNru+8jOWPquaYr+aKiuacjeWKoeWZqOWcsOWdgOaNouaIkOS4rei9rOacuueahCBgSVA656uv5Y+jYOOAggo+Cj4gKirkuLrku4DkuYjkuI3lubbov5vljbjovb3ohJrmnKwqKjogYGluc3RhbGxfcmVhbG0uc2hgIOacieiHquW3seeahOWNuOi9veWFpeWPo++8iOiPnOWNlSA077yJ77yMYHVuaW5zdGFsbF9taWhvbW8uc2hgIOS4jeS8mueisCByZWFsbSDnmoTmlofku7bvvIzpgb/lhY0i5Y24IG1paG9tbyDmiorovazlj5HkuZ/liKDkuoYi44CCCgojIyMgNi4g5pyN5Yqh56uv6Lev55Sx5YiG5rWB5bel5YW3IChNaWhvbW8gUm91dGluZykK5by65aSn55qE5pyN5Yqh56uv5Ye65Y+j5YiG5rWB5o6n5Yi26Z2i5p2/44CC5pSv5oyB6Kej5p6QIFNTIOWSjCBWTEVTUyDliIbkuqvpk77mjqXvvIzlj6/op4bljJbphY3nva7liIbmtYHop4TliJnjgIIKYGBgYmFzaApjdXJsIC1MIGh0dHBzOi8vcmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbS9EMy0zMTA5L0luc3RhbGwtTWlob21vLUluYm91bmRzL21haW4vbWlob21vX3JvdXRpbmcuc2ggLW8gbWlob21vX3JvdXRpbmcuc2ggJiYgY2htb2QgK3ggbWlob21vX3JvdXRpbmcuc2ggJiYgc3VkbyAuL21paG9tb19yb3V0aW5nLnNoCmBgYAoq5a6J6KOF5ZCO6ZqP5pe25Y+v55SoIGBtaWhvbW8tcm91dGluZ2Ag5ZG95Luk5ZSk6LW344CCKgoKIyMjIDcuIOWkh+S7veS4jui/mOWOn+W3peWFtyAoTWlob21vIFJlc3RvcmUpCuS4jeWwj+W/g+aUuemUmeS6humFjee9ru+8n+aDs+imgei/geenu+mFjee9ru+8n+S9v+eUqOatpOW3peWFt+WPr+S7pemAmui/h+ebtOmTviBVUkwg5a+85YWl6YWN572u5paH5Lu277yM5oiW6ICF5omT5byA5o6n5Yi25Y+w5omL5Yqo57KY6LS0IGBjb25maWcueWFtbGDvvIzoh6rluKblronlhajmtYvor5XpmLLmiqXplJnlip/og73jgIIKYGBgYmFzaApjdXJsIC1MIGh0dHBzOi8vcmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbS9EMy0zMTA5L0luc3RhbGwtTWlob21vLUluYm91bmRzL21haW4vbWlob21vX3Jlc3RvcmUuc2ggLW8gbWlob21vX3Jlc3RvcmUuc2ggJiYgY2htb2QgK3ggbWlob21vX3Jlc3RvcmUuc2ggJiYgc3VkbyAuL21paG9tb19yZXN0b3JlLnNoCmBgYAoq5a6J6KOF5ZCO6ZqP5pe25Y+v55SoIGBtaWhvbW8tcmVzdG9yZWAg5ZG95Luk5ZSk6LW344CCKgoKIyMjIDguIOWujOWFqOWNuOi9veW3peWFtwrlpoLmnpzkvaDpgYfliLDml6Dms5Xop6PlhrPnmoTkuKXph43pl67popjvvIzmiJbogIXmg7PopoHlrozlhajmuIXnkIbmnI3liqHlmajvvIzlj6/ku6Xkvb/nlKjmraTohJrmnKzjgILlroPkvJrmnoHlhbblubLlh4DlnLDmuIXnkIbns7vnu5/mnI3liqHvvIhTeXN0ZW1kL09wZW5SQ++8ieOAgeS6jOi/m+WItuaWh+S7tuOAgeaXpeW/l+S7peWPiuaui+eVmemFjee9ruOAggpgYGBiYXNoCmN1cmwgLUwgaHR0cHM6Ly9yYXcuZ2l0aHVidXNlcmNvbnRlbnQuY29tL0QzLTMxMDkvSW5zdGFsbC1NaWhvbW8tSW5ib3VuZHMvbWFpbi91bmluc3RhbGxfbWlob21vLnNoIC1vIHVuaW5zdGFsbF9taWhvbW8uc2ggJiYgY2htb2QgK3ggdW5pbnN0YWxsX21paG9tby5zaCAmJiBzdWRvIC4vdW5pbnN0YWxsX21paG9tby5zaApgYGAKCiMjIyA5LiDpnZ7kuqTkupLlvI/kuIDplK7mkK3lu7ogKEZsYWcg5qih5byPKQrpgILlkIjmibnph4/pg6jnvbLmiJboh6rliqjljJbohJrmnKzvvJrnm7TmjqXnlKjlkb3ku6TooYzlj4LmlbDmkK3lu7roioLngrnvvIzkuI3ov5vlhaXoj5zljZXvvIjljp/mnInkuqTkupLoj5zljZXkuI3lj5flvbHlk43vvInjgILmiYDmnInlj4LmlbDlnYflj6/nnIHnlaXvvIznnIHnlaXml7bkvb/nlKjpu5jorqTlgLzmiJbpmo/mnLrnlJ/miJDjgIIKYGBgYmFzaApjdXJsIC1MIGh0dHBzOi8vcmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbS9EMy0zMTA5L0luc3RhbGwtTWlob21vLUluYm91bmRzL21haW4vbWlob21vX2NsaS5zaCAtbyBtaWhvbW9fY2xpLnNoICYmIGNobW9kICt4IG1paG9tb19jbGkuc2gKCnN1ZG8gLi9taWhvbW9fY2xpLnNoIHJlYWxpdHkgICAtLXBvcnQgNDQzIC0tc25pIGhrLmFydC5tdXNldW0gWy0tdXVpZCA8VVVJRD5dCnN1ZG8gLi9taWhvbW9fY2xpLnNoIHNzICAgICAgICAtLXBvcnQgMjAyMiAtLW1ldGhvZCAyMDIyLWJsYWtlMy1hZXMtMjU2LWdjbSBbLS1wYXNzd29yZCA85a+G56CBPl0Kc3VkbyAuL21paG9tb19jbGkuc2ggdmxlc3MtZW5jIC0tcG9ydCA0MDAwMCBbLS11dWlkIDxVVUlEPl0Kc3VkbyAuL21paG9tb19jbGkuc2ggYW55dGxzICAgIC0tcG9ydCA4NDQzIFstLWRlc3Qgd3d3LmJpbmcuY29tOjQ0M10gWy0tbW9kZSBqbHN8dGxzXQpzdWRvIC4vbWlob21vX2NsaS5zaCByZWFsbSAgICAgLS1wb3J0IDg0NDMgLS1yZW1vdGUgMTAuMC4wLjI6ODQ0MyBbLS1uby11ZHBdCnN1ZG8gLi9taWhvbW9fY2xpLnNoIGFkZHJlc3MgICBteS5kZG5zLm5ldCAgICAgIyDorr7nva4gTkFUL0RETlMg6L+e5o6l5Zyw5Z2A77yMYXV0byDmgaLlpI3oh6rliqjojrflj5YKYGBgCiogYHJlYWxtYCDpop3lpJblj4LmlbDvvJpgLS1yZW1vdGVg77yI6L2s5Y+R55uu5qCH77yM5b+F5aGr77yJ44CBYC0tbGlzdGVuLWhvc3Rg77yI6buY6K6kIGAwLjAuMC4wYO+8ieOAgWAtLW5vLXVkcGDvvIjlj6rovawgVENQ77yJ44CBYC0tbm8tdGNwYO+8iOWPqui9rCBVRFDvvInjgIFgLS1jb21tZW50YO+8iOWGmeWFpemFjee9rueahOazqOmHiu+8iQoqIGBhbnl0bHNgIOmineWkluWPguaVsO+8mmAtLWRlc3Rg77yISkxTIOWbnuiQveebruagh++8jOm7mOiupCBgd3d3LmJpbmcuY29tOjQ0M2DvvInjgIFgLS1tb2RlYO+8iGBqbHNgIOm7mOiupCAvIGB0bHNgIOmcgOmFjSBgLS1jZXJ0YCBgLS1rZXlg77yJ44CBYC0tc25pYOOAgWAtLWFscG5g44CBYC0tamxzLXVzZXJg44CBYC0tamxzLXBhc3N3b3JkYOOAgWAtLXByb3h5YO+8iOWbnuiQveWHuuerme+8ieOAgWAtLXJhdGUtbGltaXRg44CBYC0tcGFkZGluZy1maWxlYO+8iOiHquWumuS5ieWhq+WFheaWueahiO+8iQoqIGAtLWFkZHJlc3MgPOWcsOWdgHxhdXRvPmDvvJrmkK3lu7rliY3lhYjorr7nva7ov57mjqXlnLDlnYDvvIxgYXV0b2Ag5Li66Ieq5Yqo6I635Y+W5YWs572RIElQ77yM5LiN5Lyg5YiZ5rK/55So5b2T5YmN6K6+572u77yM5L6L5aaCIGBzdWRvIC4vbWlob21vX2NsaS5zaCByZWFsaXR5IC0tYWRkcmVzcyBteS5kZG5zLm5ldGAKKiBgLXFgIC8gYC0tcXVpZXRg77ya5oiQ5Yqf5pe25Y+q6L6T5Ye65YiG5Lqr6ZO+5o6l77yM5pa55L6/5YW25LuW6ISa5pys5o2V6I63CiogYC1oYCAvIGAtLWhlbHBg77ya5p+l55yL5a6M5pW05biu5YqpCgotLS0KCiMjIPCflIQg5LiOIFhyYXkg54mI5pys55qE5a+55bqU5YWz57O7Cgp8IFhyYXkg6ISa5pysIHwgTWlob21vIOiEmuacrCB8IOWKn+iDvSB8CnwtLS18LS0tfC0tLXwKfCBgaW5zdGFsbF92bGVzc19lbmNyeXB0aW9uLnNoYCB8IGBpbnN0YWxsX3ZsZXNzX2VuY3J5cHRpb24uc2hgIHwgVkxFU1MgRW5jcnlwdGlvbiAoUFEpIOiKgueCueeuoeeQhiB8CnwgYGluc3RhbGxfdmxlc3NfcmVhbGl0eS5zaGAgfCBgaW5zdGFsbF92bGVzc19yZWFsaXR5LnNoYCB8IFZMRVNTLVJlYWxpdHkg6IqC54K5566h55CGIHwKfCBgaW5zdGFsbF9zczIwMjIuc2hgIHwgYGluc3RhbGxfc3MyMDIyLnNoYCB8IFNoYWRvd3NvY2tzIDIwMjIg6IqC54K5566h55CGIHwKfCBg4oCU4oCUYCB8IGBpbnN0YWxsX2FueXRscy5zaGAgfCBBbnlUTFMgKEpMUyDmj6HmiYvkvKroo4UpIOiKgueCueeuoeeQhiB8CnwgYOKAlOKAlGAgfCBgaW5zdGFsbF9yZWFsbS5zaGAgfCBSZWFsbSDnq6/lj6Povazlj5EgKOeLrOeri+acjeWKoSkgfAp8IGB4cmF5X21hbmFnZXIuc2hgIHwgYG1paG9tb19tYW5hZ2VyLnNoYCB8IOe7n+S4gOeuoeeQhuiPnOWNlSB8CnwgYHhyYXlfcm91dGluZy5zaGAgfCBgbWlob21vX3JvdXRpbmcuc2hgIHwg5pyN5Yqh56uv5YiG5rWB6YWN572uIHwKfCBgeHJheV9yZXN0b3JlLnNoYCB8IGBtaWhvbW9fcmVzdG9yZS5zaGAgfCDphY3nva7lpIfku73ov5jljp8gfAp8IGB1bmluc3RhbGxfeHJheS5zaGAgfCBgdW5pbnN0YWxsX21paG9tby5zaGAgfCDlrozlhajljbjovb0gfAp8IGB1cGRhdGVfZ2VvLnNoYCB8IGB1cGRhdGVfZ2VvLnNoYCB8IEdlbyDmlbDmja7mm7TmlrAgfAoKPiAqKuaPkOekuioqOiBNaWhvbW8g5bey5YWo6Z2i5pSv5oyBIFZMRVNTIOeahOWQhOmhueaWsOeJueaAp++8jOWMheaLrCBSZWFsaXR5IOWSjOWfuuS6jiBNTC1LRU0tNzY4IOeahCBFbmNyeXB0aW9uIOWNj+iuru+8jOacrOW3peWFt+euseS4reeahOaJgOaciee7hOS7tuWdh+WPr+WcqOatpOahhuaetuS4i+ato+W4uOS9v+eUqOOAggoKLS0tCgojIyDwn5ug77iPIOW4uOingemXrumimCAoRkFRKQoKKipROiDkuLrku4DkuYjopoHku44gWHJheSDov4Hnp7vliLAgTWlob21v77yfKioKCioqQToqKiBYcmF5IOS7o+eQhuacjeWKoeerr+WtmOWcqOS4pemHjeeahCBUQ1Ag6L+e5o6l5pWw5rOE6ZyyIEJ1Z+OAgk1paG9tbyAoTWV0YSBLZXJuZWwpIOS4jeWtmOWcqOatpOmXrumimO+8jOS4lOWcqOi1hOa6kOWNoOeUqOWSjOeos+WumuaAp+aWuemdouihqOeOsOabtOS8mO+8jOWwpOWFtumAguWQiOW5tuWPkei+g+mrmOeahOWVhueUqOeOr+Wig+aIluWQiOenn+acuuWZqOOAggoKKipROiDmiJHnmoTmnI3liqHlmajmmK8gTkFUIFZQU++8jOaIluiAheWFpeWPoyBJUCDot5/lh7rlj6MgSVAg5LiN5LiA5qC377yM55Sf5oiQ55qE6IqC54K55LiN6YCa5oCO5LmI5Yqe77yfKioKCioqQToqKiDor7flnKjku7vmhI/lronoo4Xoj5zljZXkuK3pgInmi6kgKioi6K6+572u6L+e5o6l5Zyw5Z2AIChOQVQvREROUykiKiog6YCJ6aG544CC5aGr5YWl5L2g5a6e6ZmF55So5LqO5aSW6YOo6L+e5o6l55qEIElQIOWcsOWdgOaIliBERE5TIOWfn+WQjeOAggoKKipROiDmiJHnmoTml6fmrL4gRTUg5aSE55CG5Zmo6KOF5LiN5LiK5paw54mI77yM5oql6ZSZ5LiN5pSv5oyBIHYzIOaetuaehOaAjuS5iOWKnu+8nyoqCgoqKkE6Kiog5pys5LuT5bqT5Lit55qE5a6J6KOF6ISa5pys5bey57uP5a+5IENQVSDmnrbmnoTor4bliKvov5vooYzkuobmmbrog73kvJjljJbjgILpkojlr7nkuI3mlK/mjIEgQVZYMiDmjIfku6Tpm4bnmoTogIHml6fnoazku7bvvIjlpoLpg6jliIYgRTUgdjLjgIFBdG9tIOWkhOeQhuWZqO+8ie+8jOiEmuacrOS8muiHquWKqOaLieWPliBgYW1kNjQtY29tcGF0aWJsZWAg5YW85a6554mI5YaF5qC477yM6YG/5YWN5a6J6KOF5aSx6LSl44CCCgoqKlE6IOWmguS9leafpeeciyBNaWhvbW8g55qE6L+Q6KGM5pel5b+X77yfKioKCioqQToqKiDlnKjlkITkuKrlronoo4XnrqHnkIbohJrmnKznmoToj5zljZXkuK3vvIzpg73mnIkgKioi5p+l55yL5pel5b+XIioqIOmAiemhueOAgumAieaLqeWQjuWNs+WPr+WunuaXtuafpeeci+i/kOihjOaXpeW/l++8jOaMiSBgQ3RybCArIENgIOWNs+WPr+WBnOatouOAggoKKipROiDlpoLkvZXmm7TmlrAgR2VvSVAg5ZKMIEdlb1NpdGUg6Lev55Sx6KeE5YiZ5paH5Lu277yfKioKCioqQToqKiDkvb/nlKggYG1paG9tby1yb3V0aW5nYCAo5pyN5Yqh56uv5YiG5rWB5bel5YW3KSDph4znmoTkuIDplK7oh6rliqjphY3nva7lrprml7bku7vliqHlip/og73vvIzkvJrmr4/lpKnlh4zmmajoh6rliqjmm7TmlrDjgILkvaDkuZ/lj6/ku6XlnKjkuLvnrqHnkIblt6XlhbcgKGBtaWhvbW8tbWFuYWdlcmApIOS4reaJi+WKqOaJp+ihjOWNs+aXtuabtOaWsOOAggoKKipROiBNaWhvbW8g55qE6YWN572u5paH5Lu25Zyo5ZOq6YeM77yfKioKCioqQToqKiDphY3nva7mlofku7bkvY3kuo4gYC91c3IvbG9jYWwvZXRjL21paG9tby9jb25maWcueWFtbGDjgIJNaWhvbW8g5L2/55SoIFlBTUwg5qC85byP6ICM6Z2eIFhyYXkg55qEIEpTT04g5qC85byP44CCCg==
+[中文](/README.md) | [English](/README_en_US.md) | [日本語](/README_ja_JP.md) | [Русский](/README_ru_RU.md) 
+
+# Caesar 蜜汁 Mihomo 一键安装与管理工具箱 (Install-Mihomo-Inbounds)
+
+这是一个功能强大、高度模块化且极具兼容性的 Mihomo 节点安装与管理脚本集合。使用 Mihomo (Meta Kernel) 替代 Xray 作为代理服务端核心，解决 Xray 存在的 TCP 连接数泄露问题。支持在一台服务器上完美共存部署多种主流协议（VLESS-Reality、VLESS Encryption、Shadowsocks 2022 等），并提供便捷的配置备份、路由分流管理以及 Geo 数据更新功能。
+
+## ✨ 核心特性
+
+* **Mihomo 核心**：使用 Mihomo (Clash Meta) 作为代理服务端，解决 Xray 的 TCP 连接数泄露 Bug，资源占用更低，稳定性更强。同时支持针对老旧 CPU 的 `amd64-compatible` 架构指令集降级适配。
+* **抗量子加密支持**：无缝支持 Xray 首创的 VLESS Encryption (ML-KEM-768, Post-Quantum) 特性，并提供高度兼容的密钥自动转换生成。
+* **多协议智能共存**：采用 Python 解析 YAML 配置并智能追加 listeners，随心所欲安装多个不同协议或多端口节点，**绝对不会覆盖**原有节点配置。
+* **极致的系统兼容**：不仅完美支持 Debian / Ubuntu 等基于 Systemd 的主流系统，更**深度兼容 Alpine Linux (OpenRC)**，对极其精简的轻量级系统同样友好。
+* **NAT / DDNS 友好**：内置独立连接地址自定义功能，无论你是使用 NAT 动态端口机，还是通过 DDNS 域名解析，都能一键生成正确的分享链接。
+* **一站式管理**：提供全局统一的管理菜单 (`mihomo-manager`)、路由分流配置工具 (`mihomo-routing`) 以及配置备份还原工具 (`mihomo-restore`)。
+* **安全精准删除**：支持按端口和协议精准识别并删除特定节点配置，绝不误伤无辜配置。
+
+---
+
+## 🚀 快速开始（推荐）
+
+如果你想体验最完整的管理功能，推荐直接安装**统一管理中心（Mihomo Manager）**。
+
+执行以下命令即可下载并唤出全局管理菜单：
+
+```bash
+curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/mihomo_manager.sh -o mihomo_manager.sh && chmod +x mihomo_manager.sh && sudo ./mihomo_manager.sh
+```
+
+**💡 贴心提示：**
+统一管理工具安装完成后，会自动注册全局命令。以后你随时可以通过在终端输入以下命令来快速唤醒主菜单：
+```bash
+mihomo-manager
+```
+
+在 `mihomo-manager` 菜单中，你可以直接一键调用以下所有独立功能，无需再单独下载脚本。
+
+---
+
+## 📦 各功能模块独立安装指南
+
+如果你只想使用本项目的某一个特定功能，也可以直接使用以下独立安装命令。
+
+### 1. VLESS Encryption (Post-Quantum) 节点管理
+支持最新一代 ML-KEM-768 抗量子加密技术，抛弃冗杂配置，仅需握手密钥即可建立安全连接。
+```bash
+curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/install_vless_encryption.sh -o install_vless_encryption.sh && chmod +x install_vless_encryption.sh && sudo ./install_vless_encryption.sh
+```
+
+### 2. VLESS-Reality (Vision) 节点管理
+支持自动生成 X25519 密钥对，默认使用 `xtls-rprx-vision` 流控，使用 Mihomo 的 listeners 接入。
+```bash
+curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/install_vless_reality.sh -o install_vless_reality.sh && chmod +x install_vless_reality.sh && sudo ./install_vless_reality.sh
+```
+
+### 3. Shadowsocks 2022 & 传统 SS 节点管理
+支持极速的 2022-blake3-aes 等新一代加密协议，并向下兼容传统的 aes-gcm 加密，自动生成强随机密码。
+```bash
+curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/install_ss2022.sh -o install_ss2022.sh && chmod +x install_ss2022.sh && sudo ./install_ss2022.sh
+```
+
+### 4. AnyTLS (JLS 握手伪装) 节点管理
+使用 Mihomo 的 `anytls` listener 承载 AnyTLS，默认走 JLS：未通过 JLS 认证的连接会被原样转发到回落目标（默认 `www.bing.com:443`），握手由内核生成的一次性证书承载，**无需自备证书**。也可切换到原生 TLS 模式填自己的证书。
+```bash
+curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/install_anytls.sh -o install_anytls.sh && chmod +x install_anytls.sh && sudo ./install_anytls.sh
+```
+
+> **内核要求**: JLS 支持随 mihomo **v1.19.29** 引入（`feat: support jls for anytls outbound and listener`）。脚本会检查版本，低版本直接拒绝安装，而不是写出一份静默失效的配置。
+>
+> **注意**: AnyTLS 的 URI 格式只定义了 `sni` 与 `insecure` 两个参数，无法表达 JLS 凭据，因此脚本输出的是一段 **`proxies:` 片段**而不是分享链接；客户端需手工导入，且必须是 mihomo >= 1.19.29（Clash Party / FlClash 表单已支持 `jls-opts`）。
+
+### 5. Realm 端口转发 (独立服务)
+安装 [realm](https://github.com/zhboner/realm) 做纯 TCP/UDP 端口转发，与 Mihomo **并行运行**：独立的二进制（`/usr/local/bin/realm`）、配置目录（`/usr/local/etc/realm/`）和 systemd/OpenRC 服务单元，互不干扰。典型场景是把中转机的端口转发到落地机的 Mihomo 节点端口。
+```bash
+curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/install_realm.sh -o install_realm.sh && chmod +x install_realm.sh && sudo ./install_realm.sh
+```
+
+> **注意**: realm 是纯端口转发，本身不产生可导入的节点链接。客户端仍然使用原来的协议和凭据，只是把服务器地址换成中转机的 `IP:端口`。
+>
+> **为什么不并进卸载脚本**: `install_realm.sh` 有自己的卸载入口（菜单 4），`uninstall_mihomo.sh` 不会碰 realm 的文件，避免"卸 mihomo 把转发也删了"。
+
+### 6. 服务端路由分流工具 (Mihomo Routing)
+强大的服务端出口分流控制面板。支持解析 SS 和 VLESS 分享链接，可视化配置分流规则。
+```bash
+curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/mihomo_routing.sh -o mihomo_routing.sh && chmod +x mihomo_routing.sh && sudo ./mihomo_routing.sh
+```
+*安装后随时可用 `mihomo-routing` 命令唤起。*
+
+### 7. 备份与还原工具 (Mihomo Restore)
+不小心改错了配置？想要迁移配置？使用此工具可以通过直链 URL 导入配置文件，或者打开控制台手动粘贴 `config.yaml`，自带安全测试防报错功能。
+```bash
+curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/mihomo_restore.sh -o mihomo_restore.sh && chmod +x mihomo_restore.sh && sudo ./mihomo_restore.sh
+```
+*安装后随时可用 `mihomo-restore` 命令唤起。*
+
+### 8. 完全卸载工具
+如果你遇到无法解决的严重问题，或者想要完全清理服务器，可以使用此脚本。它会极其干净地清理系统服务（Systemd/OpenRC）、二进制文件、日志以及残留配置。
+```bash
+curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/uninstall_mihomo.sh -o uninstall_mihomo.sh && chmod +x uninstall_mihomo.sh && sudo ./uninstall_mihomo.sh
+```
+
+### 9. 非交互式一键搭建 (Flag 模式)
+适合批量部署或自动化脚本：直接用命令行参数搭建节点，不进入菜单（原有交互菜单不受影响）。所有参数均可省略，省略时使用默认值或随机生成。
+```bash
+curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/mihomo_cli.sh -o mihomo_cli.sh && chmod +x mihomo_cli.sh
+
+sudo ./mihomo_cli.sh reality   --port 443 --sni hk.art.museum [--uuid <UUID>]
+sudo ./mihomo_cli.sh ss        --port 2022 --method 2022-blake3-aes-256-gcm [--password <密码>]
+sudo ./mihomo_cli.sh vless-enc --port 40000 [--uuid <UUID>]
+sudo ./mihomo_cli.sh anytls    --port 8443 [--dest www.bing.com:443] [--mode jls|tls]
+sudo ./mihomo_cli.sh realm     --port 8443 --remote 10.0.0.2:8443 [--no-udp]
+sudo ./mihomo_cli.sh address   my.ddns.net     # 设置 NAT/DDNS 连接地址，auto 恢复自动获取
+```
+* `realm` 额外参数：`--remote`（转发目标，必填）、`--listen-host`（默认 `0.0.0.0`）、`--no-udp`（只转 TCP）、`--no-tcp`（只转 UDP）、`--comment`（写入配置的注释）
+* `anytls` 额外参数：`--dest`（JLS 回落目标，默认 `www.bing.com:443`）、`--mode`（`jls` 默认 / `tls` 需配 `--cert` `--key`）、`--sni`、`--alpn`、`--jls-user`、`--jls-password`、`--proxy`（回落出站）、`--rate-limit`、`--padding-file`（自定义填充方案）
+* `--address <地址|auto>`：搭建前先设置连接地址，`auto` 为自动获取公网 IP，不传则沿用当前设置，例如 `sudo ./mihomo_cli.sh reality --address my.ddns.net`
+* `-q` / `--quiet`：成功时只输出分享链接，方便其他脚本捕获
+* `-h` / `--help`：查看完整帮助
+
+---
+
+## 🔄 与 Xray 版本的对应关系
+
+| Xray 脚本 | Mihomo 脚本 | 功能 |
+|---|---|---|
+| `install_vless_encryption.sh` | `install_vless_encryption.sh` | VLESS Encryption (PQ) 节点管理 |
+| `install_vless_reality.sh` | `install_vless_reality.sh` | VLESS-Reality 节点管理 |
+| `install_ss2022.sh` | `install_ss2022.sh` | Shadowsocks 2022 节点管理 |
+| `——` | `install_anytls.sh` | AnyTLS (JLS 握手伪装) 节点管理 |
+| `——` | `install_realm.sh` | Realm 端口转发 (独立服务) |
+| `xray_manager.sh` | `mihomo_manager.sh` | 统一管理菜单 |
+| `xray_routing.sh` | `mihomo_routing.sh` | 服务端分流配置 |
+| `xray_restore.sh` | `mihomo_restore.sh` | 配置备份还原 |
+| `uninstall_xray.sh` | `uninstall_mihomo.sh` | 完全卸载 |
+| `update_geo.sh` | `update_geo.sh` | Geo 数据更新 |
+
+> **提示**: Mihomo 已全面支持 VLESS 的各项新特性，包括 Reality 和基于 ML-KEM-768 的 Encryption 协议，本工具箱中的所有组件均可在此框架下正常使用。
+
+---
+
+## 🛠️ 常见问题 (FAQ)
+
+**Q: 为什么要从 Xray 迁移到 Mihomo？**
+
+**A:** Xray 代理服务端存在严重的 TCP 连接数泄露 Bug。Mihomo (Meta Kernel) 不存在此问题，且在资源占用和稳定性方面表现更优，尤其适合并发较高的商用环境或合租机器。
+
+**Q: 我的服务器是 NAT VPS，或者入口 IP 跟出口 IP 不一样，生成的节点不通怎么办？**
+
+**A:** 请在任意安装菜单中选择 **"设置连接地址 (NAT/DDNS)"** 选项。填入你实际用于外部连接的 IP 地址或 DDNS 域名。
+
+**Q: 我的旧款 E5 处理器装不上新版，报错不支持 v3 架构怎么办？**
+
+**A:** 本仓库中的安装脚本已经对 CPU 架构识别进行了智能优化。针对不支持 AVX2 指令集的老旧硬件（如部分 E5 v2、Atom 处理器），脚本会自动拉取 `amd64-compatible` 兼容版内核，避免安装失败。
+
+**Q: 如何查看 Mihomo 的运行日志？**
+
+**A:** 在各个安装管理脚本的菜单中，都有 **"查看日志"** 选项。选择后即可实时查看运行日志，按 `Ctrl + C` 即可停止。
+
+**Q: 如何更新 GeoIP 和 GeoSite 路由规则文件？**
+
+**A:** 使用 `mihomo-routing` (服务端分流工具) 里的一键自动配置定时任务功能，会每天凌晨自动更新。你也可以在主管理工具 (`mihomo-manager`) 中手动执行即时更新。
+
+**Q: Mihomo 的配置文件在哪里？**
+
+**A:** 配置文件位于 `/usr/local/etc/mihomo/config.yaml`。Mihomo 使用 YAML 格式而非 Xray 的 JSON 格式。

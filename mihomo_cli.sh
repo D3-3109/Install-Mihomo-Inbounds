@@ -1,1 +1,211 @@
-IyEvYmluL2Jhc2gKIyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KIyBNaWhvbW8g6Z2e5Lqk5LqS5byP5LiA6ZSu5pCt5bu66ISa5pysIChGbGFnIOaooeW8jykKIyDpgJrov4flkb3ku6TooYzlj4LmlbDnm7TmjqXmkK3lu7roioLngrnvvIzml6DpnIDov5vlhaXoj5zljZXjgILljp/mnInnmoTkuqTkupLlvI/oj5zljZXohJrmnKzkv53mjIHkuI3lj5jjgIIKIwojIOeUqOazleekuuS+izoKIyAgIC4vbWlob21vX2NsaS5zaCByZWFsaXR5ICAgLS1wb3J0IDQ0MyAtLXNuaSBoay5hcnQubXVzZXVtCiMgICAuL21paG9tb19jbGkuc2ggc3MgICAgICAgIC0tcG9ydCAyMDIyIC0tbWV0aG9kIDIwMjItYmxha2UzLWFlcy0yNTYtZ2NtCiMgICAuL21paG9tb19jbGkuc2ggdmxlc3MtZW5jIC0tcG9ydCA0MDAwMAojICAgLi9taWhvbW9fY2xpLnNoIGFkZHJlc3MgICBleGFtcGxlLmRkbnMubmV0ICAgICAjIOiuvue9rui/nuaOpeWcsOWdgCAoTkFUL0RETlMpCiMgICAuL21paG9tb19jbGkuc2ggYWRkcmVzcyAgIGF1dG8gICAgICAgICAgICAgICAgICMg5oGi5aSN6Ieq5Yqo6I635Y+W5YWs572RIElQCiMgPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CgpzZXQgLXVvIHBpcGVmYWlsCgojIC0tLSDku5PlupPphY3nva4gKOWPr+eUqOeOr+Wig+WPmOmHjyBNSUhPTU9fQkFTRV9VUkwg6KaG55uWKSAtLS0KQkFTRV9VUkw9IiR7TUlIT01PX0JBU0VfVVJMOi1odHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vRDMtMzEwOS9JbnN0YWxsLU1paG9tby1JbmJvdW5kcy9tYWlufSIKQUREUkVTU19GSUxFPSIvcm9vdC9pbmJvdW5kX2FkZHJlc3MudHh0IgpTQ1JJUFRfRElSPSIkKGNkICIkKGRpcm5hbWUgIiR7QkFTSF9TT1VSQ0VbMF19IikiIDI+L2Rldi9udWxsICYmIHB3ZCB8fCBlY2hvICIiKSIKClJFRD0nXDAzM1szMW0nOyBHUkVFTj0nXDAzM1szMm0nOyBZRUxMT1c9J1wwMzNbMzNtJzsgQ1lBTj0nXDAzM1s5Nm0nOyBQTEFJTj0nXDAzM1swbScKUVVJRVQ9ZmFsc2UKCmRpZSgpICB7IGVjaG8gLWUgIiR7UkVEfVvinJZdICQqJHtQTEFJTn0iID4mMjsgZXhpdCAxOyB9CmluZm8oKSB7IFtbICIkUVVJRVQiID09IHRydWUgXV0gfHwgZWNobyAtZSAiJHtZRUxMT1d9WyFdICQqJHtQTEFJTn0iID4mMjsgfQpvaygpICAgeyBbWyAiJFFVSUVUIiA9PSB0cnVlIF1dIHx8IGVjaG8gLWUgIiR7R1JFRU59W+KclF0gJCoke1BMQUlOfSIgPiYyOyB9Cgp1c2FnZSgpIHsKICAgIGNhdCA8PEVPRgpNaWhvbW8g6Z2e5Lqk5LqS5byP5LiA6ZSu5pCt5bu66ISa5pysCgrnlKjms5U6CiAgJChiYXNlbmFtZSAiJDAiKSA85ZG95LukPiBb5Y+C5pWwLi4uXQoK5ZG95LukOgogIHJlYWxpdHkgICAgIOaQreW7uiBWTEVTUy1SZWFsaXR5IChWaXNpb24pIOiKgueCuQogICAgICAgICAgICAgICAgLS1wb3J0IDznq6/lj6M+ICAgICAgIOm7mOiupCA0NDMKICAgICAgICAgICAgICAgIC0tdXVpZCA8VVVJRD4gICAgICAg6buY6K6k6ZqP5py655Sf5oiQCiAgICAgICAgICAgICAgICAtLXNuaSA85Z+f5ZCNPiAgICAgICAg6buY6K6kIGhrLmFydC5tdXNldW0KCiAgc3MgICAgICAgICAg5pCt5bu6IFNoYWRvd3NvY2tzICgyMDIyIC8g5Lyg57ufKSDoioLngrkKICAgICAgICAgICAgICAgIC0tcG9ydCA856uv5Y+jPiAgICAgICDpu5jorqQgMjAyMgogICAgICAgICAgICAgICAgLS1tZXRob2QgPOWKoOWvhj4gICAgIOm7mOiupCAyMDIyLWJsYWtlMy1hZXMtMjU2LWdjbQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICDlj6/pgIk6IDIwMjItYmxha2UzLWFlcy0xMjgtZ2NtLCAyMDIyLWJsYWtlMy1hZXMtMjU2LWdjbSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgMjAyMi1ibGFrZTMtY2hhY2hhMjAtcG9seTEzMDUsIGFlcy0xMjgtZ2NtLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBhZXMtMjU2LWdjbSwgY2hhY2hhMjAtaWV0Zi1wb2x5MTMwNQogICAgICAgICAgICAgICAgLS1wYXNzd29yZCA85a+G56CBPiAgIOm7mOiupOmaj+acuueUn+aIkCAoMjAyMiDns7vliJfpobvkuLrlr7nlupTplb/luqblr4bpkqXnmoQgQmFzZTY0KQoKICB2bGVzcy1lbmMgICDmkK3lu7ogVkxFU1MgRW5jcnlwdGlvbiAoTUwtS0VNLTc2OCDmipfph4/lrZApIOiKgueCuQogICAgICAgICAgICAgICAgLS1wb3J0IDznq6/lj6M+ICAgICAgIOm7mOiupCA0MDAwMAogICAgICAgICAgICAgICAgLS11dWlkIDxVVUlEPiAgICAgICDpu5jorqTpmo/mnLrnlJ/miJAKCiAgYW55dGxzICAgICAg5pCt5bu6IEFueVRMUyDoioLngrkgKOm7mOiupCBKTFMg5o+h5omL5Lyq6KOFLCDpnIDopoEgbWlob21vID49IDEuMTkuMjkpCiAgICAgICAgICAgICAgICAtLXBvcnQgPOerr+WPoz4gICAgICAg6buY6K6kIDg0NDMKICAgICAgICAgICAgICAgIC0tbW9kZSA8amxzfHRscz4gICAg6buY6K6kIGpsczsgamxzIOaXoOmcgOivgeS5piwgdGxzIOmcgCAtLWNlcnQvLS1rZXkKICAgICAgICAgICAgICAgIC0tZGVzdCA8aG9zdDpwb3J0PiAgSkxTIOWbnuiQveebruaghywg6buY6K6kIHd3dy5iaW5nLmNvbTo0NDMKICAgICAgICAgICAgICAgIC0tc25pIDzln5/lkI0+ICAgICAgICBKTFMgU05JLCDpu5jorqTnlLEgZGVzdCDmjqjlr7wKICAgICAgICAgICAgICAgIC0tYWxwbiA85YiX6KGoPiAgICAgICDpu5jorqQgaDIsaHR0cC8xLjEKICAgICAgICAgICAgICAgIC0tcGFzc3dvcmQgPOWvhueggT4gICBBbnlUTFMg5a+G56CBLCDpu5jorqTpmo/mnLrnlJ/miJAKICAgICAgICAgICAgICAgIC0tamxzLXVzZXIgPOWQjeensD4gICBKTFMg55So5oi35ZCNLCDpu5jorqTpmo/mnLrnlJ/miJAKICAgICAgICAgICAgICAgIC0tamxzLXBhc3N3b3JkIDzlr4bnoIE+IEpMUyDlr4bnoIEsIOm7mOiupOmaj+acuueUn+aIkAogICAgICAgICAgICAgICAgLS1wcm94eSA85Ye656uZ5ZCNPiAgICDlm57okL3mtYHph4/otbDlk6rkuKogcHJveHksIOm7mOiupCBESVJFQ1QKICAgICAgICAgICAgICAgIC0tcmF0ZS1saW1pdCA8Yml0L3M+IOWbnuiQvei9rOWPkemZkOmAnywgMCDooajnpLrkuI3pmZDpgJ8KICAgICAgICAgICAgICAgIC0tcGFkZGluZy1maWxlIDzmlofku7Y+IOiHquWumuS5iSBwYWRkaW5nLXNjaGVtZSAo6buY6K6k55So5YaF5qC45YaF572u5pa55qGIKQogICAgICAgICAgICAgICAgLS1jZXJ0IDzot6/lvoQ+ICAgICAgIHRscyDmqKHlvI/nmoTor4HkuaYgUEVNCiAgICAgICAgICAgICAgICAtLWtleSA86Lev5b6EPiAgICAgICAgdGxzIOaooeW8j+eahOengemSpSBQRU0KCiAgYWRkcmVzcyA85Zyw5Z2AfGF1dG8+CiAgICAgICAgICAgICAg6K6+572u5YiG5Lqr6ZO+5o6l5L2/55So55qE6L+e5o6l5Zyw5Z2AIChOQVQvREROUynvvIxhdXRvIOihqOekuuaBouWkjeiHquWKqOiOt+WPluWFrOe9kSBJUAoKICByZWFsbSAgICAgICDmkK3lu7ogUmVhbG0g56uv5Y+j6L2s5Y+RICjni6znq4vmnI3liqEsIOS4jiBtaWhvbW8g5bm26KGMKQogICAgICAgICAgICAgICAgLS1wb3J0IDznq6/lj6M+ICAgICAgIOacrOacuuebkeWQrOerr+WPoywg6buY6K6kIDg0NDMKICAgICAgICAgICAgICAgIC0tcmVtb3RlIDxob3N0OnBvcnQ+IOi9rOWPkeebruaghywg5b+F5aGrCiAgICAgICAgICAgICAgICAtLWxpc3Rlbi1ob3N0IDzlnLDlnYA+IOebkeWQrOWcsOWdgCwg6buY6K6kIDAuMC4wLjAKICAgICAgICAgICAgICAgIC0tbm8tdWRwICAgICAgICAgICAg5Y+q6L2s5Y+RIFRDUCAo6buY6K6kIFRDUCtVRFAg6YO96L2sKQogICAgICAgICAgICAgICAgLS1uby10Y3AgICAgICAgICAgICDlj6rovazlj5EgVURQCiAgICAgICAgICAgICAgICAtLWNvbW1lbnQgPOWkh+azqD4gICAg5YaZ5YWl6YWN572u5paH5Lu255qE5rOo6YeKLCDpu5jorqQgcmVhbG0tPHBvcnQ+CgrpgJrnlKjlj4LmlbAgKOeUqOS6jiByZWFsaXR5IC8gc3MgLyB2bGVzcy1lbmMgLyBhbnl0bHMgLyByZWFsbSk6CiAgLS1hZGRyZXNzIDzlnLDlnYB8YXV0bz4gIOaQreW7uuWJjeWFiOiuvue9rui/nuaOpeWcsOWdgO+8m2F1dG8g5Li66Ieq5Yqo6I635Y+W5YWs572RIElQ77yM5LiN5Lyg5YiZ5rK/55So5b2T5YmN6K6+572uCiAgLXEsIC0tcXVpZXQgICAgICAgIOWuiemdmeaooeW8j++8jOaIkOWKn+aXtuWPqui+k+WHuuWIhuS6q+mTvuaOpe+8jOS+v+S6juiEmuacrOiwg+eUqAogIC1oLCAtLWhlbHAgICAgICAgICDmmL7npLrmnKzluK7liqkKCuekuuS+izoKICAkKGJhc2VuYW1lICIkMCIpIHJlYWxpdHkgLS1wb3J0IDg0NDMgLS1zbmkgd3d3LmV4YW1wbGUuY29tIC0tYWRkcmVzcyBteS5kZG5zLm5ldAogICQoYmFzZW5hbWUgIiQwIikgc3MgLS1tZXRob2QgMjAyMi1ibGFrZTMtYWVzLTEyOC1nY20gLXEKICAkKGJhc2VuYW1lICIkMCIpIGFueXRscyAtLXBvcnQgODQ0MyAtLWRlc3Qgd3d3LmFwcGxlLmNvbTo0NDMgLXEKRU9GCn0KCm5vcm1hbGl6ZV9hZGRyZXNzKCkgewogICAgbG9jYWwgdmFsdWU9IiQxIgogICAgdmFsdWU9IiR7dmFsdWUjW30iOyB2YWx1ZT0iJHt2YWx1ZSVdfSIKICAgIGlmIGNvbW1hbmQgLXYgcHl0aG9uMyA+L2Rldi9udWxsIDI+JjE7IHRoZW4KICAgICAgICBweXRob24zIC0gIiR2YWx1ZSIgPDwnUFknCmltcG9ydCBpcGFkZHJlc3MsIHJlLCBzeXMKdmFsdWUgPSBzeXMuYXJndlsxXS5zdHJpcCgpCnRyeToKICAgIHByaW50KGlwYWRkcmVzcy5pcF9hZGRyZXNzKHZhbHVlKS5jb21wcmVzc2VkKQpleGNlcHQgVmFsdWVFcnJvcjoKICAgIGlmIGxlbih2YWx1ZSkgPiAyNTMgb3Igbm90IHJlLmZ1bGxtYXRjaChyJyg/PS57MSwyNTN9XC4/JCkoPzpbQS1aYS16MC05XSg/OltBLVphLXowLTktXXswLDYxfVtBLVphLXowLTldKT9cLikqW0EtWmEtejAtOV0oPzpbQS1aYS16MC05LV17MCw2MX1bQS1aYS16MC05XSk/JywgdmFsdWUpOgogICAgICAgIHJhaXNlIFN5c3RlbUV4aXQoMSkKICAgIHByaW50KHZhbHVlLnJzdHJpcCgnLicpKQpQWQogICAgZWxzZQogICAgICAgICMg5pegIHB5dGhvbjMg5pe255qE566A5piT5qCh6aqMOiBJUHY0IC8gSVB2NiAvIOWfn+WQjQogICAgICAgIGlmIFtbICIkdmFsdWUiID1+IF5bMC05QS1GYS1mOi5dKyQgfHwgIiR2YWx1ZSIgPX4gXltBLVphLXowLTldKFtBLVphLXowLTkuLV17MCwyNTF9W0EtWmEtejAtOV0pPyQgXV07IHRoZW4KICAgICAgICAgICAgcHJpbnRmICclc1xuJyAiJHt2YWx1ZSUufSIKICAgICAgICBlbHNlCiAgICAgICAgICAgIHJldHVybiAxCiAgICAgICAgZmkKICAgIGZpCn0KCnNldF9hZGRyZXNzKCkgewogICAgbG9jYWwgYWRkcj0iJDEiCiAgICBpZiBbWyAteiAiJGFkZHIiIHx8ICIkYWRkciIgPT0gImF1dG8iIF1dOyB0aGVuCiAgICAgICAgcm0gLWYgIiRBRERSRVNTX0ZJTEUiCiAgICAgICAgb2sgIuW3suaBouWkjeS4uuiHquWKqOiOt+WPluWFrOe9kSBJUCDmqKHlvI/jgIIiCiAgICAgICAgcmV0dXJuIDAKICAgIGZpCiAgICBsb2NhbCBub3JtYWxpemVkCiAgICBub3JtYWxpemVkPSQobm9ybWFsaXplX2FkZHJlc3MgIiRhZGRyIikgfHwgZGllICLov57mjqXlnLDlnYDml6DmlYg6ICRhZGRyICjor7fovpPlhaXnuq8gSVAg5oiW5Z+f5ZCN77yM5LiN6KaB5YyF5ZCr5Y2P6K6u5ZKM56uv5Y+jKSIKICAgIHByaW50ZiAnJXNcbicgIiRub3JtYWxpemVkIiA+ICIkQUREUkVTU19GSUxFIgogICAgY2htb2QgNjAwICIkQUREUkVTU19GSUxFIgogICAgb2sgIui/nuaOpeWcsOWdgOW3suiuvue9ruS4ujogJG5vcm1hbGl6ZWQiCn0KCiMg5LyY5YWI5L2/55So5ZCM55uu5b2V5LiL55qE6ISa5pys77yM5ZCm5YiZ5LuO5LuT5bqT5LiL6L295Yiw5Li05pe255uu5b2VClRNUF9ESVI9IiIKY2xlYW51cCgpIHsgW1sgLW4gIiRUTVBfRElSIiBdXSAmJiBybSAtcmYgIiRUTVBfRElSIjsgfQp0cmFwIGNsZWFudXAgRVhJVAoKcmVzb2x2ZV9zY3JpcHQoKSB7CiAgICBsb2NhbCBuYW1lPSIkMSIKICAgIGlmIFtbIC1uICIkU0NSSVBUX0RJUiIgJiYgLWYgIiRTQ1JJUFRfRElSLyRuYW1lIiBdXTsgdGhlbgogICAgICAgIHByaW50ZiAnJXNcbicgIiRTQ1JJUFRfRElSLyRuYW1lIgogICAgICAgIHJldHVybiAwCiAgICBmaQogICAgY29tbWFuZCAtdiBjdXJsID4vZGV2L251bGwgMj4mMSB8fCBkaWUgIue8uuWwkSBjdXJs77yM5peg5rOV5LiL6L29ICRuYW1lIgogICAgW1sgLW4gIiRUTVBfRElSIiBdXSB8fCBUTVBfRElSPSIkKG1rdGVtcCAtZCkiIHx8IGRpZSAi5peg5rOV5Yib5bu65Li05pe255uu5b2VIgogICAgbG9jYWwgdGFyZ2V0PSIkVE1QX0RJUi8kbmFtZSIKICAgIGluZm8gIuato+WcqOS4i+i9vSAkbmFtZSAuLi4iCiAgICBjdXJsIC1mc1NMIC1vICIkdGFyZ2V0IiAiJHtCQVNFX1VSTH0vJHtuYW1lfSIgfHwgZGllICLkuIvovb0gJG5hbWUg5aSx6LSl77yM6K+35qOA5p+l572R57uc44CCIgogICAgYmFzaCAtbiAiJHRhcmdldCIgfHwgZGllICIkbmFtZSDmnKrpgJrov4cgQmFzaCDor63ms5Xmo4Dmn6XvvIzlt7LkuK3mraLjgIIiCiAgICBjaG1vZCAwNzU1ICIkdGFyZ2V0IgogICAgcHJpbnRmICclc1xuJyAiJHRhcmdldCIKfQoKcnVuX2luc3RhbGxlcigpIHsKICAgIGxvY2FsIHNjcmlwdF9uYW1lPSIkMSI7IHNoaWZ0CiAgICBsb2NhbCBhZGRyZXNzPSIiIGFyZ3M9KCkKICAgIHdoaWxlIFtbICQjIC1ndCAwIF1dOyBkbwogICAgICAgIGNhc2UgIiQxIiBpbgogICAgICAgICAgICAtLWFkZHJlc3MpCiAgICAgICAgICAgICAgICBbWyAkIyAtZ2UgMiBdXSB8fCBkaWUgIuWPguaVsCAtLWFkZHJlc3Mg57y65bCR5YC8IgogICAgICAgICAgICAgICAgYWRkcmVzcz0iJDIiOyBzaGlmdCAyIDs7CiAgICAgICAgICAgIC1xfC0tcXVpZXQpIFFVSUVUPXRydWU7IGFyZ3MrPSgiLS1xdWlldCIpOyBzaGlmdCA7OwogICAgICAgICAgICAtaHwtLWhlbHApIHVzYWdlOyBleGl0IDAgOzsKICAgICAgICAgICAgKikgYXJncys9KCIkMSIpOyBzaGlmdCA7OwogICAgICAgIGVzYWMKICAgIGRvbmUKCiAgICBbWyAtbiAiJGFkZHJlc3MiIF1dICYmIHNldF9hZGRyZXNzICIkYWRkcmVzcyIKCiAgICBsb2NhbCBzY3JpcHRfcGF0aAogICAgc2NyaXB0X3BhdGg9JChyZXNvbHZlX3NjcmlwdCAiJHNjcmlwdF9uYW1lIikKICAgICMg5a2Q6ISa5pysIGluc3RhbGwg5qih5byP5LiL5bim5Y+C5pWw5Y2z6LWw6Z2e5Lqk5LqS5rWB56iL77yb5aeL57uI5bim5LiKIC0tcG9ydCDku6Xpgb/lhY3ov5vlhaXkuqTkupIKICAgIGxvY2FsIGhhc19wb3J0PWZhbHNlIGEKICAgIGZvciBhIGluICIke2FyZ3NbQF0rIiR7YXJnc1tAXX0ifSI7IGRvIFtbICIkYSIgPT0gIi0tcG9ydCIgXV0gJiYgaGFzX3BvcnQ9dHJ1ZTsgZG9uZQogICAgW1sgIiRoYXNfcG9ydCIgPT0gdHJ1ZSBdXSB8fCBhcmdzPSgiLS1wb3J0IiAiJERFRkFVTFRfUE9SVCIgIiR7YXJnc1tAXSsiJHthcmdzW0BdfSJ9IikKCiAgICBiYXNoICIkc2NyaXB0X3BhdGgiIGluc3RhbGwgIiR7YXJnc1tAXX0iCn0KCm1haW4oKSB7CiAgICBbWyAkIyAtZ3QgMCBdXSB8fCB7IHVzYWdlOyBleGl0IDE7IH0KICAgIGxvY2FsIGNtZD0iJDEiOyBzaGlmdAoKICAgIGNhc2UgIiRjbWQiIGluCiAgICAgICAgLWh8LS1oZWxwfGhlbHApIHVzYWdlOyBleGl0IDAgOzsKICAgIGVzYWMKCiAgICBbWyAke0VVSUQ6LSQoaWQgLXUpfSAtZXEgMCBdXSB8fCBkaWUgIuivt+S7pSByb290IOi6q+S7vei/kOihjOatpOiEmuacrOOAgiIKCiAgICBjYXNlICIkY21kIiBpbgogICAgICAgIHJlYWxpdHkpCiAgICAgICAgICAgIERFRkFVTFRfUE9SVD00NDMKICAgICAgICAgICAgcnVuX2luc3RhbGxlciAiaW5zdGFsbF92bGVzc19yZWFsaXR5LnNoIiAiJEAiIDs7CiAgICAgICAgc3N8c3MyMDIyfHNoYWRvd3NvY2tzKQogICAgICAgICAgICBERUZBVUxUX1BPUlQ9MjAyMgogICAgICAgICAgICBydW5faW5zdGFsbGVyICJpbnN0YWxsX3NzMjAyMi5zaCIgIiRAIiA7OwogICAgICAgIHZsZXNzLWVuY3x2bGVzcy1lbmNyeXB0aW9ufHZsZXNzLXBxKQogICAgICAgICAgICBERUZBVUxUX1BPUlQ9NDAwMDAKICAgICAgICAgICAgcnVuX2luc3RhbGxlciAiaW5zdGFsbF92bGVzc19lbmNyeXB0aW9uLnNoIiAiJEAiIDs7CiAgICAgICAgYW55dGxzKQogICAgICAgICAgICBERUZBVUxUX1BPUlQ9ODQ0MwogICAgICAgICAgICBydW5faW5zdGFsbGVyICJpbnN0YWxsX2FueXRscy5zaCIgIiRAIiA7OwogICAgICAgIHJlYWxtKQogICAgICAgICAgICBERUZBVUxUX1BPUlQ9ODQ0MwogICAgICAgICAgICBydW5faW5zdGFsbGVyICJpbnN0YWxsX3JlYWxtLnNoIiAiJEAiIDs7CiAgICAgICAgYWRkcmVzcykKICAgICAgICAgICAgW1sgJCMgLWdlIDEgXV0gfHwgZGllICLnlKjms5U6ICQoYmFzZW5hbWUgIiQwIikgYWRkcmVzcyA85Zyw5Z2AfGF1dG8+IgogICAgICAgICAgICBzZXRfYWRkcmVzcyAiJDEiIDs7CiAgICAgICAgKikKICAgICAgICAgICAgZWNobyAtZSAiJHtSRUR95pyq55+l5ZG95LukOiAkY21kJHtQTEFJTn0iID4mMgogICAgICAgICAgICB1c2FnZTsgZXhpdCAxIDs7CiAgICBlc2FjCn0KCm1haW4gIiRAIgo=
+#!/bin/bash
+# ==============================================================================
+# Mihomo 非交互式一键搭建脚本 (Flag 模式)
+# 通过命令行参数直接搭建节点，无需进入菜单。原有的交互式菜单脚本保持不变。
+#
+# 用法示例:
+#   ./mihomo_cli.sh reality   --port 443 --sni hk.art.museum
+#   ./mihomo_cli.sh ss        --port 2022 --method 2022-blake3-aes-256-gcm
+#   ./mihomo_cli.sh vless-enc --port 40000
+#   ./mihomo_cli.sh address   example.ddns.net     # 设置连接地址 (NAT/DDNS)
+#   ./mihomo_cli.sh address   auto                 # 恢复自动获取公网 IP
+# ==============================================================================
+
+set -uo pipefail
+
+# --- 仓库配置 (可用环境变量 MIHOMO_BASE_URL 覆盖) ---
+BASE_URL="${MIHOMO_BASE_URL:-https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main}"
+ADDRESS_FILE="/root/inbound_address.txt"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" 2>/dev/null && pwd || echo "")"
+
+RED='\033[31m'; GREEN='\033[32m'; YELLOW='\033[33m'; CYAN='\033[96m'; PLAIN='\033[0m'
+QUIET=false
+
+die()  { echo -e "${RED}[✖] $*${PLAIN}" >&2; exit 1; }
+info() { [[ "$QUIET" == true ]] || echo -e "${YELLOW}[!] $*${PLAIN}" >&2; }
+ok()   { [[ "$QUIET" == true ]] || echo -e "${GREEN}[✔] $*${PLAIN}" >&2; }
+
+usage() {
+    cat <<EOF
+Mihomo 非交互式一键搭建脚本
+
+用法:
+  $(basename "$0") <命令> [参数...]
+
+命令:
+  reality     搭建 VLESS-Reality (Vision) 节点
+                --port <端口>       默认 443
+                --uuid <UUID>       默认随机生成
+                --sni <域名>        默认 hk.art.museum
+
+  ss          搭建 Shadowsocks (2022 / 传统) 节点
+                --port <端口>       默认 2022
+                --method <加密>     默认 2022-blake3-aes-256-gcm
+                                    可选: 2022-blake3-aes-128-gcm, 2022-blake3-aes-256-gcm,
+                                          2022-blake3-chacha20-poly1305, aes-128-gcm,
+                                          aes-256-gcm, chacha20-ietf-poly1305
+                --password <密码>   默认随机生成 (2022 系列须为对应长度密钥的 Base64)
+
+  vless-enc   搭建 VLESS Encryption (ML-KEM-768 抗量子) 节点
+                --port <端口>       默认 40000
+                --uuid <UUID>       默认随机生成
+
+  anytls      搭建 AnyTLS 节点 (默认 JLS 握手伪装, 需要 mihomo >= 1.19.29)
+                --port <端口>       默认 8443
+                --mode <jls|tls>    默认 jls; jls 无需证书, tls 需 --cert/--key
+                --dest <host:port>  JLS 回落目标, 默认 www.bing.com:443
+                --sni <域名>        JLS SNI, 默认由 dest 推导
+                --alpn <列表>       默认 h2,http/1.1
+                --password <密码>   AnyTLS 密码, 默认随机生成
+                --jls-user <名称>   JLS 用户名, 默认随机生成
+                --jls-password <密码> JLS 密码, 默认随机生成
+                --proxy <出站名>    回落流量走哪个 proxy, 默认 DIRECT
+                --rate-limit <bit/s> 回落转发限速, 0 表示不限速
+                --padding-file <文件> 自定义 padding-scheme (默认用内核内置方案)
+                --cert <路径>       tls 模式的证书 PEM
+                --key <路径>        tls 模式的私钥 PEM
+
+  address <地址|auto>
+              设置分享链接使用的连接地址 (NAT/DDNS)，auto 表示恢复自动获取公网 IP
+
+  realm       搭建 Realm 端口转发 (独立服务, 与 mihomo 并行)
+                --port <端口>       本机监听端口, 默认 8443
+                --remote <host:port> 转发目标, 必填
+                --listen-host <地址> 监听地址, 默认 0.0.0.0
+                --no-udp            只转发 TCP (默认 TCP+UDP 都转)
+                --no-tcp            只转发 UDP
+                --comment <备注>    写入配置文件的注释, 默认 realm-<port>
+
+通用参数 (用于 reality / ss / vless-enc / anytls / realm):
+  --address <地址|auto>  搭建前先设置连接地址；auto 为自动获取公网 IP，不传则沿用当前设置
+  -q, --quiet        安静模式，成功时只输出分享链接，便于脚本调用
+  -h, --help         显示本帮助
+
+示例:
+  $(basename "$0") reality --port 8443 --sni www.example.com --address my.ddns.net
+  $(basename "$0") ss --method 2022-blake3-aes-128-gcm -q
+  $(basename "$0") anytls --port 8443 --dest www.apple.com:443 -q
+EOF
+}
+
+normalize_address() {
+    local value="$1"
+    value="${value#[}"; value="${value%]}"
+    if command -v python3 >/dev/null 2>&1; then
+        python3 - "$value" <<'PY'
+import ipaddress, re, sys
+value = sys.argv[1].strip()
+try:
+    print(ipaddress.ip_address(value).compressed)
+except ValueError:
+    if len(value) > 253 or not re.fullmatch(r'(?=.{1,253}\.?$)(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)*[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?', value):
+        raise SystemExit(1)
+    print(value.rstrip('.'))
+PY
+    else
+        # 无 python3 时的简易校验: IPv4 / IPv6 / 域名
+        if [[ "$value" =~ ^[0-9A-Fa-f:.]+$ || "$value" =~ ^[A-Za-z0-9]([A-Za-z0-9.-]{0,251}[A-Za-z0-9])?$ ]]; then
+            printf '%s\n' "${value%.}"
+        else
+            return 1
+        fi
+    fi
+}
+
+set_address() {
+    local addr="$1"
+    if [[ -z "$addr" || "$addr" == "auto" ]]; then
+        rm -f "$ADDRESS_FILE"
+        ok "已恢复为自动获取公网 IP 模式。"
+        return 0
+    fi
+    local normalized
+    normalized=$(normalize_address "$addr") || die "连接地址无效: $addr (请输入纯 IP 或域名，不要包含协议和端口)"
+    printf '%s\n' "$normalized" > "$ADDRESS_FILE"
+    chmod 600 "$ADDRESS_FILE"
+    ok "连接地址已设置为: $normalized"
+}
+
+# 优先使用同目录下的脚本，否则从仓库下载到临时目录
+TMP_DIR=""
+cleanup() { [[ -n "$TMP_DIR" ]] && rm -rf "$TMP_DIR"; }
+trap cleanup EXIT
+
+resolve_script() {
+    local name="$1"
+    if [[ -n "$SCRIPT_DIR" && -f "$SCRIPT_DIR/$name" ]]; then
+        printf '%s\n' "$SCRIPT_DIR/$name"
+        return 0
+    fi
+    command -v curl >/dev/null 2>&1 || die "缺少 curl，无法下载 $name"
+    [[ -n "$TMP_DIR" ]] || TMP_DIR="$(mktemp -d)" || die "无法创建临时目录"
+    local target="$TMP_DIR/$name"
+    info "正在下载 $name ..."
+    curl -fsSL -o "$target" "${BASE_URL}/${name}" || die "下载 $name 失败，请检查网络。"
+    bash -n "$target" || die "$name 未通过 Bash 语法检查，已中止。"
+    chmod 0755 "$target"
+    printf '%s\n' "$target"
+}
+
+run_installer() {
+    local script_name="$1"; shift
+    local address="" args=()
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --address)
+                [[ $# -ge 2 ]] || die "参数 --address 缺少值"
+                address="$2"; shift 2 ;;
+            -q|--quiet) QUIET=true; args+=("--quiet"); shift ;;
+            -h|--help) usage; exit 0 ;;
+            *) args+=("$1"); shift ;;
+        esac
+    done
+
+    [[ -n "$address" ]] && set_address "$address"
+
+    local script_path
+    script_path=$(resolve_script "$script_name")
+    # 子脚本 install 模式下带参数即走非交互流程；始终带上 --port 以避免进入交互
+    local has_port=false a
+    for a in "${args[@]+"${args[@]}"}"; do [[ "$a" == "--port" ]] && has_port=true; done
+    [[ "$has_port" == true ]] || args=("--port" "$DEFAULT_PORT" "${args[@]+"${args[@]}"}")
+
+    bash "$script_path" install "${args[@]}"
+}
+
+main() {
+    [[ $# -gt 0 ]] || { usage; exit 1; }
+    local cmd="$1"; shift
+
+    case "$cmd" in
+        -h|--help|help) usage; exit 0 ;;
+    esac
+
+    [[ ${EUID:-$(id -u)} -eq 0 ]] || die "请以 root 身份运行此脚本。"
+
+    case "$cmd" in
+        reality)
+            DEFAULT_PORT=443
+            run_installer "install_vless_reality.sh" "$@" ;;
+        ss|ss2022|shadowsocks)
+            DEFAULT_PORT=2022
+            run_installer "install_ss2022.sh" "$@" ;;
+        vless-enc|vless-encryption|vless-pq)
+            DEFAULT_PORT=40000
+            run_installer "install_vless_encryption.sh" "$@" ;;
+        anytls)
+            DEFAULT_PORT=8443
+            run_installer "install_anytls.sh" "$@" ;;
+        realm)
+            DEFAULT_PORT=8443
+            run_installer "install_realm.sh" "$@" ;;
+        address)
+            [[ $# -ge 1 ]] || die "用法: $(basename "$0") address <地址|auto>"
+            set_address "$1" ;;
+        *)
+            echo -e "${RED}未知命令: $cmd${PLAIN}" >&2
+            usage; exit 1 ;;
+    esac
+}
+
+main "$@"

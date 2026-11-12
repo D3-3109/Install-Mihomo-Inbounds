@@ -1,1 +1,266 @@
-IyEvYmluL2Jhc2gKIyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KIyBDYWVzYXIg6Jyc5rGBIE1paG9tbyDphY3nva7ov5jljp/lt6XlhbcKIyDlip/og73vvJrku44gVVJMIOS4i+i9veaIluaJi+WKqOeymOi0tCBjb25maWcueWFtbO+8jOW5tuaPkOS+m+a1i+ivleWKn+iDvQojID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQoKIyAtLS0g5YWo5bGA6K6+572uIC0tLQpzZXQgLXVvIHBpcGVmYWlsClJFRD0nXDAzM1szMW0nCkdSRUVOPSdcMDMzWzMybScKWUVMTE9XPSdcMDMzWzMzbScKQ1lBTj0nXDAzM1s5Nm0nClBMQUlOPSdcMDMzWzBtJwoKIyAtLS0g6Lev5b6E6YWN572uIC0tLQpTQ1JJUFRfUEFUSD0iL3Vzci9iaW4vbWlob21vLXJlc3RvcmUiCkNPTkZJR19ESVI9Ii91c3IvbG9jYWwvZXRjL21paG9tbyIKQ09ORklHX0ZJTEU9IiR7Q09ORklHX0RJUn0vY29uZmlnLnlhbWwiCk1JSE9NT19CSU49Ii91c3IvbG9jYWwvYmluL21paG9tbyIKCiMgLS0tIEdpdGh1YiDmm7TmlrDlnLDlnYAgLS0tCkdJVEhVQl9VU0VSPSJEMy0zMTA5IgpHSVRIVUJfUkVQTz0iSW5zdGFsbC1NaWhvbW8tSW5ib3VuZHMiCkdJVEhVQl9CUkFOQ0g9Im1haW4iClVQREFURV9VUkw9Imh0dHBzOi8vcmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbS8ke0dJVEhVQl9VU0VSfS8ke0dJVEhVQl9SRVBPfS8ke0dJVEhVQl9CUkFOQ0h9L21paG9tb19yZXN0b3JlLnNoIgoKIyAtLS0g5Z+656GA5Ye95pWwIC0tLQpkaWUoKSB7IGVjaG8gLWUgIiR7UkVEfVtFUlJPUl0gJCoke1BMQUlOfSIgPiYyOyBleGl0IDE7IH0KaW5mbygpIHsgZWNobyAtZSAiJHtHUkVFTn1bSU5GT10gJCoke1BMQUlOfSI7IH0Kd2FybigpIHsgZWNobyAtZSAiJHtZRUxMT1d9W1dBUk5dICQqJHtQTEFJTn0iOyB9Cgp2YWxpZGF0ZV9jb25maWdfZmlsZSgpIHsKICAgIGxvY2FsIGNhbmRpZGF0ZT0iJDEiCiAgICBpZiBbWyAhIC1zICIkY2FuZGlkYXRlIiBdXTsgdGhlbgogICAgICAgIHdhcm4gIumFjee9ruaWh+S7tuS4uuepuuOAgiIKICAgICAgICByZXR1cm4gMQogICAgZmkKICAgIGlmICEgZ3JlcCAtcUUgIl4obW9kZTp8bGlzdGVuZXJzOnxydWxlczp8cHJveGllczp8bG9nLWxldmVsOikiICIkY2FuZGlkYXRlIjsgdGhlbgogICAgICAgIHdhcm4gIuaWh+S7tuS4jeWFt+Wkh+W4uOingeeahCBNaWhvbW8g6aG257qn6YWN572u6aG544CCIgogICAgICAgIHJldHVybiAxCiAgICBmaQogICAgaWYgW1sgLXggIiRNSUhPTU9fQklOIiBdXTsgdGhlbgogICAgICAgIGlmICEgIiRNSUhPTU9fQklOIiAtdCAtZCAiJENPTkZJR19ESVIiIC1mICIkY2FuZGlkYXRlIjsgdGhlbgogICAgICAgICAgICB3YXJuICJNaWhvbW8g6YWN572u5rWL6K+V5aSx6LSl77yM5ouS57ud6KaG55uW5q2j5byP6YWN572u44CCIgogICAgICAgICAgICByZXR1cm4gMQogICAgICAgIGZpCiAgICBlbHNlCiAgICAgICAgd2FybiAiTWlob21vIOaguOW/g+S4jeWtmOWcqO+8jOWPquWujOaIkOS6huWfuuehgOagvOW8j+ajgOafpeOAgiIKICAgIGZpCn0KCmluc3RhbGxfY29uZmlnX2ZpbGUoKSB7CiAgICBsb2NhbCBjYW5kaWRhdGU9IiQxIgogICAgbG9jYWwgYmFja3VwX2ZpbGU9IiIKICAgIGxvY2FsIHN0YWdlZF9maWxlCiAgICBpZiBbWyAtZiAiJENPTkZJR19GSUxFIiBdXTsgdGhlbgogICAgICAgIGJhY2t1cF9maWxlPSQobWt0ZW1wICIke0NPTkZJR19GSUxFfS5iYWsuJChkYXRlICslWSVtJWQlSCVNJVMpLlhYWFhYWCIpIHx8IHJldHVybiAxCiAgICAgICAgY3AgIiRDT05GSUdfRklMRSIgIiRiYWNrdXBfZmlsZSIgfHwgeyBybSAtZiAiJGJhY2t1cF9maWxlIjsgcmV0dXJuIDE7IH0KICAgICAgICBjaG1vZCA2MDAgIiRiYWNrdXBfZmlsZSIKICAgICAgICBpbmZvICLmo4DmtYvliLDml6fphY3nva7vvIzlt7Loh6rliqjlpIfku73kuLo6ICRiYWNrdXBfZmlsZSIKICAgIGZpCiAgICBzdGFnZWRfZmlsZT0kKG1rdGVtcCAiJHtDT05GSUdfRElSfS8uY29uZmlnLnJlc3RvcmUuWFhYWFhYIikgfHwgcmV0dXJuIDEKICAgIGlmICEgaW5zdGFsbCAtbSAwNjAwICIkY2FuZGlkYXRlIiAiJHN0YWdlZF9maWxlIiB8fCAhIG12IC1mICIkc3RhZ2VkX2ZpbGUiICIkQ09ORklHX0ZJTEUiOyB0aGVuCiAgICAgICAgcm0gLWYgIiRzdGFnZWRfZmlsZSIKICAgICAgICByZXR1cm4gMQogICAgZmkKfQoKZG93bmxvYWRfc2NyaXB0KCkgewogICAgbG9jYWwgdXJsPSIkMSIgdGFyZ2V0PSIkMiIgdG1wX2ZpbGUKICAgIHRtcF9maWxlPSIkKG1rdGVtcCAiJHt0YXJnZXR9LnRtcC5YWFhYWFgiKSIgfHwgcmV0dXJuIDEKICAgIGlmICEgY3VybCAtZnNTTCAtbyAiJHRtcF9maWxlIiAiJHVybCIgfHwgISBiYXNoIC1uICIkdG1wX2ZpbGUiOyB0aGVuCiAgICAgICAgcm0gLWYgIiR0bXBfZmlsZSIKICAgICAgICByZXR1cm4gMQogICAgZmkKICAgIGlmICEgY2htb2QgMDc1NSAiJHRtcF9maWxlIiB8fCAhIG12IC1mICIkdG1wX2ZpbGUiICIkdGFyZ2V0IjsgdGhlbgogICAgICAgIHJtIC1mICIkdG1wX2ZpbGUiCiAgICAgICAgcmV0dXJuIDEKICAgIGZpCn0KCiMgLS0tIOadg+mZkOS4juS+nei1luajgOa1iyAtLS0KcHJlX2NoZWNrKCkgewogICAgW1sgJHtFVUlEOi0kKGlkIC11KX0gLW5lIDAgXV0gJiYgZGllICLor7fku6Ugcm9vdCDouqvku73ov5DooYzmraTohJrmnKzjgIIiCiAgICAKICAgIGlmIFtbICEgLWQgIiRDT05GSUdfRElSIiBdXTsgdGhlbgogICAgICAgIG1rZGlyIC1wICIkQ09ORklHX0RJUiIKICAgIGZpCgogICAgbG9jYWwgZGVwcz0oImN1cmwiICJuYW5vIiAiYmFzaCIgImluc3RhbGwiICJta3RlbXAiICJyZWFscGF0aCIpCiAgICBsb2NhbCBtaXNzaW5nX2RlcHM9KCkKCiAgICBmb3IgZGVwIGluICIke2RlcHNbQF19IjsgZG8KICAgICAgICBpZiAhIGNvbW1hbmQgLXYgIiRkZXAiID4vZGV2L251bGwgMj4mMTsgdGhlbgogICAgICAgICAgICBtaXNzaW5nX2RlcHMrPSgiJGRlcCIpCiAgICAgICAgZmkKICAgIGRvbmUKCiAgICBpZiBbWyAkeyNtaXNzaW5nX2RlcHNbQF19IC1ndCAwIF1dOyB0aGVuCiAgICAgICAgaW5mbyAi5q2j5Zyo5a6J6KOF57y65aSx5L6d6LWWOiAke21pc3NpbmdfZGVwc1sqXX0gLi4uIgogICAgICAgIGlmIFtbIC1mIC9ldGMvYWxwaW5lLXJlbGVhc2UgXV07IHRoZW4KICAgICAgICAgICAgYXBrIHVwZGF0ZSAmJiBhcGsgYWRkIC0tbm8tY2FjaGUgY3VybCBuYW5vIGJhc2ggY29yZXV0aWxzCiAgICAgICAgZWxpZiBjb21tYW5kIC12IGFwdC1nZXQgPi9kZXYvbnVsbCAyPiYxOyB0aGVuCiAgICAgICAgICAgIGFwdC1nZXQgdXBkYXRlICYmIGFwdC1nZXQgaW5zdGFsbCAteSBjdXJsIG5hbm8gYmFzaCBjb3JldXRpbHMKICAgICAgICBlbHNlCiAgICAgICAgICAgIGRpZSAi5peg5rOV5qOA5rWL57O757uf5YyF566h55CG5Zmo77yM6K+35omL5Yqo5a6J6KOFOiAke21pc3NpbmdfZGVwc1sqXX0iCiAgICAgICAgZmkKICAgIGZpCiAgICBsb2NhbCBkZXAKICAgIGZvciBkZXAgaW4gIiR7ZGVwc1tAXX0iOyBkbyBjb21tYW5kIC12ICIkZGVwIiA+L2Rldi9udWxsIDI+JjEgfHwgZGllICLnvLrlsJHlv4XopoHlkb3ku6Q6ICRkZXAiOyBkb25lCn0KCiMgLS0tIOiHquaIkeWuieijhSAtLS0KaW5zdGFsbF9zZWxmKCkgewogICAgbG9jYWwgY3VycmVudF9wYXRoCiAgICBjdXJyZW50X3BhdGg9IiQocmVhbHBhdGggIiQwIikiCiAgICAKICAgIGlmIFtbICIkY3VycmVudF9wYXRoIiAhPSAiJFNDUklQVF9QQVRIIiBdXTsgdGhlbgogICAgICAgIGluZm8gIuato+WcqOWuieijheiEmuacrOWIsCAkU0NSSVBUX1BBVEggLi4uIgogICAgICAgIGNwICIkY3VycmVudF9wYXRoIiAiJFNDUklQVF9QQVRIIgogICAgICAgIGNobW9kICt4ICIkU0NSSVBUX1BBVEgiCiAgICAgICAgaW5mbyAi5a6J6KOF5a6M5oiQ77yB5Lul5ZCO5Y+v5Lul5Zyo57uI56uv55u05o6l6L6T5YWlICR7Q1lBTn1taWhvbW8tcmVzdG9yZSR7UExBSU59IOS9v+eUqOOAgiIKICAgICAgICBzbGVlcCAxCiAgICAgICAgZXhlYyAiJFNDUklQVF9QQVRIIiAiJEAiCiAgICBmaQp9CgojIC0tLSDlip/og70gMTog5LuOIFVSTCDov5jljp8gLS0tCnJlc3RvcmVfZnJvbV91cmwoKSB7CiAgICBlY2hvICI9PT09PT09PT09PT09PT09IOS7jiBVUkwg6L+Y5Y6f6YWN572uID09PT09PT09PT09PT09PT0iCiAgICBlY2hvICLor7fovpPlhaUgY29uZmlnLnlhbWwg55qE55u06ZO+5LiL6L295Zyw5Z2AICjkvovlpoI6IGh0dHBzOi8vZXhhbXBsZS5jb20vYmFja3VwLnlhbWwpIgogICAgcmVhZCAtcnAgIuWcsOWdgDogIiB1cmwKICAgIAogICAgaWYgW1sgLXogIiR1cmwiIF1dOyB0aGVuCiAgICAgICAgd2FybiAi5Zyw5Z2A5LiN6IO95Li656m644CCIgogICAgICAgIHJldHVybgogICAgZmkKCiAgICBpbmZvICLmraPlnKjkuIvovb3phY3nva7mlofku7YuLi4iCiAgICBsb2NhbCB0bXBfZmlsZQogICAgdG1wX2ZpbGU9IiQobWt0ZW1wKSIKICAgIAogICAgaWYgY3VybCAtZnNTTCAtbyAiJHRtcF9maWxlIiAiJHVybCI7IHRoZW4KICAgICAgICBpZiB2YWxpZGF0ZV9jb25maWdfZmlsZSAiJHRtcF9maWxlIiAmJiBpbnN0YWxsX2NvbmZpZ19maWxlICIkdG1wX2ZpbGUiOyB0aGVuCiAgICAgICAgICAgIHJtIC1mICIkdG1wX2ZpbGUiCiAgICAgICAgICAgIGluZm8gIuaWsOmFjee9ruaWh+S7tuW3suaIkOWKn+S4i+i9veW5tuS/neWtmOWIsDogJENPTkZJR19GSUxFIgogICAgICAgIGVsc2UKICAgICAgICAgICAgd2FybiAi5paw6YWN572u5qCh6aqM5oiW5a6J6KOF5aSx6LSl77yM5Y6f6YWN572u5pyq6KKr6KaG55uW44CCIgogICAgICAgICAgICBybSAtZiAiJHRtcF9maWxlIgogICAgICAgIGZpCiAgICBlbHNlCiAgICAgICAgcm0gLWYgIiR0bXBfZmlsZSIKICAgICAgICBkaWUgIuS4i+i9veWksei0pe+8jOivt+ajgOafpSBVUkwg5oiW572R57uc6L+e5o6l44CCIgogICAgZmkKICAgIAogICAgZWNobwogICAgcmVhZCAtbiAxIC1zIC1yIC1wICLmjInku7vmhI/plK7ov5Tlm57kuLvoj5zljZUuLi4iIHx8IHRydWUKfQoKIyAtLS0g5Yqf6IO9IDI6IOaJi+WKqOeymOi0tCAtLS0KcmVzdG9yZV9tYW51YWwoKSB7CiAgICBlY2hvICI9PT09PT09PT09PT09PT09IOaJi+WKqOeymOi0tOmFjee9riA9PT09PT09PT09PT09PT09IgoKICAgIGxvY2FsIHRtcF9maWxlCiAgICB0bXBfZmlsZT0iJChta3RlbXApIiB8fCB7IHdhcm4gIuaXoOazleWIm+W7uuS4tOaXtuaWh+S7tuOAgiI7IHJldHVybjsgfQogICAgaWYgW1sgLWYgIiRDT05GSUdfRklMRSIgXV07IHRoZW4gY3AgIiRDT05GSUdfRklMRSIgIiR0bXBfZmlsZSI7IGZpCgogICAgaW5mbyAi5Y2z5bCG5omT5byAIG5hbm8g57yW6L6R5ZmoLi4uIgogICAgaW5mbyAi6K+35bCG5oKo55qEIGNvbmZpZy55YW1sIOWGheWuueeymOi0tOi/m+WOu++8m+S/neWtmOWQjuS8muWFiOagoemqjO+8jOWGjeWGs+WumuaYr+WQpuimhuebluOAgiIKICAgIGluZm8gIuaTjeS9nOaPkOekujog57KY6LS05ZCO5oyJIEN0cmwrTyDkv53lrZggKOWbnui9puehruiupCnvvIznhLblkI4gQ3RybCtYIOmAgOWHuuOAgiIKICAgIGVjaG8KICAgIHJlYWQgLW4gMSAtcyAtciAtcCAi5oyJ5Lu75oSP6ZSu5byA5aeL57yW6L6RLi4uIiB8fCB0cnVlCiAgICAKICAgIG5hbm8gIiR0bXBfZmlsZSIKICAgIAogICAgaWYgdmFsaWRhdGVfY29uZmlnX2ZpbGUgIiR0bXBfZmlsZSIgJiYgaW5zdGFsbF9jb25maWdfZmlsZSAiJHRtcF9maWxlIjsgdGhlbgogICAgICAgIGluZm8gIue8lui+keWQjueahOmFjee9ruW3sumAmui/h+ajgOafpeW5tuS/neWtmOOAgiIKICAgIGVsc2UKICAgICAgICB3YXJuICLnvJbovpHlhoXlrrnkuLrnqbrjgIHml6DmlYjmiJblronoo4XlpLHotKXvvIzljp/phY3nva7mnKrooqvopobnm5bjgIIiCiAgICBmaQogICAgcm0gLWYgIiR0bXBfZmlsZSIKICAgIAogICAgZWNobwogICAgcmVhZCAtbiAxIC1zIC1yIC1wICLmjInku7vmhI/plK7ov5Tlm57kuLvoj5zljZUuLi4iIHx8IHRydWUKfQoKIyAtLS0g5Yqf6IO9IDM6IOivlei/kOihjOa1i+ivlSAtLS0KdGVzdF9jb25maWcoKSB7CiAgICBlY2hvICI9PT09PT09PT09PT09PT09IOa1i+ivlemFjee9ruaWh+S7tiA9PT09PT09PT09PT09PT09IgogICAgCiAgICBpZiBbWyAhIC1mICIkQ09ORklHX0ZJTEUiIF1dOyB0aGVuCiAgICAgICAgZGllICLphY3nva7mlofku7bkuI3lrZjlnKg6ICRDT05GSUdfRklMRSIKICAgIGZpCiAgICAKICAgIGlmIFtbICEgLWYgIiRNSUhPTU9fQklOIiBdXTsgdGhlbgogICAgICAgIGRpZSAiTWlob21vIOaguOW/g+acquaJvuWIsDogJE1JSE9NT19CSU7vvIzml6Dms5XmtYvor5XjgIIiCiAgICBmaQoKICAgIGluZm8gIuato+WcqOaJp+ihjDogbWlob21vIC10IC1kICRDT05GSUdfRElSIgogICAgZWNobyAiLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tIgogICAgCiAgICBsb2NhbCByZXQ9MAogICAgIiRNSUhPTU9fQklOIiAtdCAtZCAiJENPTkZJR19ESVIiIHx8IHJldD0kPwogICAgCiAgICBlY2hvICItLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0iCiAgICBpZiBbWyAkcmV0IC1lcSAwIF1dOyB0aGVuCiAgICAgICAgZWNobyAtZSAiJHtHUkVFTn3inJQg6YWN572u5paH5Lu25rWL6K+V6YCa6L+H77yBTWlob21vIOWPr+S7peato+W4uOWQr+WKqOOAgiR7UExBSU59IgogICAgICAgIGVjaG8gLWUgIuaPkOekujog5aaC5p6c6ZyA6KaB56uL5Y2z5bqU55So77yM6K+35omL5Yqo6YeN5ZCvIE1paG9tbyAoc3lzdGVtY3RsIHJlc3RhcnQgbWlob21vIOaIliByYy1zZXJ2aWNlIG1paG9tbyByZXN0YXJ0KSIKICAgIGVsc2UKICAgICAgICBlY2hvIC1lICIke1JFRH3inJYg6YWN572u5paH5Lu25pyJ6ZSZ6K+v77yB6K+35qOA5p+l5LiK5pa55oql6ZSZ5L+h5oGv44CCJHtQTEFJTn0iCiAgICBmaQogICAgCiAgICBlY2hvCiAgICBlY2hvICLlsIblnKggMzAg56eS5ZCO6Ieq5Yqo6L+U5Zue5Li76I+c5Y2V77yM5oiW5oyJ5Lu75oSP6ZSu56uL5Y2z6L+U5ZueLi4uIgogICAgcmVhZCAtdCAzMCAtbiAxIC1zIC1yIHx8IHRydWUKfQoKIyAtLS0g5Yqf6IO9IDQ6IOabtOaWsOiEmuacrCAtLS0KdXBkYXRlX3NjcmlwdCgpIHsKICAgIGluZm8gIuato+WcqOajgOafpeabtOaWsC4uLiIKICAgIAogICAgaWYgZG93bmxvYWRfc2NyaXB0ICIkVVBEQVRFX1VSTCIgIiRTQ1JJUFRfUEFUSCI7IHRoZW4KICAgICAgICBpbmZvICLohJrmnKzmm7TmlrDmiJDlip/vvIHmraPlnKjph43mlrDliqDovb0uLi4iCiAgICAgICAgc2xlZXAgMQogICAgICAgIGV4ZWMgIiRTQ1JJUFRfUEFUSCIKICAgIGVsc2UKICAgICAgICBkaWUgIuabtOaWsOWksei0pe+8jOivt+ajgOafpee9kee7nOaIliBHaXRodWIg5LuT5bqT5Zyw5Z2A44CCIgogICAgZmkKfQoKIyAtLS0g5Li76I+c5Y2VIC0tLQpzaG93X21lbnUoKSB7CiAgICBjbGVhcgogICAgZWNobyAtZSAiJHtDWUFOfT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0ke1BMQUlOfSIKICAgIGVjaG8gLWUgIiR7Q1lBTn0gICAgICAgQ2Flc2FyIOicnOaxgSBNaWhvbW8g6YWN572u6L+Y5Y6f5bel5YW3ICAgICAgICAgICAgJHtQTEFJTn0iCiAgICBlY2hvIC1lICIke0NZQU59PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PSR7UExBSU59IgogICAgZWNobyAtZSAiICAke0dSRUVOfTEuJHtQTEFJTn0g5LuOIFVSTCDkuIvovb0gY29uZmlnLnlhbWwiCiAgICBlY2hvIC1lICIgICR7R1JFRU59Mi4ke1BMQUlOfSDmiYvliqjnspjotLQgY29uZmlnLnlhbWwgKE5hbm8pIgogICAgZWNobyAtZSAiICAke1lFTExPV30zLiR7UExBSU59IOivlei/kOihjOa1i+ivlemFjee9ruaWh+S7tiAoRGVidWcpIgogICAgZWNobyAtZSAiICAke0NZQU59NC4ke1BMQUlOfSDmm7TmlrDmraTov5jljp/ohJrmnKwiCiAgICBlY2hvIC1lICIgICR7UkVEfTAuJHtQTEFJTn0g6YCA5Ye66ISa5pysIgogICAgZWNobyAtZSAiJHtDWUFOfT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0ke1BMQUlOfSIKICAgIAogICAgcmVhZCAtcnAgIiDor7fovpPlhaXpgInpobkgWzAtNF06ICIgY2hvaWNlCiAgICAKICAgIGNhc2UgIiRjaG9pY2UiIGluCiAgICAgICAgMSkgcmVzdG9yZV9mcm9tX3VybCA7OwogICAgICAgIDIpIHJlc3RvcmVfbWFudWFsIDs7CiAgICAgICAgMykgdGVzdF9jb25maWcgOzsKICAgICAgICA0KSB1cGRhdGVfc2NyaXB0IDs7CiAgICAgICAgMCkgZWNobyAtZSAiJHtHUkVFTn3mhJ/osKLkvb/nlKjmnKzohJrmnKzvvIzlho3op4HvvIEke1BMQUlOfSI7IGV4aXQgMCA7OwogICAgICAgICopIGVjaG8gLWUgIiR7UkVEfeaXoOaViOi+k+WFpe+8jOivt+mHjeaWsOmAieaLqeOAgiR7UExBSU59Ijsgc2xlZXAgMSA7OwogICAgZXNhYwp9CgojIC0tLSDkuLvnqIvluo/lhaXlj6MgLS0tCm1haW4oKSB7CiAgICBwcmVfY2hlY2sKICAgIGluc3RhbGxfc2VsZgogICAgCiAgICB3aGlsZSB0cnVlOyBkbwogICAgICAgIHNob3dfbWVudQogICAgZG9uZQp9CgptYWluICIkQCIK
+#!/bin/bash
+# ==============================================================================
+# Caesar 蜜汁 Mihomo 配置还原工具
+# 功能：从 URL 下载或手动粘贴 config.yaml，并提供测试功能
+# ==============================================================================
+
+# --- 全局设置 ---
+set -uo pipefail
+RED='\033[31m'
+GREEN='\033[32m'
+YELLOW='\033[33m'
+CYAN='\033[96m'
+PLAIN='\033[0m'
+
+# --- 路径配置 ---
+SCRIPT_PATH="/usr/bin/mihomo-restore"
+CONFIG_DIR="/usr/local/etc/mihomo"
+CONFIG_FILE="${CONFIG_DIR}/config.yaml"
+MIHOMO_BIN="/usr/local/bin/mihomo"
+
+# --- Github 更新地址 ---
+GITHUB_USER="D3-3109"
+GITHUB_REPO="Install-Mihomo-Inbounds"
+GITHUB_BRANCH="main"
+UPDATE_URL="https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/mihomo_restore.sh"
+
+# --- 基础函数 ---
+die() { echo -e "${RED}[ERROR] $*${PLAIN}" >&2; exit 1; }
+info() { echo -e "${GREEN}[INFO] $*${PLAIN}"; }
+warn() { echo -e "${YELLOW}[WARN] $*${PLAIN}"; }
+
+validate_config_file() {
+    local candidate="$1"
+    if [[ ! -s "$candidate" ]]; then
+        warn "配置文件为空。"
+        return 1
+    fi
+    if ! grep -qE "^(mode:|listeners:|rules:|proxies:|log-level:)" "$candidate"; then
+        warn "文件不具备常见的 Mihomo 顶级配置项。"
+        return 1
+    fi
+    if [[ -x "$MIHOMO_BIN" ]]; then
+        if ! "$MIHOMO_BIN" -t -d "$CONFIG_DIR" -f "$candidate"; then
+            warn "Mihomo 配置测试失败，拒绝覆盖正式配置。"
+            return 1
+        fi
+    else
+        warn "Mihomo 核心不存在，只完成了基础格式检查。"
+    fi
+}
+
+install_config_file() {
+    local candidate="$1"
+    local backup_file=""
+    local staged_file
+    if [[ -f "$CONFIG_FILE" ]]; then
+        backup_file=$(mktemp "${CONFIG_FILE}.bak.$(date +%Y%m%d%H%M%S).XXXXXX") || return 1
+        cp "$CONFIG_FILE" "$backup_file" || { rm -f "$backup_file"; return 1; }
+        chmod 600 "$backup_file"
+        info "检测到旧配置，已自动备份为: $backup_file"
+    fi
+    staged_file=$(mktemp "${CONFIG_DIR}/.config.restore.XXXXXX") || return 1
+    if ! install -m 0600 "$candidate" "$staged_file" || ! mv -f "$staged_file" "$CONFIG_FILE"; then
+        rm -f "$staged_file"
+        return 1
+    fi
+}
+
+download_script() {
+    local url="$1" target="$2" tmp_file
+    tmp_file="$(mktemp "${target}.tmp.XXXXXX")" || return 1
+    if ! curl -fsSL -o "$tmp_file" "$url" || ! bash -n "$tmp_file"; then
+        rm -f "$tmp_file"
+        return 1
+    fi
+    if ! chmod 0755 "$tmp_file" || ! mv -f "$tmp_file" "$target"; then
+        rm -f "$tmp_file"
+        return 1
+    fi
+}
+
+# --- 权限与依赖检测 ---
+pre_check() {
+    [[ ${EUID:-$(id -u)} -ne 0 ]] && die "请以 root 身份运行此脚本。"
+    
+    if [[ ! -d "$CONFIG_DIR" ]]; then
+        mkdir -p "$CONFIG_DIR"
+    fi
+
+    local deps=("curl" "nano" "bash" "install" "mktemp" "realpath")
+    local missing_deps=()
+
+    for dep in "${deps[@]}"; do
+        if ! command -v "$dep" >/dev/null 2>&1; then
+            missing_deps+=("$dep")
+        fi
+    done
+
+    if [[ ${#missing_deps[@]} -gt 0 ]]; then
+        info "正在安装缺失依赖: ${missing_deps[*]} ..."
+        if [[ -f /etc/alpine-release ]]; then
+            apk update && apk add --no-cache curl nano bash coreutils
+        elif command -v apt-get >/dev/null 2>&1; then
+            apt-get update && apt-get install -y curl nano bash coreutils
+        else
+            die "无法检测系统包管理器，请手动安装: ${missing_deps[*]}"
+        fi
+    fi
+    local dep
+    for dep in "${deps[@]}"; do command -v "$dep" >/dev/null 2>&1 || die "缺少必要命令: $dep"; done
+}
+
+# --- 自我安装 ---
+install_self() {
+    local current_path
+    current_path="$(realpath "$0")"
+    
+    if [[ "$current_path" != "$SCRIPT_PATH" ]]; then
+        info "正在安装脚本到 $SCRIPT_PATH ..."
+        cp "$current_path" "$SCRIPT_PATH"
+        chmod +x "$SCRIPT_PATH"
+        info "安装完成！以后可以在终端直接输入 ${CYAN}mihomo-restore${PLAIN} 使用。"
+        sleep 1
+        exec "$SCRIPT_PATH" "$@"
+    fi
+}
+
+# --- 功能 1: 从 URL 还原 ---
+restore_from_url() {
+    echo "================ 从 URL 还原配置 ================"
+    echo "请输入 config.yaml 的直链下载地址 (例如: https://example.com/backup.yaml)"
+    read -rp "地址: " url
+    
+    if [[ -z "$url" ]]; then
+        warn "地址不能为空。"
+        return
+    fi
+
+    info "正在下载配置文件..."
+    local tmp_file
+    tmp_file="$(mktemp)"
+    
+    if curl -fsSL -o "$tmp_file" "$url"; then
+        if validate_config_file "$tmp_file" && install_config_file "$tmp_file"; then
+            rm -f "$tmp_file"
+            info "新配置文件已成功下载并保存到: $CONFIG_FILE"
+        else
+            warn "新配置校验或安装失败，原配置未被覆盖。"
+            rm -f "$tmp_file"
+        fi
+    else
+        rm -f "$tmp_file"
+        die "下载失败，请检查 URL 或网络连接。"
+    fi
+    
+    echo
+    read -n 1 -s -r -p "按任意键返回主菜单..." || true
+}
+
+# --- 功能 2: 手动粘贴 ---
+restore_manual() {
+    echo "================ 手动粘贴配置 ================"
+
+    local tmp_file
+    tmp_file="$(mktemp)" || { warn "无法创建临时文件。"; return; }
+    if [[ -f "$CONFIG_FILE" ]]; then cp "$CONFIG_FILE" "$tmp_file"; fi
+
+    info "即将打开 nano 编辑器..."
+    info "请将您的 config.yaml 内容粘贴进去；保存后会先校验，再决定是否覆盖。"
+    info "操作提示: 粘贴后按 Ctrl+O 保存 (回车确认)，然后 Ctrl+X 退出。"
+    echo
+    read -n 1 -s -r -p "按任意键开始编辑..." || true
+    
+    nano "$tmp_file"
+    
+    if validate_config_file "$tmp_file" && install_config_file "$tmp_file"; then
+        info "编辑后的配置已通过检查并保存。"
+    else
+        warn "编辑内容为空、无效或安装失败，原配置未被覆盖。"
+    fi
+    rm -f "$tmp_file"
+    
+    echo
+    read -n 1 -s -r -p "按任意键返回主菜单..." || true
+}
+
+# --- 功能 3: 试运行测试 ---
+test_config() {
+    echo "================ 测试配置文件 ================"
+    
+    if [[ ! -f "$CONFIG_FILE" ]]; then
+        die "配置文件不存在: $CONFIG_FILE"
+    fi
+    
+    if [[ ! -f "$MIHOMO_BIN" ]]; then
+        die "Mihomo 核心未找到: $MIHOMO_BIN，无法测试。"
+    fi
+
+    info "正在执行: mihomo -t -d $CONFIG_DIR"
+    echo "------------------------------------------------"
+    
+    local ret=0
+    "$MIHOMO_BIN" -t -d "$CONFIG_DIR" || ret=$?
+    
+    echo "------------------------------------------------"
+    if [[ $ret -eq 0 ]]; then
+        echo -e "${GREEN}✔ 配置文件测试通过！Mihomo 可以正常启动。${PLAIN}"
+        echo -e "提示: 如果需要立即应用，请手动重启 Mihomo (systemctl restart mihomo 或 rc-service mihomo restart)"
+    else
+        echo -e "${RED}✖ 配置文件有错误！请检查上方报错信息。${PLAIN}"
+    fi
+    
+    echo
+    echo "将在 30 秒后自动返回主菜单，或按任意键立即返回..."
+    read -t 30 -n 1 -s -r || true
+}
+
+# --- 功能 4: 更新脚本 ---
+update_script() {
+    info "正在检查更新..."
+    
+    if download_script "$UPDATE_URL" "$SCRIPT_PATH"; then
+        info "脚本更新成功！正在重新加载..."
+        sleep 1
+        exec "$SCRIPT_PATH"
+    else
+        die "更新失败，请检查网络或 Github 仓库地址。"
+    fi
+}
+
+# --- 主菜单 ---
+show_menu() {
+    clear
+    echo -e "${CYAN}=================================================${PLAIN}"
+    echo -e "${CYAN}       Caesar 蜜汁 Mihomo 配置还原工具            ${PLAIN}"
+    echo -e "${CYAN}=================================================${PLAIN}"
+    echo -e "  ${GREEN}1.${PLAIN} 从 URL 下载 config.yaml"
+    echo -e "  ${GREEN}2.${PLAIN} 手动粘贴 config.yaml (Nano)"
+    echo -e "  ${YELLOW}3.${PLAIN} 试运行测试配置文件 (Debug)"
+    echo -e "  ${CYAN}4.${PLAIN} 更新此还原脚本"
+    echo -e "  ${RED}0.${PLAIN} 退出脚本"
+    echo -e "${CYAN}=================================================${PLAIN}"
+    
+    read -rp " 请输入选项 [0-4]: " choice
+    
+    case "$choice" in
+        1) restore_from_url ;;
+        2) restore_manual ;;
+        3) test_config ;;
+        4) update_script ;;
+        0) echo -e "${GREEN}感谢使用本脚本，再见！${PLAIN}"; exit 0 ;;
+        *) echo -e "${RED}无效输入，请重新选择。${PLAIN}"; sleep 1 ;;
+    esac
+}
+
+# --- 主程序入口 ---
+main() {
+    pre_check
+    install_self
+    
+    while true; do
+        show_menu
+    done
+}
+
+main "$@"
