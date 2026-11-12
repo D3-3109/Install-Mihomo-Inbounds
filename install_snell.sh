@@ -85,12 +85,17 @@ is_valid_port() { local port=$1; [[ "$port" =~ ^[0-9]+$ ]] && [ "$port" -ge 1 ] 
 
 # PSK 校验: 官方 v6 服务端限制 12-255 字节 (按字节计, 非 UTF-8 字符数);
 # ASCII PSK 下与字符数等价, 多字节 PSK 以字节数按官方语义限制。
+# 同时限制字符集为 Base64 风格 [A-Za-z0-9+/=_-]: 配置以裸值写入 INI,
+# 空格/井号/引号/分号会破坏行解析, 必须在这里挡掉。
 is_valid_psk() {
     local psk=$1
     python3 -c '
 import sys
 psk = sys.argv[1].encode("utf-8")
-sys.exit(0 if 12 <= len(psk) <= 255 else 1)' "$psk" 2>/dev/null
+if not 12 <= len(psk) <= 255:
+    sys.exit(1)
+import re
+sys.exit(0 if re.fullmatch(r"[A-Za-z0-9+/=_-]+", sys.argv[1]) else 1)' "$psk" 2>/dev/null
 }
 
 is_valid_mode() {
@@ -322,7 +327,8 @@ snell_node_count() {
     printf '%s\n' "$ports" | wc -l | tr -d ' '
 }
 
-# 从 conf 中读取原始键值 (单表扁平结构, 行扫描足够可靠)
+# 从 conf 中读取原始键值 (单表扁平结构, 行扫描足够可靠)。
+# 官方向导/本脚本写的是裸值; 读取时顺带剥一层可选引号, 兼容手工编辑过的情况。
 read_conf_key() {
     local conf=$1 key=$2
     [[ -f "$conf" ]] || return 1
@@ -332,10 +338,10 @@ import json, sys
 path, key = sys.argv[1:3]
 with open(path, encoding='utf-8') as f:
     for raw in f:
-        line = raw.split('#', 1)[0].strip()
-        if line.startswith('['):
-            continue
-        if '=' not in line:
+        # 官方解析器不把 # 当注释符 (PSK 是行尾裸值), 读取时也不能按 # 截断,
+        # 否则会把含 # 的 PSK 读残。只按 = 切分, 值取整行去首尾空白。
+        line = raw.strip()
+        if line.startswith('[') or '=' not in line:
             continue
         k, _, v = line.partition('=')
         if k.strip() == key:
@@ -396,20 +402,27 @@ import os, stat, sys, tempfile
 
 conf, listen, psk, mode, dns_pref = sys.argv[1:6]
 
-def ini_str(value):
-    return '"' + value.replace('\\', '\\\\').replace('"', '\\"') + '"'
+# 官方 INI 解析器不剥引号: listen = "0.0.0.0:6160" 会被原样送进地址解析直接报
+# "Invalid listen address invalid argument" (errno EINVAL)。向导模板也是裸值,
+# 因此所有值一律裸写。PSK 限 [A-Za-z0-9+/=_-] 字符集 (Base64 风格), 天然不需要引号;
+# 值里的 = 无害 (解析器只在首个 = 切键值), 真正危险的是空白/引号/井号/分号。
+def ini_bare(value):
+    value = value.strip()
+    if any(c in value for c in ' \t\n\r"#;'):
+        raise SystemExit('配置值含 INI 不安全字符, 拒绝写入: %r' % value)
+    return value
 
 lines = [
     '[snell-server]',
-    f'listen = {ini_str(listen)}',
-    f'psk = {ini_str(psk)}',
+    f'listen = {ini_bare(listen)}',
+    f'psk = {ini_bare(psk)}',
 ]
 # mode / dns-ip-preference 只在非默认值时写入, 保持配置文件干净;
 # 默认值 (default / default) 由服务端自行采用, 显式写出反而碍日后手工编辑。
 if mode != 'default':
-    lines.append(f'mode = {ini_str(mode)}')
+    lines.append(f'mode = {ini_bare(mode)}')
 if dns_pref != 'default':
-    lines.append(f'dns-ip-preference = {ini_str(dns_pref)}')
+    lines.append(f'dns-ip-preference = {ini_bare(dns_pref)}')
 
 content = '\n'.join(lines) + '\n'
 
@@ -484,8 +497,9 @@ with open(src, encoding='utf-8') as f:
 
 out, bad = [], []
 for raw in lines:
-    stripped = raw.split('#', 1)[0].strip()
+    stripped = raw.strip()
     if stripped.startswith('listen') and '=' in stripped:
+        # 值为裸值 (官方解析器不剥引号也不能按 # 截断), 整行取 = 右侧
         value = stripped.partition('=')[2].strip().strip('"')
         addrs = [a.strip() for a in value.split(',') if a.strip()]
         if not addrs or any(not addr_ok(a) for a in addrs):
@@ -493,7 +507,7 @@ for raw in lines:
             out.append(raw)
             continue
         # 全部换到临时端口, host 收敛到 127.0.0.1 避免纯 v6 环境反解析问题
-        out.append('listen = "127.0.0.1:%d"\n' % free_port())
+        out.append('listen = 127.0.0.1:%d\n' % free_port())
     else:
         out.append(raw)
 
