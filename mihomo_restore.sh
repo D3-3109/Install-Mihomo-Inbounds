@@ -250,6 +250,8 @@ backup_mihomo_archive() (
                 "$state_dir"/mihomo_anytls_link_*.txt \
                 "$state_dir"/mihomo_anytls_node_*.json \
                 "$state_dir"/mihomo_anytls_proxies_*.yaml \
+                "$state_dir"/mihomo_tuic_link_*.txt \
+                "$state_dir"/mihomo_tuic_node_*.json \
                 "$state_dir"/inbound_address.txt; do
         [[ -f "$file" ]] || continue
         cp -pL -- "$file" "$tmp/client-state/" || return 1
@@ -325,6 +327,8 @@ restore_archive() (
                     "$tmp/client-state"/mihomo_anytls_link_*.txt \
                     "$tmp/client-state"/mihomo_anytls_node_*.json \
                     "$tmp/client-state"/mihomo_anytls_proxies_*.yaml \
+                    "$tmp/client-state"/mihomo_tuic_link_*.txt \
+                    "$tmp/client-state"/mihomo_tuic_node_*.json \
                     "$tmp/client-state"/inbound_address.txt; do
             [[ -e "$file" || -L "$file" ]] || continue
             target="$CLIENT_STATE_DIR/${file##*/}"

@@ -74,6 +74,24 @@ curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/i
 >
 > **注意**: AnyTLS 的 URI 格式只定义了 `sni` 与 `insecure` 两个参数，无法表达 JLS 凭据，因此脚本输出的是一段 **`proxies:` 片段**而不是分享链接；客户端需手工导入，且必须是 mihomo >= 1.19.29（Clash Party / FlClash 表单已支持 `jls-opts`）。
 
+### TUIC v5 节点管理
+作为 Mihomo 的 `tuic` listener 写入同一份 `config.yaml`，和 VLESS / SS / AnyTLS 共用核心、路由、备份还原和卸载。默认自签证书，也可以填已有 PEM，或用 acme.sh 申请证书。流量走 QUIC，防火墙要放行 **UDP**。
+```bash
+curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/install_tuic.sh -o install_tuic.sh && chmod +x install_tuic.sh && sudo ./install_tuic.sh
+```
+
+非交互（默认端口 443，拥塞控制 bbr，ALPN h3，自签证书）：
+
+```bash
+sudo ./install_tuic.sh install --port 443 --congestion bbr
+```
+
+> **客户端**: 安装后同时给出 Surge `tuic-v5` 行、`tuic://` 分享链接和 Mihomo YAML。自签证书会带 `skip-cert-verify` / `allow_insecure=1`。`udp-relay-mode` 是客户端参数，默认 `native`。
+>
+> **证书**: `selfsign` 由脚本生成；`file` 把已有 PEM 复制进 `/usr/local/etc/mihomo/certs/`（内核不读配置目录以外的路径）；`acme` 调用 acme.sh 的 HTTP-01，需要域名已经解析到本机且 TCP/80 空闲。
+>
+> **端口**: 冲突检测看的是 UDP 监听和已有 listener，不只看 TCP。
+
 ### Snell v4/v5 服务端 (与 v6 共存)
 
 `install_snell.sh` 安装的是 Snell **v6**。部分机房会按 v6 的流量特征拦截，这时用 `install_snell_legacy.sh` 安装官方 **v4.1.1 / v5.0.1**（交互时默认 v5）。两套脚本的二进制、配置目录和服务名都分开，可以同时跑，卸载也只删自己的文件。
@@ -142,13 +160,15 @@ sudo ./mihomo_cli.sh reality   --port 443 --sni hk.art.museum [--uuid <UUID>]
 sudo ./mihomo_cli.sh ss        --port 2022 --method 2022-blake3-aes-256-gcm [--password <密码>]
 sudo ./mihomo_cli.sh vless-enc --port 40000 [--uuid <UUID>]
 sudo ./mihomo_cli.sh anytls    --port 8443 [--dest www.bing.com:443] [--mode jls|tls]
+sudo ./mihomo_cli.sh tuic      --port 443 [--congestion bbr] [--cert-mode selfsign|file|acme]
 sudo ./mihomo_cli.sh realm     --port 8443 --remote 10.0.0.2:8443 [--no-udp]
 sudo ./mihomo_cli.sh address   my.ddns.net     # 设置 NAT/DDNS 连接地址，auto 恢复自动获取
 ```
 * `realm` 额外参数：`--remote`（转发目标，必填）、`--listen-host`（默认 `0.0.0.0`）、`--no-udp`（只转 TCP）、`--no-tcp`（只转 UDP）、`--comment`（写入配置的注释）
 * `anytls` 额外参数：`--dest`（JLS 回落目标，默认 `www.bing.com:443`）、`--mode`（`jls` 默认 / `tls` 需配 `--cert` `--key`）、`--sni`（JLS SNI 或 TLS 证书域名）、`--alpn`、`--jls-user`、`--jls-password`、`--proxy`（回落出站）、`--rate-limit`、`--padding-file`（自定义填充方案）
+* `tuic` 额外参数：`--uuid`、`--password`、`--congestion`（`bbr` 默认 / `cubic` / `new_reno`）、`--alpn`（默认 `h3`）、`--udp-relay-mode`（`native` 默认 / `quic`，只写进客户端）、`--sni`、`--cert-mode`（`selfsign` 默认 / `file` / `acme`）、`--cert`、`--key`、`--domain`、`--listen-host`
 * `--address <地址|auto>`：搭建前先设置连接地址，`auto` 为自动获取公网 IP，不传则沿用当前设置，例如 `sudo ./mihomo_cli.sh reality --address my.ddns.net`
-* `-q` / `--quiet`：标准输出只包含结果：SS、Reality 和 VLESS Encryption 的分享链接，AnyTLS 的 `proxies:` YAML，或 Realm 的转发信息；运行过程中的消息输出到标准错误。
+* `-q` / `--quiet`：标准输出只包含结果：SS、Reality 和 VLESS Encryption 的分享链接，AnyTLS 的 `proxies:` YAML，TUIC 的 Surge 行、分享链接和 YAML，或 Realm 的转发信息；运行过程中的消息输出到标准错误。
 * `-h` / `--help`：查看完整帮助
 
 ---
@@ -161,6 +181,7 @@ sudo ./mihomo_cli.sh address   my.ddns.net     # 设置 NAT/DDNS 连接地址，
 | `install_vless_reality.sh` | `install_vless_reality.sh` | VLESS-Reality 节点管理 |
 | `install_ss2022.sh` | `install_ss2022.sh` | Shadowsocks 2022 节点管理 |
 | `——` | `install_anytls.sh` | AnyTLS (JLS 握手伪装) 节点管理 |
+| `——` | `install_tuic.sh` | TUIC v5 节点管理 (Mihomo 入站) |
 | `——` | `install_snell.sh` | Snell v6 服务端 (独立服务) |
 | `——` | `install_snell_legacy.sh` | Snell v4/v5 服务端 (与 v6 共存) |
 | `——` | `install_realm.sh` | Realm 端口转发 (独立服务) |

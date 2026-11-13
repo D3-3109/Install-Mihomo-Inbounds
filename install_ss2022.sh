@@ -356,6 +356,8 @@ backup_config_archive() (
                 "$state_dir"/mihomo_anytls_link_*.txt \
                 "$state_dir"/mihomo_anytls_node_*.json \
                 "$state_dir"/mihomo_anytls_proxies_*.yaml \
+                "$state_dir"/mihomo_tuic_link_*.txt \
+                "$state_dir"/mihomo_tuic_node_*.json \
                 "$state_dir"/inbound_address.txt; do
         [[ -f "$file" ]] || continue
         cp -pL -- "$file" "$tmp/client-state/" || return 1

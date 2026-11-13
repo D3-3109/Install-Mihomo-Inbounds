@@ -149,6 +149,8 @@ backup_mihomo_archive() (
               "$state_dir"/mihomo_anytls_link_*.txt \
               "$state_dir"/mihomo_anytls_node_*.json \
               "$state_dir"/mihomo_anytls_proxies_*.yaml \
+              "$state_dir"/mihomo_tuic_link_*.txt \
+              "$state_dir"/mihomo_tuic_node_*.json \
               "$state_dir"/inbound_address.txt; do
     [[ -f "$file" ]] || continue
     cp -pL -- "$file" "$tmp/client-state/" || return 1
@@ -211,7 +213,9 @@ remove_binary_and_misc() {
       "$CLIENT_STATE_DIR"/mihomo_vless_encryption_client_key_*.txt \
       "$CLIENT_STATE_DIR"/mihomo_anytls_link_*.txt \
       "$CLIENT_STATE_DIR"/mihomo_anytls_proxies_*.yaml \
-      "$CLIENT_STATE_DIR"/mihomo_anytls_node_*.json 2>/dev/null || true
+      "$CLIENT_STATE_DIR"/mihomo_anytls_node_*.json \
+      "$CLIENT_STATE_DIR"/mihomo_tuic_link_*.txt \
+      "$CLIENT_STATE_DIR"/mihomo_tuic_node_*.json 2>/dev/null || true
   fi
 }
 
