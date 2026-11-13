@@ -222,7 +222,7 @@ port_in_use() {
 apply_rule() {
     local label="$1" lport="$2" dest="$3" dport="$4"; shift 4
     local protos=("$@")
-    local target tool pp nfproto fam_expr
+    local target tool pp nfproto fam_expr chain
 
     if [[ "$BACKEND" == "nftables" ]]; then
         target=$(format_dnat_target "$dest" "$dport")
@@ -233,8 +233,12 @@ apply_rule() {
         fi
         # 每条规则独立 chain，整体重建保证幂等
         nft list table inet dnat_mihomo >/dev/null 2>&1 || nft add table inet dnat_mihomo || die "创建 nftables 表失败。"
-        nft delete chain inet dnat_mihomo "pre_${label}" 2>/dev/null || true
-        nft delete chain inet dnat_mihomo "post_${label}" 2>/dev/null || true
+        for chain in "pre_${label}" "post_${label}"; do
+            if nft list chain inet dnat_mihomo "$chain" >/dev/null 2>&1; then
+                nft flush chain inet dnat_mihomo "$chain" || die "清空 nftables 链失败: $chain"
+                nft delete chain inet dnat_mihomo "$chain" || die "删除 nftables 链失败: $chain"
+            fi
+        done
         nft add chain inet dnat_mihomo "pre_${label}" '{ type nat hook prerouting priority -100 ; }' || die "创建 PREROUTING 链失败 (内核可能低于 4.18，不支持 inet NAT)。"
         nft add chain inet dnat_mihomo "post_${label}" '{ type nat hook postrouting priority 100 ; }' || die "创建 POSTROUTING 链失败。"
         for pp in "${protos[@]}"; do
@@ -260,23 +264,32 @@ apply_rule() {
 remove_kernel_rule() {
     local label="$1" lport="$2" dest="$3" dport="$4"; shift 4
     local protos=("$@")
-    local target tool pp
+    local target tool pp chain
 
     if [[ "$BACKEND" == "nftables" ]]; then
-        nft delete chain inet dnat_mihomo "pre_${label}" 2>/dev/null || true
-        nft delete chain inet dnat_mihomo "post_${label}" 2>/dev/null || true
+        for chain in "pre_${label}" "post_${label}"; do
+            if nft list chain inet dnat_mihomo "$chain" >/dev/null 2>&1; then
+                nft flush chain inet dnat_mihomo "$chain" || { warn "清空 nftables 链失败: $chain"; return 1; }
+                nft delete chain inet dnat_mihomo "$chain" || { warn "删除 nftables 链失败: $chain"; return 1; }
+            fi
+        done
     else
         target=$(format_dnat_target "$dest" "$dport")
         tool=$(ipt_tool_for "$dest")
         for pp in "${protos[@]}"; do
             while "$tool" -t nat -C PREROUTING -p "$pp" --dport "$lport" -j DNAT --to-destination "$target" 2>/dev/null; do
-                "$tool" -t nat -D PREROUTING -p "$pp" --dport "$lport" -j DNAT --to-destination "$target" || break
+                "$tool" -t nat -D PREROUTING -p "$pp" --dport "$lport" -j DNAT --to-destination "$target" || return 1
             done
-            while "$tool" -t nat -C POSTROUTING -d "$dest" -p "$pp" --dport "$dport" -j MASQUERADE 2>/dev/null; do
-                "$tool" -t nat -D POSTROUTING -d "$dest" -p "$pp" --dport "$dport" -j MASQUERADE || break
-            done
+            # 其他规则可能共用同一目标和协议的 MASQUERADE
+            if ! awk -F'|' -v l="$label" -v d="$dest" -v p="$dport" -v proto="$pp" \
+                '$1 !~ /^[[:space:]]*(#|$)/ && $1 != l && $4 == d && $5 == p && ($2 == proto || $2 == "both") { found=1 } END { exit(found?0:1) }' "$RULES_FILE"; then
+                while "$tool" -t nat -C POSTROUTING -d "$dest" -p "$pp" --dport "$dport" -j MASQUERADE 2>/dev/null; do
+                    "$tool" -t nat -D POSTROUTING -d "$dest" -p "$pp" --dport "$dport" -j MASQUERADE || return 1
+                done
+            fi
         done
     fi
+    return 0
 }
 
 # 检查规则当前是否在内核中生效
@@ -304,7 +317,7 @@ persist_rules() {
         echo 'sysctl -w net.ipv4.ip_forward=1 >/dev/null 2>&1 || true'
         echo 'sysctl -w net.ipv6.conf.all.forwarding=1 >/dev/null 2>&1 || true'
         if [[ "$BACKEND" == "nftables" ]]; then
-            echo 'nft list table inet dnat_mihomo >/dev/null 2>&1 || nft add table inet dnat_mihomo'
+            echo 'nft list table inet dnat_mihomo >/dev/null 2>&1 || nft add table inet dnat_mihomo || exit 1'
         fi
     } > "$RESTORE_SCRIPT"
 
@@ -320,11 +333,11 @@ persist_rules() {
             else
                 nfproto="ipv4"; fam_expr="ip daddr ${dest}"
             fi
-            echo "nft list chain inet dnat_mihomo pre_${label} >/dev/null 2>&1 || nft add chain inet dnat_mihomo pre_${label} '{ type nat hook prerouting priority -100 ; }'" >> "$RESTORE_SCRIPT"
-            echo "nft list chain inet dnat_mihomo post_${label} >/dev/null 2>&1 || nft add chain inet dnat_mihomo post_${label} '{ type nat hook postrouting priority 100 ; }'" >> "$RESTORE_SCRIPT"
+            echo "if nft list chain inet dnat_mihomo pre_${label} >/dev/null 2>&1; then nft flush chain inet dnat_mihomo pre_${label} || exit 1; else nft add chain inet dnat_mihomo pre_${label} '{ type nat hook prerouting priority -100 ; }' || exit 1; fi" >> "$RESTORE_SCRIPT"
+            echo "if nft list chain inet dnat_mihomo post_${label} >/dev/null 2>&1; then nft flush chain inet dnat_mihomo post_${label} || exit 1; else nft add chain inet dnat_mihomo post_${label} '{ type nat hook postrouting priority 100 ; }' || exit 1; fi" >> "$RESTORE_SCRIPT"
             for pp in "${protos[@]}"; do
-                echo "nft add rule inet dnat_mihomo pre_${label} meta nfproto ${nfproto} ${pp} dport ${lport} dnat to ${target}" >> "$RESTORE_SCRIPT"
-                echo "nft add rule inet dnat_mihomo post_${label} meta nfproto ${nfproto} ${fam_expr} ${pp} dport ${dport} masquerade" >> "$RESTORE_SCRIPT"
+                echo "nft add rule inet dnat_mihomo pre_${label} meta nfproto ${nfproto} ${pp} dport ${lport} dnat to ${target} || exit 1" >> "$RESTORE_SCRIPT"
+                echo "nft add rule inet dnat_mihomo post_${label} meta nfproto ${nfproto} ${fam_expr} ${pp} dport ${dport} masquerade || exit 1" >> "$RESTORE_SCRIPT"
             done
         else
             target=$(format_dnat_target "$dest" "$dport")
@@ -465,7 +478,7 @@ delete_dnat_rule() {
     echo "-----------------------------------------------"
     read -rp "请输入要删除的规则标签 (all=全部删除): " label
 
-    local l p lp d dp
+    local l p lp d dp tmp failed=0
     local protos=()
 
     if [[ "$label" == "all" ]]; then
@@ -474,17 +487,30 @@ delete_dnat_rule() {
         while IFS='|' read -r l p lp d dp; do
             [[ -z "${l// }" || "$l" =~ ^[[:space:]]*# ]] && continue
             read -r -a protos <<< "$(expand_protos "$p" 2>/dev/null)" || true
-            [[ ${#protos[@]} -gt 0 ]] || continue
-            remove_kernel_rule "$l" "$lp" "$d" "$dp" "${protos[@]}"
+            if [[ ${#protos[@]} -eq 0 ]] || ! remove_kernel_rule "$l" "$lp" "$d" "$dp" "${protos[@]}"; then
+                warn "删除 DNAT 规则失败，已保留清单记录: $l"
+                failed=1
+                continue
+            fi
+            tmp=$(mktemp) || die "无法创建临时文件"
+            awk -F'|' -v l="$l" '$1 != l' "$RULES_FILE" > "$tmp"
+            mv -f "$tmp" "$RULES_FILE"
+            chmod 600 "$RULES_FILE"
         done < "$RULES_FILE"
-        : > "$RULES_FILE"
-        if [[ "$BACKEND" == "nftables" ]]; then
-            nft delete table inet dnat_mihomo 2>/dev/null || true
+        if [[ "$BACKEND" == "nftables" && "$failed" -eq 0 ]]; then
+            if nft list table inet dnat_mihomo >/dev/null 2>&1 && ! nft delete table inet dnat_mihomo; then
+                warn "删除 nftables 表失败: dnat_mihomo"
+                failed=1
+            fi
         fi
         sync_persist
-        success "已删除全部 DNAT 规则。"
+        if [[ "$failed" -eq 0 ]]; then
+            success "已删除全部 DNAT 规则。"
+        else
+            warn "部分 DNAT 规则或 nftables 表未能删除。"
+        fi
         pause
-        return 0
+        return "$failed"
     fi
 
     rule_label_exists "$label" || die "标签不存在: $label"
@@ -502,10 +528,13 @@ delete_dnat_rule() {
     [[ "$confirm" =~ ^[yY]$ ]] || { info "已取消。"; return 0; }
 
     read -r -a protos <<< "$(expand_protos "$p" 2>/dev/null)" || true
-    [[ ${#protos[@]} -gt 0 ]] && remove_kernel_rule "$l" "$lp" "$d" "$dp" "${protos[@]}"
+    if [[ ${#protos[@]} -eq 0 ]] || ! remove_kernel_rule "$l" "$lp" "$d" "$dp" "${protos[@]}"; then
+        warn "删除 DNAT 规则失败，已保留清单记录: $label"
+        pause
+        return 1
+    fi
 
     # 从清单移除该行
-    local tmp
     tmp=$(mktemp) || die "无法创建临时文件"
     awk -F'|' -v l="$label" '$1 != l' "$RULES_FILE" > "$tmp"
     mv -f "$tmp" "$RULES_FILE"

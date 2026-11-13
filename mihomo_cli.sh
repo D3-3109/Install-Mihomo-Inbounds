@@ -18,7 +18,7 @@ BASE_URL="${MIHOMO_BASE_URL:-https://raw.githubusercontent.com/D3-3109/Install-M
 ADDRESS_FILE="/root/inbound_address.txt"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" 2>/dev/null && pwd || echo "")"
 
-RED='\033[31m'; GREEN='\033[32m'; YELLOW='\033[33m'; CYAN='\033[96m'; PLAIN='\033[0m'
+RED='\033[31m'; GREEN='\033[32m'; YELLOW='\033[33m'; PLAIN='\033[0m'
 QUIET=false
 
 die()  { echo -e "${RED}[✖] $*${PLAIN}" >&2; exit 1; }
@@ -54,7 +54,7 @@ Mihomo 非交互式一键搭建脚本
                 --port <端口>       默认 8443
                 --mode <jls|tls>    默认 jls; jls 无需证书, tls 需 --cert/--key
                 --dest <host:port>  JLS 回落目标, 默认 www.bing.com:443
-                --sni <域名>        JLS SNI, 默认由 dest 推导
+                --sni <域名>        JLS SNI (默认由 dest 推导)，或 TLS 证书域名
                 --alpn <列表>       默认 h2,http/1.1
                 --password <密码>   AnyTLS 密码, 默认随机生成
                 --jls-user <名称>   JLS 用户名, 默认随机生成
@@ -78,7 +78,7 @@ Mihomo 非交互式一键搭建脚本
 
 通用参数 (用于 reality / ss / vless-enc / anytls / realm):
   --address <地址|auto>  搭建前先设置连接地址；auto 为自动获取公网 IP，不传则沿用当前设置
-  -q, --quiet        安静模式，成功时只输出分享链接，便于脚本调用
+  -q, --quiet        安静模式：stdout 仅输出链接、AnyTLS YAML 或 Realm 转发信息
   -h, --help         显示本帮助
 
 示例:
@@ -128,23 +128,23 @@ set_address() {
 
 # 优先使用同目录下的脚本，否则从仓库下载到临时目录
 TMP_DIR=""
+SCRIPT_PATH=""
 cleanup() { [[ -n "$TMP_DIR" ]] && rm -rf "$TMP_DIR"; }
 trap cleanup EXIT
 
 resolve_script() {
     local name="$1"
     if [[ -n "$SCRIPT_DIR" && -f "$SCRIPT_DIR/$name" ]]; then
-        printf '%s\n' "$SCRIPT_DIR/$name"
+        SCRIPT_PATH="$SCRIPT_DIR/$name"
         return 0
     fi
     command -v curl >/dev/null 2>&1 || die "缺少 curl，无法下载 $name"
     [[ -n "$TMP_DIR" ]] || TMP_DIR="$(mktemp -d)" || die "无法创建临时目录"
-    local target="$TMP_DIR/$name"
+    SCRIPT_PATH="$TMP_DIR/$name"
     info "正在下载 $name ..."
-    curl -fsSL -o "$target" "${BASE_URL}/${name}" || die "下载 $name 失败，请检查网络。"
-    bash -n "$target" || die "$name 未通过 Bash 语法检查，已中止。"
-    chmod 0755 "$target"
-    printf '%s\n' "$target"
+    curl -fsSL -o "$SCRIPT_PATH" "${BASE_URL}/${name}" || die "下载 $name 失败，请检查网络。"
+    bash -n "$SCRIPT_PATH" || die "$name 未通过 Bash 语法检查，已中止。"
+    chmod 0755 "$SCRIPT_PATH"
 }
 
 run_installer() {
@@ -163,14 +163,13 @@ run_installer() {
 
     [[ -n "$address" ]] && set_address "$address"
 
-    local script_path
-    script_path=$(resolve_script "$script_name")
+    resolve_script "$script_name"
     # 子脚本 install 模式下带参数即走非交互流程；始终带上 --port 以避免进入交互
     local has_port=false a
     for a in "${args[@]+"${args[@]}"}"; do [[ "$a" == "--port" ]] && has_port=true; done
     [[ "$has_port" == true ]] || args=("--port" "$DEFAULT_PORT" "${args[@]+"${args[@]}"}")
 
-    bash "$script_path" install "${args[@]}"
+    bash "$SCRIPT_PATH" install "${args[@]}"
 }
 
 main() {

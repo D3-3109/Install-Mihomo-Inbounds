@@ -288,17 +288,37 @@ backup_config() {
     printf '%s\n' "$backup"
 }
 
-backup_config_archive() {
-    [[ -d "$mihomo_config_dir" ]] || return 0
-    local archive
-    archive=$(mktemp "/root/mihomo-config-backup-$(date +%Y%m%d%H%M%S).XXXXXX.tar.gz") || return 1
-    if ! tar -czf "$archive" -C "$(dirname "$mihomo_config_dir")" "$(basename "$mihomo_config_dir")"; then
-        rm -f "$archive"
+backup_config_archive() (
+    local cfg_dir="${1:-$mihomo_config_dir}" state_dir="${2:-/root}" archive tmp file
+    local -a entries=(client-state)
+    umask 077
+    tmp=$(mktemp -d) || return 1
+    trap 'rm -rf -- "$tmp"' EXIT
+    mkdir -p "$tmp/client-state" || return 1
+    if [[ -d "$cfg_dir" ]]; then
+        mkdir -p "$tmp/mihomo" || return 1
+        cp -a "$cfg_dir/." "$tmp/mihomo/" || return 1
+        entries=(mihomo client-state)
+    fi
+    for file in "$state_dir"/mihomo_ss_link_*.txt \
+                "$state_dir"/mihomo_vless_reality_link_*.txt \
+                "$state_dir"/mihomo_reality_pubkey_*.txt \
+                "$state_dir"/mihomo_vless_encryption_link_*.txt \
+                "$state_dir"/mihomo_vless_encryption_client_key_*.txt \
+                "$state_dir"/mihomo_anytls_link_*.txt \
+                "$state_dir"/mihomo_anytls_node_*.json \
+                "$state_dir"/mihomo_anytls_proxies_*.yaml \
+                "$state_dir"/inbound_address.txt; do
+        [[ -f "$file" ]] || continue
+        cp -pL -- "$file" "$tmp/client-state/" || return 1
+    done
+    archive=$(mktemp "${state_dir}/mihomo-config-backup-$(date +%Y%m%d%H%M%S).XXXXXX.tar.gz") || return 1
+    if ! tar -czf "$archive" -C "$tmp" "${entries[@]}" || ! chmod 600 "$archive"; then
+        rm -f -- "$archive"
         return 1
     fi
-    chmod 600 "$archive" || return 1
     printf '%s\n' "$archive"
-}
+)
 
 remove_managed_listener() {
     local prefix=$1 port=$2
@@ -331,9 +351,9 @@ for raw in lines:
 
     stripped = raw.strip()
     indent = len(raw) - len(raw.lstrip())
+    if in_listeners and skip and indent <= skip_indent and re.match(r'^-(?:\s|$)', stripped):
+        skip = False
     if in_listeners and stripped.startswith('- name:'):
-        if skip and indent <= skip_indent:
-            skip = False
         name = scalar(stripped.split(':', 1)[1])
         if not skip and name == target_name:
             skip = True
@@ -681,7 +701,9 @@ view_subscription_info() {
 
     local target_port="" port_count=$(echo "$ports" | wc -l)
 
-    if [[ "$port_count" -eq 1 ]]; then
+    if [[ -n "${1:-}" ]]; then
+        target_port=$1
+    elif [[ "$port_count" -eq 1 ]]; then
         target_port=$(echo "$ports" | tr -d ' \n')
     else
         echo "发现多个 Reality 节点:"
@@ -794,12 +816,12 @@ if name:
     local display_ip
     display_ip=$(format_uri_host "$ip")
 
-    # 生成链接
+    # ipinfo 只用于备注，失败或缺少字段时使用默认名称。
     local ipinfo_json country org link_name
-    ipinfo_json=$(curl -sf --max-time 5 https://ipinfo.io 2>/dev/null)
+    ipinfo_json=$(curl -sf --max-time 5 https://ipinfo.io 2>/dev/null) || ipinfo_json=""
     if [[ -n "$ipinfo_json" ]]; then
-        country=$(echo "$ipinfo_json" | grep '"country"' | sed 's/.*"country"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/')
-        org=$(echo "$ipinfo_json" | grep '"org"' | sed 's/.*"org"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/')
+        country=$(echo "$ipinfo_json" | grep '"country"' | sed 's/.*"country"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/') || true
+        org=$(echo "$ipinfo_json" | grep '"org"' | sed 's/.*"org"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/') || true
     fi
     if [[ -n "${country:-}" && -n "${org:-}" ]]; then link_name="${country} - ${org}"
     else link_name="$(hostname)-${target_port}"; fi
@@ -813,7 +835,7 @@ if name:
 
     local save_file=~/mihomo_vless_reality_link_${target_port}.txt
 
-    if [[ "$is_quiet" = true ]]; then echo "${vless_url}"
+    if [[ "$is_quiet" = true ]]; then echo "${vless_url}" >&3
     else
         echo "${vless_url}" > "$save_file"
         chmod 600 "$save_file"
@@ -855,6 +877,46 @@ restart_mihomo() {
     success "Mihomo 服务已成功重启！"
 }
 
+remove_geo_updater() {
+    local cron_file filtered_file cmp_status
+    if ! command -v crontab >/dev/null 2>&1; then
+        error "未找到 crontab；Geo 定时任务未清理，更新脚本已保留，请手动检查。"
+        return 1
+    fi
+    cron_file=$(mktemp) || { error "无法创建临时文件；Geo 更新脚本已保留。"; return 1; }
+    filtered_file=$(mktemp) || { rm -f "$cron_file"; error "无法创建临时文件；Geo 更新脚本已保留。"; return 1; }
+    if ! crontab -l > "$cron_file" 2>/dev/null; then
+        rm -f "$cron_file" "$filtered_file"
+        error "无法读取 root 的 crontab；Geo 定时任务未清理，更新脚本已保留，请手动检查。"
+        return 1
+    fi
+    # 仅匹配直接执行该绝对路径的任务，保留注释、环境变量和其他命令。
+    if ! awk '
+        ($1 ~ /^[0-9*]/ && $6 ~ /^\/root\/update_geo[.]sh($|[<>])/) ||
+        ($1 ~ /^@(reboot|yearly|annually|monthly|weekly|daily|midnight|hourly)$/ && $2 ~ /^\/root\/update_geo[.]sh($|[<>])/) { next }
+        { print }
+    ' "$cron_file" > "$filtered_file"; then
+        rm -f "$cron_file" "$filtered_file"
+        error "无法筛选 root 的 crontab；Geo 更新脚本已保留，请手动检查。"
+        return 1
+    fi
+    if cmp -s "$cron_file" "$filtered_file"; then
+        :
+    else
+        cmp_status=$?
+        if [[ $cmp_status -ne 1 ]] || ! crontab "$filtered_file"; then
+            rm -f "$cron_file" "$filtered_file"
+            error "无法比较或更新 root 的 crontab；Geo 更新脚本已保留，请手动检查。"
+            return 1
+        fi
+    fi
+    rm -f "$cron_file" "$filtered_file"
+    if ! rm -f -- /root/update_geo.sh; then
+        error "无法删除 Geo 更新脚本 /root/update_geo.sh，请手动检查。"
+        return 1
+    fi
+}
+
 uninstall_mihomo() {
     if [[ ! -f "$mihomo_binary_path" ]]; then error "Mihomo 未安装" && return; fi
     read -p "确定卸载 Mihomo 吗？配置会先自动备份。[y/N]: " confirm
@@ -875,7 +937,7 @@ uninstall_mihomo() {
     rm -f "$mihomo_binary_path"
     rm -rf "$mihomo_config_dir"
     rm -f ~/mihomo_vless_reality_link_*.txt /root/mihomo_reality_pubkey_*.txt
-    rm -f /root/inbound_address.txt
+    remove_geo_updater || true
     success "Mihomo 已成功卸载；配置备份: $config_archive"
 }
 
@@ -984,7 +1046,7 @@ except ImportError:
     echo "$public_key" > "/root/mihomo_reality_pubkey_${target_p}.txt"
     chmod 600 "/root/mihomo_reality_pubkey_${target_p}.txt"
     success "修改完成"
-    view_subscription_info
+    view_subscription_info "$target_p"
 }
 
 # --- 核心安装流程 ---
@@ -1058,7 +1120,7 @@ except ImportError:
     echo "$public_key" > "/root/mihomo_reality_pubkey_${port}.txt"
     chmod 600 "/root/mihomo_reality_pubkey_${port}.txt"
     success "Mihomo 安装/配置成功！"
-    view_subscription_info
+    view_subscription_info "$port"
 }
 
 press_any_key_to_continue() {
@@ -1111,6 +1173,18 @@ main_menu() {
 }
 
 main() {
+    if [[ ${1:-} == "install" ]]; then
+        local arg expect_value=false
+        for arg in "${@:2}"; do
+            if [[ "$expect_value" == true ]]; then expect_value=false; continue; fi
+            case "$arg" in
+                --port|--uuid|--sni) expect_value=true ;;
+                --quiet|-q) is_quiet=true; break ;;
+            esac
+        done
+    fi
+    # quiet 模式将过程输出送往 stderr，文件描述符 3 保留给最终链接。
+    if [[ "$is_quiet" == true ]]; then exec 3>&1 1>&2; fi
     pre_check
     if [[ $# -gt 0 && "$1" == "install" ]]; then
         shift

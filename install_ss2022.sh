@@ -35,8 +35,8 @@ INIT_SYSTEM=""
 
 # --- 辅助函数 ---
 error() { echo -e "\n${red}[✖] $1${none}\n" >&2; }
-info()  { if [[ "$is_quiet" = false ]]; then echo -e "\n${yellow}[!] $1${none}\n"; fi; return 0; }
-success(){ if [[ "$is_quiet" = false ]]; then echo -e "\n${green}[✔] $1${none}\n"; fi; return 0; }
+info()  { echo -e "\n${yellow}[!] $1${none}\n"; }
+success(){ echo -e "\n${green}[✔] $1${none}\n"; }
 
 spinner() {
     local pid=$1; local spinstr='|/-\\'
@@ -336,17 +336,37 @@ backup_config() {
     printf '%s\n' "$backup"
 }
 
-backup_config_archive() {
-    [[ -d "$mihomo_config_dir" ]] || return 0
-    local archive
-    archive=$(mktemp "/root/mihomo-config-backup-$(date +%Y%m%d%H%M%S).XXXXXX.tar.gz") || return 1
-    if ! tar -czf "$archive" -C "$(dirname "$mihomo_config_dir")" "$(basename "$mihomo_config_dir")"; then
-        rm -f "$archive"
+backup_config_archive() (
+    local cfg_dir="${1:-$mihomo_config_dir}" state_dir="${2:-/root}" archive tmp file
+    local -a entries=(client-state)
+    umask 077
+    tmp=$(mktemp -d) || return 1
+    trap 'rm -rf -- "$tmp"' EXIT
+    mkdir -p "$tmp/client-state" || return 1
+    if [[ -d "$cfg_dir" ]]; then
+        mkdir -p "$tmp/mihomo" || return 1
+        cp -a "$cfg_dir/." "$tmp/mihomo/" || return 1
+        entries=(mihomo client-state)
+    fi
+    for file in "$state_dir"/mihomo_ss_link_*.txt \
+                "$state_dir"/mihomo_vless_reality_link_*.txt \
+                "$state_dir"/mihomo_reality_pubkey_*.txt \
+                "$state_dir"/mihomo_vless_encryption_link_*.txt \
+                "$state_dir"/mihomo_vless_encryption_client_key_*.txt \
+                "$state_dir"/mihomo_anytls_link_*.txt \
+                "$state_dir"/mihomo_anytls_node_*.json \
+                "$state_dir"/mihomo_anytls_proxies_*.yaml \
+                "$state_dir"/inbound_address.txt; do
+        [[ -f "$file" ]] || continue
+        cp -pL -- "$file" "$tmp/client-state/" || return 1
+    done
+    archive=$(mktemp "${state_dir}/mihomo-config-backup-$(date +%Y%m%d%H%M%S).XXXXXX.tar.gz") || return 1
+    if ! tar -czf "$archive" -C "$tmp" "${entries[@]}" || ! chmod 600 "$archive"; then
+        rm -f -- "$archive"
         return 1
     fi
-    chmod 600 "$archive" || return 1
     printf '%s\n' "$archive"
-}
+)
 
 remove_managed_listener() {
     local prefix=$1 port=$2
@@ -371,7 +391,7 @@ with open(path, encoding='utf-8') as f:
     lines = f.readlines()
 
 for raw in lines:
-    if re.match(r'^[^\s#][^:]*:', raw):
+    if re.match(r'^[^\s#][^:]*:', raw) and not re.match(r'^-(?:\s|$)', raw):
         skip = False
         in_listeners = raw.split(':', 1)[0].strip() == 'listeners'
         result.append(raw)
@@ -379,9 +399,9 @@ for raw in lines:
 
     stripped = raw.strip()
     indent = len(raw) - len(raw.lstrip())
+    if skip and indent <= skip_indent and re.match(r'^-(?:\s|$)', stripped):
+        skip = False
     if in_listeners and stripped.startswith('- name:'):
-        if skip and indent <= skip_indent:
-            skip = False
         name = scalar(stripped.split(':', 1)[1])
         if not skip and name == target_name:
             skip = True
@@ -470,7 +490,7 @@ check_system_compatibility() {
 
 pre_check() {
     [[ $(id -u) != 0 ]] && error "必须以 root 运行" && exit 1
-    check_system_compatibility || exit 1
+    check_system_compatibility || exit $?
 }
 
 check_mihomo_status() {
@@ -482,6 +502,11 @@ check_mihomo_status() {
 }
 
 # --- 核心 SS 配置逻辑 ---
+validate_ss2022_password() {
+    local password=$1 key_len=$2
+    python3 -c 'import base64,sys; sys.exit(0 if len(base64.b64decode(sys.argv[1], validate=True)) == int(sys.argv[2]) else 1)' "$password" "$key_len" 2>/dev/null
+}
+
 select_method_and_password() {
     echo ""
     echo "请选择 Shadowsocks 加密协议:"
@@ -506,16 +531,22 @@ select_method_and_password() {
         *) error "无效选择，默认使用 2022-blake3-aes-256-gcm"; SS_METHOD="2022-blake3-aes-256-gcm"; key_len=32 ;;
     esac
 
-    echo ""
-    echo -ne "请输入密码 (留空生成随机 ${key_len} 字节密码): "
-    read user_pass
-    
-    if [[ -z "$user_pass" ]]; then
-        SS_PASSWORD=$(openssl rand -base64 $key_len | tr -d '\n')
-        info "已自动生成密码: ${cyan}${SS_PASSWORD}${none}"
-    else
-        SS_PASSWORD="$user_pass"
-    fi
+    while true; do
+        echo ""
+        echo -ne "请输入密码 (留空生成随机 ${key_len} 字节密码): "
+        read user_pass || return 1
+
+        if [[ -z "$user_pass" ]]; then
+            SS_PASSWORD=$(openssl rand -base64 "$key_len" | tr -d '\n')
+            info "已自动生成密码: ${cyan}${SS_PASSWORD}${none}"
+            break
+        elif [[ "$SS_METHOD" == 2022-* ]] && ! validate_ss2022_password "$user_pass" "$key_len"; then
+            error "$SS_METHOD 的密码必须是 ${key_len} 字节密钥的 Base64 编码，请重新输入。"
+        else
+            SS_PASSWORD="$user_pass"
+            break
+        fi
+    done
 }
 
 # --- 初始化 Mihomo 基础配置文件 ---
@@ -745,7 +776,7 @@ install_ss() {
         break
     done
 
-    select_method_and_password
+    select_method_and_password || return 1
 
     # 安装核心 & GeoData
     if ! install_mihomo_core; then return 1; fi
@@ -764,13 +795,13 @@ install_ss() {
 
 view_subscription_info() {
     # 自动查找 SS 节点
-    if [[ ! -f "$mihomo_config_path" ]]; then error "配置不存在"; return; fi
+    if [[ ! -f "$mihomo_config_path" ]]; then error "配置不存在"; return 1; fi
     
     # 1. 扫描所有 SS 节点端口
     local ports
     ports=$(managed_listener_ports "ss-in-" || true)
     
-    if [[ -z "$ports" ]]; then error "未找到 Shadowsocks 节点配置。"; return; fi
+    if [[ -z "$ports" ]]; then error "未找到 Shadowsocks 节点配置。"; return 1; fi
 
     local target_port=""
     local port_count=$(echo "$ports" | wc -l)
@@ -849,7 +880,7 @@ if name:
     print(json.dumps({'name': name, 'port': port, 'method': method, 'password': password}, ensure_ascii=False))
 " "$mihomo_config_path" "$target_port" 2>/dev/null || true)
 
-    if [[ -z "$node_info" ]]; then error "读取配置失败"; return; fi
+    if [[ -z "$node_info" ]]; then error "读取配置失败"; return 1; fi
 
     local tag method password
     tag=$(printf '%s' "$node_info" | python3 -c 'import json,sys; print(json.load(sys.stdin)["name"])')
@@ -860,9 +891,9 @@ if name:
     local ip
     if [[ -f "$address_file" && -s "$address_file" ]]; then
         ip=$(cat "$address_file")
-        if [[ -z "$ip" ]]; then ip=$(get_public_ip); fi
+        if [[ -z "$ip" ]]; then ip=$(get_public_ip) || return $?; fi
     else
-        ip=$(get_public_ip)
+        ip=$(get_public_ip) || return $?
     fi
     
     # 5. 生成链接 (SIP002)
@@ -871,7 +902,7 @@ if name:
     user_info_b64=$(python3 -c 'import base64,sys; print(base64.urlsafe_b64encode(sys.argv[1].encode()).decode().rstrip("="))' "$user_info")
 
     local ipinfo_json country org link_name
-    ipinfo_json=$(curl -sf --max-time 5 https://ipinfo.io 2>/dev/null)
+    ipinfo_json=$(curl -sf --max-time 5 https://ipinfo.io 2>/dev/null) || ipinfo_json=""
     if [[ -n "$ipinfo_json" ]]; then
         country=$(echo "$ipinfo_json" | grep '"country"' | sed 's/.*"country"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/')
         org=$(echo "$ipinfo_json" | grep '"org"' | sed 's/.*"org"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/')
@@ -890,7 +921,7 @@ if name:
     local save_file="/root/mihomo_ss_link_${target_port}.txt"
 
     if [[ "$is_quiet" = true ]]; then
-        echo "$link"
+        echo "$link" >&3
     else
         echo "----------------------------------------------------------------"
         echo -e "${green} --- Shadowsocks 配置信息 (Mihomo) --- ${none}"
@@ -922,6 +953,46 @@ restart_mihomo() {
     success "服务已重启"
 }
 
+remove_geo_updater() {
+    local cron_file filtered_file cmp_status
+    if ! command -v crontab >/dev/null 2>&1; then
+        error "未找到 crontab；Geo 定时任务未清理，更新脚本已保留，请手动检查。"
+        return 1
+    fi
+    cron_file=$(mktemp) || { error "无法创建临时文件；Geo 更新脚本已保留。"; return 1; }
+    filtered_file=$(mktemp) || { rm -f "$cron_file"; error "无法创建临时文件；Geo 更新脚本已保留。"; return 1; }
+    if ! crontab -l > "$cron_file" 2>/dev/null; then
+        rm -f "$cron_file" "$filtered_file"
+        error "无法读取 root 的 crontab；Geo 定时任务未清理，更新脚本已保留，请手动检查。"
+        return 1
+    fi
+    # 仅匹配直接执行该绝对路径的任务，保留注释、环境变量和其他命令。
+    if ! awk '
+        ($1 ~ /^[0-9*]/ && $6 ~ /^\/root\/update_geo[.]sh($|[<>])/) ||
+        ($1 ~ /^@(reboot|yearly|annually|monthly|weekly|daily|midnight|hourly)$/ && $2 ~ /^\/root\/update_geo[.]sh($|[<>])/) { next }
+        { print }
+    ' "$cron_file" > "$filtered_file"; then
+        rm -f "$cron_file" "$filtered_file"
+        error "无法筛选 root 的 crontab；Geo 更新脚本已保留，请手动检查。"
+        return 1
+    fi
+    if cmp -s "$cron_file" "$filtered_file"; then
+        :
+    else
+        cmp_status=$?
+        if [[ $cmp_status -ne 1 ]] || ! crontab "$filtered_file"; then
+            rm -f "$cron_file" "$filtered_file"
+            error "无法比较或更新 root 的 crontab；Geo 更新脚本已保留，请手动检查。"
+            return 1
+        fi
+    fi
+    rm -f "$cron_file" "$filtered_file"
+    if ! rm -f -- /root/update_geo.sh; then
+        error "无法删除 Geo 更新脚本 /root/update_geo.sh，请手动检查。"
+        return 1
+    fi
+}
+
 uninstall_mihomo() {
     read -p "确定卸载 Mihomo 吗？(删除程序文件，保留配置文件可选) [y/N]: " confirm
     if [[ ! $confirm =~ ^[yY]$ ]]; then return; fi
@@ -950,9 +1021,9 @@ uninstall_mihomo() {
     fi
     
     rm -f "$mihomo_binary_path"
+    remove_geo_updater || true
     if [[ $del_conf =~ ^[yY]$ ]]; then
         rm -rf "$mihomo_config_dir" /var/log/mihomo
-        rm -f /root/inbound_address.txt # 同时清理地址配置文件
         success "Mihomo 及配置已完全卸载；配置备份: $config_archive"
     else
         success "Mihomo 程序已卸载，配置保留"
@@ -998,7 +1069,7 @@ modify_config() {
     info "注意：修改将删除旧端口配置并重新添加。"
     info "请重新配置参数:"
     
-    select_method_and_password
+    select_method_and_password || return 1
     
     # 先备份原始配置，再删除旧入站；避免 append 阶段的备份已经丢失旧节点。
     local modify_backup
@@ -1099,31 +1170,48 @@ install_ss_noninteractive() {
     local key_len
     if ! key_len=$(ss_key_len_for_method "$method"); then error "不支持的加密方式: $method"; return 1; fi
     if [[ -z "$password" ]]; then
-        password=$(openssl rand -base64 "$key_len" | tr -d '\n')
+        password=$(openssl rand -base64 "$key_len" | tr -d '\n') || return $?
     elif [[ "$method" == 2022-* ]]; then
         # SS2022 要求密码为指定长度密钥的 Base64 编码
-        if ! python3 -c 'import base64,sys; sys.exit(0 if len(base64.b64decode(sys.argv[1], validate=True)) == int(sys.argv[2]) else 1)' "$password" "$key_len" 2>/dev/null; then
+        if ! validate_ss2022_password "$password" "$key_len"; then
             error "$method 的密码必须是 ${key_len} 字节密钥的 Base64 编码 (可用 openssl rand -base64 ${key_len} 生成)"
             return 1
         fi
     fi
     if is_port_in_use "$port"; then error "端口 $port 已被占用"; return 1; fi
 
-    if ! install_mihomo_core; then return 1; fi
-    install_geodata || return 1
-    append_ss_config "$port" "$method" "$password" || return 1
-    setup_service || return 1
-    service_restart || return 1
+    install_mihomo_core || return $?
+    install_geodata || return $?
+    append_ss_config "$port" "$method" "$password" || return $?
+    setup_service || return $?
+    service_restart || return $?
     success "安装配置完成！"
     view_subscription_info "$port"
 }
 
 main() {
-    pre_check
+    if [[ $# -gt 0 && "$1" == "install" ]]; then
+        # 在环境检查之前识别静默模式；跳过带值参数，避免把密码误判为选项。
+        local arg
+        local -a args=("$@")
+        local i
+        for ((i = 1; i < ${#args[@]}; i++)); do
+            arg=${args[i]}
+            case "$arg" in
+                --port|--method|--password) ((i += 1)) ;;
+                --quiet|-q) is_quiet=true ;;
+            esac
+        done
+        if [[ "$is_quiet" = true ]]; then
+            # fd 3 保存原 stdout，其余输出（包括环境检查和服务命令）转到 stderr。
+            exec 3>&1 1>&2
+        fi
+    fi
+    pre_check || return $?
     if [[ $# -gt 0 && "$1" == "install" ]]; then
         shift
         if [[ $# -gt 0 ]]; then
-            install_ss_noninteractive "$@" || exit 1
+            install_ss_noninteractive "$@"
         else
             install_ss
         fi

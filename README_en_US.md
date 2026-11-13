@@ -8,7 +8,7 @@ This is a powerful, highly modular, and extremely compatible collection of Mihom
 
   * **Mihomo Core**: Utilizes Mihomo (Clash Meta) as the proxy server, resolving Xray's TCP connection leak bug. It features lower resource consumption and stronger stability. It also supports automated fallback to the `amd64-compatible` instruction set architecture for older CPUs.
   * **Post-Quantum Encryption Support**: Seamlessly supports the VLESS Encryption (ML-KEM-768, Post-Quantum) feature pioneered by Xray, providing highly compatible automatic key conversion and generation.
-  * **Smart Multi-Protocol Coexistence**: Uses Python to parse YAML configurations and intelligently appends listeners. You can install multiple different protocols or multi-port nodes as you wish, and it will **absolutely not overwrite** your original node configurations.
+  * **Smart Multi-Protocol Coexistence**: Appends listeners to an existing YAML configuration, so multiple protocols or ports can be used on one server.
   * **Extreme System Compatibility**: Not only does it perfectly support mainstream Systemd-based distributions like Debian/Ubuntu, but it is also **deeply compatible with Alpine Linux (OpenRC)**, making it exceptionally friendly to ultra-minimalist lightweight systems.
   * **NAT / DDNS Friendly**: Built-in feature to customize independent connection addresses. Whether you are using a NAT machine with dynamic ports or resolving via a DDNS domain name, you can generate the correct sharing links with one click.
   * **All-in-One Management**: Provides a unified global management menu (`mihomo-manager`), a routing configuration tool (`mihomo-routing`), and a configuration backup/restore tool (`mihomo-restore`).
@@ -33,7 +33,7 @@ After the unified management tool is installed, it will automatically register a
 mihomo-manager
 ```
 
-Within the `mihomo-manager` menu, you can directly invoke all the independent features listed below with a single click, eliminating the need to download scripts individually.
+Within the `mihomo-manager` menu, you can invoke the main features without downloading each script individually. Snell and DNAT forwarding can also be run separately using `install_snell.sh` and `install_dnat.sh`.
 
 -----
 
@@ -91,7 +91,7 @@ curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/i
 
 ### 6\. Server Routing Tool (Mihomo Routing)
 
-A powerful control panel for server outbound routing. Supports parsing SS and VLESS sharing links and allows visual configuration of routing rules.
+A control panel for server outbound routing. It supports SS links and common TCP, WebSocket, and gRPC VLESS links, and allows visual configuration of routing rules.
 
 ```bash
 curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/mihomo_routing.sh -o mihomo_routing.sh && chmod +x mihomo_routing.sh && sudo ./mihomo_routing.sh
@@ -101,7 +101,7 @@ curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/m
 
 ### 7\. Backup and Restore Tool (Mihomo Restore)
 
-Accidentally messed up your configuration? Want to migrate your setup? This tool allows you to import configuration files via direct URLs or by manually pasting the `config.yaml` into the console, complete with built-in safety checks to prevent fatal errors.
+Import a `config.yaml` from a direct URL or by pasting it into the console, or restore a local uninstall backup archive. New archives include client information alongside the configuration; older archives can still restore the files they contain.
 
 ```bash
 curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/mihomo_restore.sh -o mihomo_restore.sh && chmod +x mihomo_restore.sh && sudo ./mihomo_restore.sh

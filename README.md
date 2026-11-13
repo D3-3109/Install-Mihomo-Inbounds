@@ -8,7 +8,7 @@
 
 * **Mihomo 核心**：使用 Mihomo (Clash Meta) 作为代理服务端，解决 Xray 的 TCP 连接数泄露 Bug，资源占用更低，稳定性更强。同时支持针对老旧 CPU 的 `amd64-compatible` 架构指令集降级适配。
 * **抗量子加密支持**：无缝支持 Xray 首创的 VLESS Encryption (ML-KEM-768, Post-Quantum) 特性，并提供高度兼容的密钥自动转换生成。
-* **多协议智能共存**：采用 Python 解析 YAML 配置并智能追加 listeners，随心所欲安装多个不同协议或多端口节点，**绝对不会覆盖**原有节点配置。
+* **多协议智能共存**：在现有 YAML 配置中追加 listeners，可在一台服务器上安装多个协议或多端口节点。
 * **极致的系统兼容**：不仅完美支持 Debian / Ubuntu 等基于 Systemd 的主流系统，更**深度兼容 Alpine Linux (OpenRC)**，对极其精简的轻量级系统同样友好。
 * **NAT / DDNS 友好**：内置独立连接地址自定义功能，无论你是使用 NAT 动态端口机，还是通过 DDNS 域名解析，都能一键生成正确的分享链接。
 * **一站式管理**：提供全局统一的管理菜单 (`mihomo-manager`)、路由分流配置工具 (`mihomo-routing`) 以及配置备份还原工具 (`mihomo-restore`)。
@@ -32,7 +32,12 @@ curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/m
 mihomo-manager
 ```
 
-在 `mihomo-manager` 菜单中，你可以直接一键调用以下所有独立功能，无需再单独下载脚本。
+在 `mihomo-manager` 菜单中可以调用主要功能，无需再单独下载脚本。Snell 和 DNAT 转发可单独运行：
+
+```bash
+curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/install_snell.sh -o install_snell.sh && chmod +x install_snell.sh && sudo ./install_snell.sh
+curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/install_dnat.sh -o install_dnat.sh && chmod +x install_dnat.sh && sudo ./install_dnat.sh
+```
 
 ---
 
@@ -79,14 +84,14 @@ curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/i
 > **为什么不并进卸载脚本**: `install_realm.sh` 有自己的卸载入口（菜单 4），`uninstall_mihomo.sh` 不会碰 realm 的文件，避免"卸 mihomo 把转发也删了"。
 
 ### 6. 服务端路由分流工具 (Mihomo Routing)
-强大的服务端出口分流控制面板。支持解析 SS 和 VLESS 分享链接，可视化配置分流规则。
+强大的服务端出口分流控制面板。支持解析 SS 和常见的 TCP、WebSocket、gRPC VLESS 分享链接，可视化配置分流规则。
 ```bash
 curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/mihomo_routing.sh -o mihomo_routing.sh && chmod +x mihomo_routing.sh && sudo ./mihomo_routing.sh
 ```
 *安装后随时可用 `mihomo-routing` 命令唤起。*
 
 ### 7. 备份与还原工具 (Mihomo Restore)
-不小心改错了配置？想要迁移配置？使用此工具可以通过直链 URL 导入配置文件，或者打开控制台手动粘贴 `config.yaml`，自带安全测试防报错功能。
+不小心改错了配置？想要迁移配置？使用此工具可以通过直链 URL 导入、手动粘贴 `config.yaml`，也可恢复本地卸载备份归档。恢复归档可一并找回其中的客户端信息；旧归档仍可恢复已有的配置。
 ```bash
 curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/mihomo_restore.sh -o mihomo_restore.sh && chmod +x mihomo_restore.sh && sudo ./mihomo_restore.sh
 ```
@@ -111,9 +116,9 @@ sudo ./mihomo_cli.sh realm     --port 8443 --remote 10.0.0.2:8443 [--no-udp]
 sudo ./mihomo_cli.sh address   my.ddns.net     # 设置 NAT/DDNS 连接地址，auto 恢复自动获取
 ```
 * `realm` 额外参数：`--remote`（转发目标，必填）、`--listen-host`（默认 `0.0.0.0`）、`--no-udp`（只转 TCP）、`--no-tcp`（只转 UDP）、`--comment`（写入配置的注释）
-* `anytls` 额外参数：`--dest`（JLS 回落目标，默认 `www.bing.com:443`）、`--mode`（`jls` 默认 / `tls` 需配 `--cert` `--key`）、`--sni`、`--alpn`、`--jls-user`、`--jls-password`、`--proxy`（回落出站）、`--rate-limit`、`--padding-file`（自定义填充方案）
+* `anytls` 额外参数：`--dest`（JLS 回落目标，默认 `www.bing.com:443`）、`--mode`（`jls` 默认 / `tls` 需配 `--cert` `--key`）、`--sni`（JLS SNI 或 TLS 证书域名）、`--alpn`、`--jls-user`、`--jls-password`、`--proxy`（回落出站）、`--rate-limit`、`--padding-file`（自定义填充方案）
 * `--address <地址|auto>`：搭建前先设置连接地址，`auto` 为自动获取公网 IP，不传则沿用当前设置，例如 `sudo ./mihomo_cli.sh reality --address my.ddns.net`
-* `-q` / `--quiet`：成功时只输出分享链接，方便其他脚本捕获
+* `-q` / `--quiet`：标准输出只包含结果：SS、Reality 和 VLESS Encryption 的分享链接，AnyTLS 的 `proxies:` YAML，或 Realm 的转发信息；运行过程中的消息输出到标准错误。
 * `-h` / `--help`：查看完整帮助
 
 ---
