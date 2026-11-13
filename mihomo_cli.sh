@@ -50,6 +50,20 @@ Mihomo 非交互式一键搭建脚本
                 --port <端口>       默认 40000
                 --uuid <UUID>       默认随机生成
 
+  tuic        搭建 TUIC v5 节点 (Mihomo listener, 走 UDP/QUIC)
+                --port <端口>       默认 443
+                --uuid <UUID>       默认随机生成
+                --password <密码>   默认随机生成, 8-128 位字母数字
+                --congestion <算法> 默认 bbr, 可选 cubic / new_reno
+                --alpn <列表>       默认 h3
+                --udp-relay-mode <模式> 客户端 UDP 中继, 默认 native, 可选 quic
+                --sni <域名或IP>    默认 tuic.local
+                --cert-mode <模式>  selfsign (默认) / file / acme
+                --cert <路径>       file 模式的证书 PEM
+                --key <路径>        file 模式的私钥 PEM
+                --domain <域名>     acme 模式必填, 同时作为 SNI
+                --listen-host <IP>  默认 0.0.0.0
+
   anytls      搭建 AnyTLS 节点 (默认 JLS 握手伪装, 需要 mihomo >= 1.19.29)
                 --port <端口>       默认 8443
                 --mode <jls|tls>    默认 jls; jls 无需证书, tls 需 --cert/--key
@@ -76,7 +90,7 @@ Mihomo 非交互式一键搭建脚本
                 --no-tcp            只转发 UDP
                 --comment <备注>    写入配置文件的注释, 默认 realm-<port>
 
-通用参数 (用于 reality / ss / vless-enc / anytls / realm):
+通用参数 (用于 reality / ss / vless-enc / anytls / tuic / realm):
   --address <地址|auto>  搭建前先设置连接地址；auto 为自动获取公网 IP，不传则沿用当前设置
   -q, --quiet        安静模式：stdout 仅输出链接、AnyTLS YAML 或 Realm 转发信息
   -h, --help         显示本帮助
@@ -85,6 +99,7 @@ Mihomo 非交互式一键搭建脚本
   $(basename "$0") reality --port 8443 --sni www.example.com --address my.ddns.net
   $(basename "$0") ss --method 2022-blake3-aes-128-gcm -q
   $(basename "$0") anytls --port 8443 --dest www.apple.com:443 -q
+  $(basename "$0") tuic --port 443 --congestion bbr -q
 EOF
 }
 
@@ -195,6 +210,9 @@ main() {
         anytls)
             DEFAULT_PORT=8443
             run_installer "install_anytls.sh" "$@" ;;
+        tuic|tuic-v5|tuic5)
+            DEFAULT_PORT=443
+            run_installer "install_tuic.sh" "$@" ;;
         realm)
             DEFAULT_PORT=8443
             run_installer "install_realm.sh" "$@" ;;
