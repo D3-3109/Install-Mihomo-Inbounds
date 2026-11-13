@@ -5,7 +5,7 @@
 # 使用 realm 作为纯 TCP/UDP 转发服务端，与 Mihomo 节点配合做落地/中转
 # 版本: V-Realm-Forward-1.0
 # 功能:
-# - 安装/管理 realm 转发 (单端口 TCP+UDP 或纯 TCP)
+# - 安装/管理 realm 转发 (TCP+UDP、纯 TCP 或纯 UDP)
 # - 智能追加配置 (不覆盖已有 endpoints)
 # - 多端口/多转发管理
 # - 支持自定义连接地址 (NAT/DDNS)
@@ -445,16 +445,8 @@ def toml_str(value):
 
 block = ["[[endpoints]]", f"listen = {toml_str(listen)}", f"remote = {toml_str(remote)}"]
 
-# 端点级 network 覆盖: 只在非默认值时写入, 保持配置文件干净
-overrides = []
-if no_tcp == "true":
-    overrides.append("no_tcp = true")
-if use_udp == "false":
-    overrides.append("use_udp = false")
-if overrides:
-    block.append("")
-    block.append("[endpoints.network]")
-    block.extend(overrides)
+# 明确端点的协议选择，避免继承已有全局配置中不同的设置。
+block.extend(["", "[endpoints.network]", f"no_tcp = {no_tcp}", f"use_udp = {use_udp}"])
 
 # 注释放在 [[endpoints]] 之后而不是之前: 整块自包含,
 # 删除时注释随块一起消失, 不会残留在原地错位。
@@ -831,7 +823,7 @@ install_forward() {
     [[ "$yn" =~ ^[nN]$ ]] && use_udp=false
     if [[ "$use_udp" == "false" ]]; then
         read -p "完全禁用 TCP 只转 UDP? [y/N]: " yn2
-        [[ "$yn2" =~ ^[yY]$ ]] && no_tcp=true
+        if [[ "$yn2" =~ ^[yY]$ ]]; then use_udp=true; no_tcp=true; fi
     fi
 
     local comment="realm-${listen_port}"
@@ -987,7 +979,7 @@ test_forward() {
         fi
     done <<< "$rows"
     echo ""
-    echo -e "${yellow}[!] 这里只验证本地监听是否存活。"
+    echo -e "${yellow}[!] 这里只测试 127.0.0.1 上的 TCP 监听，不适用于纯 UDP 或纯 IPv6 转发。"
     echo -e "    真正能否通到目标, 需要从外部用客户端实测。${none}"
 }
 
@@ -1039,11 +1031,10 @@ main_menu() {
 }
 
 main() {
-    pre_check
     if [[ $# -gt 0 && "$1" == "install" ]]; then
         shift
         local port="" listen_host="0.0.0.0" remote_addr=""
-        local use_udp=true no_tcp=false comment=""
+        local use_udp=true no_tcp=false comment="" result_fd
         while [[ $# -gt 0 ]]; do
             case "$1" in
                 --port|--listen-host|--remote|--comment)
@@ -1064,6 +1055,14 @@ main() {
             esac
         done
 
+        if [[ "$is_quiet" == true ]]; then
+            exec {result_fd}>&1
+            exec 1>&2
+        fi
+        pre_check
+        if [[ "$use_udp" == false && "$no_tcp" == true ]]; then
+            error "不能同时禁用 TCP 和 UDP。"; exit 1
+        fi
         [[ -z "$port" ]] && port=8443
         if ! is_valid_port "$port"; then error "端口无效。" && exit 1; fi
         if [[ -z "$remote_addr" ]]; then error "必须提供 --remote host:port。" && exit 1; fi
@@ -1104,8 +1103,14 @@ main() {
             exit 1
         fi
         success "Realm 转发安装完成！"
-        view_forward_info "$listen_addr"
+        if [[ "$is_quiet" == true ]]; then
+            view_forward_info "$listen_addr" >&"$result_fd"
+            exec {result_fd}>&-
+        else
+            view_forward_info "$listen_addr"
+        fi
     else
+        pre_check
         main_menu
     fi
 }

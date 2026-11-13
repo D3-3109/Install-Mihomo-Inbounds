@@ -158,7 +158,7 @@ with open(config_path, 'r', encoding='utf-8') as f:
 empty = re.compile(r'^proxies:\s*\[\]\s*(?:#.*)?$', re.MULTILINE)
 plain = re.compile(r'^proxies:\s*(?:#.*)?$', re.MULTILINE)
 if empty.search(content):
-    content = empty.sub('proxies:\n' + yaml_snippet.rstrip('\n'), content, count=1)
+    content = empty.sub(lambda _: 'proxies:\n' + yaml_snippet.rstrip('\n'), content, count=1)
 elif not re.search(r'^proxies:', content, re.MULTILINE):
     content = content.rstrip('\n') + '\n\nproxies:\n' + yaml_snippet.rstrip('\n') + '\n'
 elif not plain.search(content):
@@ -381,6 +381,10 @@ try:
         result["sid"] = params.get("sid", [""])[0]
         result["fp"] = params.get("fp", [""])[0]
         result["type"] = params.get("type", ["tcp"])[0]
+        result["path"] = params.get("path", [""])[0]
+        result["host"] = params.get("host", [""])[0]
+        result["serviceName"] = params.get("serviceName", [""])[0]
+        result["alpn"] = params.get("alpn", [""])[0]
         result["spiderx"] = params.get("spiderx", [""])[0]
         if not result["uuid"] or not result["address"] or result["port"] is None:
             raise ValueError("VLESS link is missing UUID, address, or port")
@@ -545,7 +549,7 @@ EOF
             local parsed; parsed=$(parse_link_py "$link")
             if echo "$parsed" | grep -q '"error"'; then die "解析失败"; fi
             
-            local addr port uuid security encryption sni pbk sid fp flow type
+            local addr port uuid security encryption sni pbk sid fp flow type path host service_name alpn
             addr=$(echo "$parsed" | python3 -c 'import sys,json; print(json.load(sys.stdin)["address"])')
             port=$(echo "$parsed" | python3 -c 'import sys,json; print(json.load(sys.stdin)["port"])')
             uuid=$(echo "$parsed" | python3 -c 'import sys,json; print(json.load(sys.stdin)["uuid"])')
@@ -557,10 +561,19 @@ EOF
             fp=$(echo "$parsed" | python3 -c 'import sys,json; print(json.load(sys.stdin).get("fp","chrome"))')
             flow=$(echo "$parsed" | python3 -c 'import sys,json; print(json.load(sys.stdin).get("flow",""))')
             type=$(echo "$parsed" | python3 -c 'import sys,json; print(json.load(sys.stdin).get("type","tcp"))')
+            path=$(echo "$parsed" | python3 -c 'import sys,json; print(json.load(sys.stdin).get("path",""))')
+            host=$(echo "$parsed" | python3 -c 'import sys,json; print(json.load(sys.stdin).get("host",""))')
+            service_name=$(echo "$parsed" | python3 -c 'import sys,json; print(json.load(sys.stdin).get("serviceName",""))')
+            alpn=$(echo "$parsed" | python3 -c 'import sys,json; print(json.load(sys.stdin).get("alpn",""))')
 
             [[ -n "$addr" ]] || die "VLESS 地址为空"
             is_valid_port "$port" || die "VLESS 端口无效"
             is_valid_uuid "$uuid" || die "VLESS UUID 格式无效"
+            case "$type" in
+                tcp|ws|grpc) ;;
+                *) die "暂不支持导入 VLESS network: $type" ;;
+            esac
+            [[ -n "$fp" ]] || fp="chrome"
             local q_tag q_addr q_uuid q_type q_flow q_encryption q_sni q_fp q_pbk q_sid
             q_tag=$(yaml_quote "$tag"); q_addr=$(yaml_quote "$addr"); q_uuid=$(yaml_quote "$uuid")
             q_type=$(yaml_quote "$type"); q_flow=$(yaml_quote "$flow"); q_encryption=$(yaml_quote "$encryption")
@@ -582,6 +595,26 @@ EOF
             if [[ -n "$encryption" && "$encryption" != "none" ]]; then 
                 yaml_snippet+=$'\n'"    encryption: ${q_encryption}"
             fi
+            if [[ "$type" == "ws" && ( -n "$path" || -n "$host" ) ]]; then
+                yaml_snippet+=$'\n'"    ws-opts:"
+                if [[ -n "$path" ]]; then yaml_snippet+=$'\n'"      path: $(yaml_quote "$path")"; fi
+                if [[ -n "$host" ]]; then
+                    yaml_snippet+=$'\n'"      headers:"
+                    yaml_snippet+=$'\n'"        Host: $(yaml_quote "$host")"
+                fi
+            elif [[ "$type" == "grpc" && -n "$service_name" ]]; then
+                yaml_snippet+=$'\n'"    grpc-opts:"
+                yaml_snippet+=$'\n'"      grpc-service-name: $(yaml_quote "$service_name")"
+            fi
+            if [[ -n "$alpn" ]]; then
+                local alpn_item
+                local -a alpn_items
+                IFS=',' read -r -a alpn_items <<< "$alpn"
+                yaml_snippet+=$'\n'"    alpn:"
+                for alpn_item in "${alpn_items[@]}"; do
+                    [[ -n "$alpn_item" ]] && yaml_snippet+=$'\n'"      - $(yaml_quote "$alpn_item")"
+                done
+            fi
             if [[ "$security" == "reality" ]]; then
                 [[ -n "$sni" && -n "$pbk" ]] || die "Reality 链接缺少 SNI 或公钥"
                 yaml_snippet+=$'\n'"    tls: true"
@@ -592,7 +625,7 @@ EOF
                 if [[ -n "$sid" ]]; then yaml_snippet+=$'\n'"      short-id: ${q_sid}"; fi
             elif [[ "$security" == "tls" ]]; then
                 yaml_snippet+=$'\n'"    tls: true"
-                yaml_snippet+=$'\n'"    servername: ${q_sni}"
+                if [[ -n "$sni" ]]; then yaml_snippet+=$'\n'"    servername: ${q_sni}"; fi
                 yaml_snippet+=$'\n'"    client-fingerprint: ${q_fp}"
             fi
             ;;

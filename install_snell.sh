@@ -180,15 +180,15 @@ check_system_compatibility() {
     fi
     if [[ "$distro_detected" == false ]]; then error "错误: 未检测到支持的 Linux 发行版。"; return 1; fi
     [[ "$is_quiet" == false ]] && info "系统兼容性检查通过 | 系统: ${OS_ID} | init: ${INIT_SYSTEM}"
-    local required_commands=("awk" "grep" "sed" "curl" "python3" "install" "mktemp" "unzip")
+    local required_commands=("awk" "grep" "sed" "curl" "python3" "install" "mktemp" "unzip" "openssl")
     local missing_commands=()
     for cmd in "${required_commands[@]}"; do command -v "$cmd" >/dev/null 2>&1 || missing_commands+=("$cmd"); done
     if [[ ${#missing_commands[@]} -gt 0 ]]; then
         info "正在安装缺失依赖: ${missing_commands[*]} ..."
         if [[ "$OS_ID" == "alpine" ]]; then
-            apk add --no-cache bash curl python3 unzip coreutils
+            apk add --no-cache bash curl python3 unzip coreutils openssl
         elif command -v apt-get >/dev/null 2>&1; then
-            DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y bash curl python3 unzip coreutils
+            DEBIAN_FRONTEND=noninteractive apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y bash curl python3 unzip coreutils openssl
         else
             error "当前系统不支持自动安装依赖"
             return 1
@@ -698,6 +698,21 @@ print("\n".join(lines))' "$link_name" "$ip" "$target_port" "$psk" "$mode" 2>/dev
 }
 
 # --- 交互向导 ---
+# 为每个监听主机附加同一个端口，裸 IPv6 自动加方括号。
+build_listen_address() {
+    local hosts=$1 port=$2 host result=""
+    local -a host_list
+    IFS=',' read -r -a host_list <<< "$hosts"
+    for host in "${host_list[@]}"; do
+        host="${host#"${host%%[![:space:]]*}"}"
+        host="${host%"${host##*[![:space:]]}"}"
+        if [[ "$host" == *:* && "$host" != \[* ]]; then host="[${host}]"; fi
+        [[ -n "$result" ]] && result+=","
+        result+="${host}:${port}"
+    done
+    printf '%s\n' "$result"
+}
+
 select_psk_and_mode() {
     echo ""
     echo "请选择 Snell v6 加密模式 (mode):"
@@ -740,11 +755,11 @@ install_snell_node() {
     done
 
     echo ""
-    echo -e "${yellow}[!] 监听地址一般用 0.0.0.0 (仅 IPv4)。"
-    echo -e "    需要 IPv4+IPv6 双栈时填 0.0.0.0:端口,[::]:端口 (逗号分隔);"
-    echo -e "    纯 IPv6 机器请填 [::]:端口。${none}"
+    echo -e "${yellow}[!] 请输入监听主机，不要包含端口；一般用 0.0.0.0 (仅 IPv4)。"
+    echo -e "    IPv4+IPv6 双地址可填 0.0.0.0,[::] (逗号分隔);"
+    echo -e "    纯 IPv6 机器请填 [::] 或 ::。${none}"
     local listen_host=""
-    read -p "$(echo -e "监听地址 (默认: ${cyan}0.0.0.0${none}): ")" listen_host
+    read -p "$(echo -e "监听主机 (默认: ${cyan}0.0.0.0${none}): ")" listen_host
     [[ -z "$listen_host" ]] && listen_host="0.0.0.0"
 
     select_psk_and_mode
@@ -764,16 +779,8 @@ install_snell_node() {
     if ! is_valid_dns_pref "$dns_pref"; then error "dns-ip-preference 无效: $dns_pref"; return 1
     fi
 
-    # 组装 listen: 裸 IPv6 自动加方括号; 多地址逐个括号化后拼接
-    local listen="${listen_host}:${port}"
-    if [[ "$listen_host" == *,* ]]; then
-        listen=$(python3 -c '
-import sys
-addrs = sys.argv[1:]
-def bracket(a):
-    return "[%s]" % a if ":" in a and not a.startswith("[") else a
-print(",".join(bracket(a) for a in addrs))' ${listen_host//,/ } "$port")
-    fi
+    local listen
+    listen=$(build_listen_address "$listen_host" "$port")
 
     if ! is_valid_listen_list "$listen"; then
         error "监听地址格式无效: $listen"; return 1
@@ -1059,9 +1066,10 @@ main_menu() {
         printf "  ${cyan}%-2s${none} %-35s\n" "8." "测试连通性"
         printf "  ${red}%-2s${none} %-35s\n" "9." "删除指定节点"
         echo "---------------------------------------------"
-        printf "  ${magenta}%-2s${none} %-35s\n" "0." "设置连接地址 (NAT/DDNS) 并退出"
+        printf "  ${magenta}%-2s${none} %-35s\n" "10." "设置连接地址 (NAT/DDNS)"
+        printf "  ${yellow}%-2s${none} %-35s\n" "0." "退出脚本"
         echo "---------------------------------------------"
-        read -p "请输入选项 [0-9]: " choice
+        read -p "请输入选项 [0-10]: " choice
 
         local needs_pause=true
         case $choice in
@@ -1074,7 +1082,8 @@ main_menu() {
             7) view_node_info "" ;;
             8) test_connectivity ;;
             9) delete_snell_node ;;
-            0) set_connection_address; success "感谢使用！"; exit 0 ;;
+            10) set_connection_address ;;
+            0) success "感谢使用！"; exit 0 ;;
             *) error "无效选项" ;;
         esac
         if [ "$needs_pause" = true ]; then press_any_key_to_continue; fi
@@ -1134,16 +1143,8 @@ install_snell_noninteractive() {
     if ! is_valid_dns_pref "$dns_pref"; then error "dns-ip-preference 无效: $dns_pref" && exit 1; fi
     if is_port_in_use "$port"; then error "端口 $port 已被占用。" && exit 1; fi
 
-    # 组装 listen: 多地址/裸 IPv6 统一括号化
-    local listen="${listen_host}:${port}"
-    if [[ "$listen_host" == *,* ]]; then
-        listen=$(python3 -c '
-import sys
-addrs = sys.argv[1:]
-def bracket(a):
-    return "[%s]" % a if ":" in a and not a.startswith("[") else a
-print(",".join(bracket(a) for a in addrs))' ${listen_host//,/ } "$port")
-    fi
+    local listen
+    listen=$(build_listen_address "$listen_host" "$port")
     if ! is_valid_listen_list "$listen"; then error "监听地址无效: $listen" && exit 1; fi
 
     run_install_node "$port" "$listen" "$psk" "$mode" "$dns_pref" || exit 1

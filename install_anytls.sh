@@ -339,17 +339,37 @@ backup_config() {
     printf '%s\n' "$backup"
 }
 
-backup_config_archive() {
-    [[ -d "$mihomo_config_dir" ]] || return 0
-    local archive
-    archive=$(mktemp "/root/mihomo-config-backup-$(date +%Y%m%d%H%M%S).XXXXXX.tar.gz") || return 1
-    if ! tar -czf "$archive" -C "$(dirname "$mihomo_config_dir")" "$(basename "$mihomo_config_dir")"; then
-        rm -f "$archive"
+backup_config_archive() (
+    local cfg_dir="${1:-$mihomo_config_dir}" state_dir="${2:-/root}" archive tmp file
+    local -a entries=(client-state)
+    umask 077
+    tmp=$(mktemp -d) || return 1
+    trap 'rm -rf -- "$tmp"' EXIT
+    mkdir -p "$tmp/client-state" || return 1
+    if [[ -d "$cfg_dir" ]]; then
+        mkdir -p "$tmp/mihomo" || return 1
+        cp -a "$cfg_dir/." "$tmp/mihomo/" || return 1
+        entries=(mihomo client-state)
+    fi
+    for file in "$state_dir"/mihomo_ss_link_*.txt \
+                "$state_dir"/mihomo_vless_reality_link_*.txt \
+                "$state_dir"/mihomo_reality_pubkey_*.txt \
+                "$state_dir"/mihomo_vless_encryption_link_*.txt \
+                "$state_dir"/mihomo_vless_encryption_client_key_*.txt \
+                "$state_dir"/mihomo_anytls_link_*.txt \
+                "$state_dir"/mihomo_anytls_node_*.json \
+                "$state_dir"/mihomo_anytls_proxies_*.yaml \
+                "$state_dir"/inbound_address.txt; do
+        [[ -f "$file" ]] || continue
+        cp -pL -- "$file" "$tmp/client-state/" || return 1
+    done
+    archive=$(mktemp "${state_dir}/mihomo-config-backup-$(date +%Y%m%d%H%M%S).XXXXXX.tar.gz") || return 1
+    if ! tar -czf "$archive" -C "$tmp" "${entries[@]}" || ! chmod 600 "$archive"; then
+        rm -f -- "$archive"
         return 1
     fi
-    chmod 600 "$archive" || return 1
     printf '%s\n' "$archive"
-}
+)
 
 remove_managed_listener() {
     local prefix=$1 port=$2
@@ -382,9 +402,9 @@ for raw in lines:
 
     stripped = raw.strip()
     indent = len(raw) - len(raw.lstrip())
+    if skip and indent <= skip_indent and re.match(r'^-(?:\s|$)', stripped):
+        skip = False
     if in_listeners and stripped.startswith('- name:'):
-        if skip and indent <= skip_indent:
-            skip = False
         name = scalar(stripped.split(':', 1)[1])
         if not skip and name == target_name:
             skip = True
@@ -541,7 +561,7 @@ YAML
 }
 
 # --- AnyTLS 监听块构建 ---
-# 参数: out_file port tag mode password jls_user jls_password dest sni alpn proxy rate_limit padding_file
+# 参数: out_file port tag mode password jls_user jls_password dest sni alpn proxy rate_limit padding_file cert_path key_path
 # mode: jls | tls
 # 说明: jls 模式禁止同时写 certificate/private-key (内核报
 # "security modes are mutually exclusive: certificate, jls"); tls 模式则必须同时写。
@@ -704,6 +724,89 @@ finally:
 PY
 }
 
+# 修改节点时从原 listener 保留状态文件未记录的证书和填充方案。
+preserve_listener_fields() {
+    local block_file=$1 port=$2 mode=$3
+    python3 - "$mihomo_config_path" "$block_file" "${node_prefix}${port}" "$port" "$mode" <<'PY'
+import json, re, sys
+
+config_path, block_path, target, port, mode = sys.argv[1:]
+
+def scalar(value):
+    value = value.strip()
+    try:
+        return str(json.loads(value))
+    except ValueError:
+        return value.strip("\"'")
+
+with open(config_path, encoding='utf-8') as f:
+    lines = f.readlines()
+
+in_listeners = False
+listener = []
+for raw in lines:
+    if re.match(r'^[^\s#][^:]*:', raw):
+        if listener:
+            break
+        in_listeners = raw.split(':', 1)[0].strip() == 'listeners'
+        continue
+    if not in_listeners:
+        continue
+    stripped = raw.strip()
+    indent = len(raw) - len(raw.lstrip())
+    if listener:
+        if indent <= item_indent and re.match(r'^-(?:\s|$)', stripped):
+            break
+        listener.append(raw)
+    elif stripped.startswith('- name:') and scalar(stripped.split(':', 1)[1]) == target:
+        item_indent = indent
+        listener.append(raw)
+
+if not listener or not any(
+    re.match(r'^port:\s*', line.strip())
+    and scalar(line.strip().split(':', 1)[1].split('#', 1)[0]) == port
+    and len(line) - len(line.lstrip()) == item_indent + 2
+    for line in listener
+):
+    raise SystemExit(1)
+
+fields = {}
+i = 1
+while i < len(listener):
+    raw = listener[i]
+    stripped = raw.strip()
+    indent = len(raw) - len(raw.lstrip())
+    match = re.match(r'^(certificate|private-key|padding-scheme):(?:\s|$)', stripped)
+    if indent != item_indent + 2 or not match:
+        i += 1
+        continue
+    start = i
+    i += 1
+    while i < len(listener):
+        line = listener[i]
+        text = line.strip()
+        if text and not text.startswith('#') and len(line) - len(line.lstrip()) <= indent:
+            break
+        i += 1
+    fields[match.group(1)] = listener[start:i]
+
+if mode != 'tls':
+    fields.pop('certificate', None)
+    fields.pop('private-key', None)
+
+with open(block_path, encoding='utf-8') as f:
+    block = f.readlines()
+with open(block_path, 'w', encoding='utf-8') as f:
+    for line in block:
+        match = re.match(r'^    (certificate|private-key):', line)
+        if not match or match.group(1) not in fields:
+            f.write(line)
+    for field in fields.values():
+        for line in field:
+            f.write('  ' + line[item_indent:])
+PY
+}
+
 node_state_file() {
     printf '/root/mihomo_anytls_node_%s.json' "$1"
 }
@@ -754,6 +857,7 @@ PY
 run_install() {
     local port=$1 mode=$2 password=$3 jls_user=$4 jls_password=$5
     local dest=$6 sni=$7 alpn=$8 proxy=$9 rate_limit=${10} padding_file=${11}
+    local cert_path=${12:-} key_path=${13:-}
 
     if ! install_mihomo_core; then error "Mihomo 核心安装失败！"; return 1; fi
     install_geodata || return 1
@@ -763,7 +867,7 @@ run_install() {
     local block_file; block_file=$(mktemp) || return 1
     if ! build_anytls_block "$block_file" "$port" "$tag" "$mode" "$password" \
         "$jls_user" "$jls_password" "$dest" "$sni" "$alpn" \
-        "$proxy" "$rate_limit" "$padding_file"; then
+        "$proxy" "$rate_limit" "$padding_file" "$cert_path" "$key_path"; then
         rm -f "$block_file"; error "构建 listener 配置失败。"; return 1
     fi
 
@@ -893,6 +997,11 @@ ask_anytls_node() {
         while true; do
             read -p "$(echo -e "私钥 PEM 路径: ")" key_path
             [[ -f "$key_path" ]] && break || error "文件不存在: $key_path"
+        done
+        while true; do
+            read -p "$(echo -e "证书域名 SNI (留空则使用连接地址中的域名): ")" sni
+            [[ -z "$sni" ]] && break
+            if is_valid_domain "$sni"; then break; else error "SNI 必须是域名"; fi
         done
         # mihomo 只读 home 目录内的证书; 先复制进来, 否则 listener 起不来
         local staged
@@ -1087,7 +1196,7 @@ view_subscription_info() {
     local yaml_file=~/mihomo_anytls_proxies_${target_port}.yaml
 
     if [[ "$is_quiet" == true ]]; then
-        echo "${client_yaml}"
+        printf '%s\n' "$client_yaml" >&3 || return 1
         return
     fi
 
@@ -1107,6 +1216,8 @@ view_subscription_info() {
         echo -e "${yellow} JLS dest: ${cyan}$dest${none}"
         [[ -n "$sni" ]] && echo -e "${yellow} SNI: ${cyan}$sni${none}"
         echo -e "${yellow} ALPN: ${cyan}$alpn${none}"
+    elif [[ -n "$sni" ]]; then
+        echo -e "${yellow} SNI: ${cyan}$sni${none}"
     fi
     echo "----------------------------------------------------------------"
     echo -e "${green} 客户端配置 (已保存到 $yaml_file): ${none}"
@@ -1271,12 +1382,15 @@ modify_config() {
 
     local modify_backup
     modify_backup=$(backup_config "bak.modify") || { error "备份配置失败"; return 1; }
-    remove_managed_listener "$node_prefix" "$target_p" || { error "删除旧节点失败"; return 1; }
 
-    local block_file; block_file=$(mktemp) || { cp "$modify_backup" "$mihomo_config_path"; return 1; }
+    local block_file; block_file=$(mktemp) || return 1
     if ! build_anytls_block "$block_file" "$target_p" "${node_prefix}${target_p}" "$mode" "$password" \
-        "$jls_user" "$jls_password" "$dest" "$sni" "$alpn" "$proxy" "$rate_limit" "" "" ""; then
-        rm -f "$block_file"; cp "$modify_backup" "$mihomo_config_path"; error "重建配置失败，已恢复。"; return 1
+        "$jls_user" "$jls_password" "$dest" "$sni" "$alpn" "$proxy" "$rate_limit" "" "" "" \
+        || ! preserve_listener_fields "$block_file" "$target_p" "$mode"; then
+        rm -f "$block_file"; error "重建配置失败，原配置未修改。"; return 1
+    fi
+    if ! remove_managed_listener "$node_prefix" "$target_p"; then
+        rm -f "$block_file"; error "删除旧节点失败"; return 1
     fi
     if ! append_listener_block "$block_file" || ! validate_mihomo_config || ! service_restart; then
         rm -f "$block_file"
@@ -1315,6 +1429,46 @@ restart_mihomo() {
     success "Mihomo 服务已成功重启！"
 }
 
+remove_geo_updater() {
+    local cron_file filtered_file cmp_status
+    if ! command -v crontab >/dev/null 2>&1; then
+        error "未找到 crontab；Geo 定时任务未清理，更新脚本已保留，请手动检查。"
+        return 1
+    fi
+    cron_file=$(mktemp) || { error "无法创建临时文件；Geo 更新脚本已保留。"; return 1; }
+    filtered_file=$(mktemp) || { rm -f "$cron_file"; error "无法创建临时文件；Geo 更新脚本已保留。"; return 1; }
+    if ! crontab -l > "$cron_file" 2>/dev/null; then
+        rm -f "$cron_file" "$filtered_file"
+        error "无法读取 root 的 crontab；Geo 定时任务未清理，更新脚本已保留，请手动检查。"
+        return 1
+    fi
+    # 仅匹配直接执行该绝对路径的任务，保留注释、环境变量和其他命令。
+    if ! awk '
+        ($1 ~ /^[0-9*]/ && $6 ~ /^\/root\/update_geo[.]sh($|[<>])/) ||
+        ($1 ~ /^@(reboot|yearly|annually|monthly|weekly|daily|midnight|hourly)$/ && $2 ~ /^\/root\/update_geo[.]sh($|[<>])/) { next }
+        { print }
+    ' "$cron_file" > "$filtered_file"; then
+        rm -f "$cron_file" "$filtered_file"
+        error "无法筛选 root 的 crontab；Geo 更新脚本已保留，请手动检查。"
+        return 1
+    fi
+    if cmp -s "$cron_file" "$filtered_file"; then
+        :
+    else
+        cmp_status=$?
+        if [[ $cmp_status -ne 1 ]] || ! crontab "$filtered_file"; then
+            rm -f "$cron_file" "$filtered_file"
+            error "无法比较或更新 root 的 crontab；Geo 更新脚本已保留，请手动检查。"
+            return 1
+        fi
+    fi
+    rm -f "$cron_file" "$filtered_file"
+    if ! rm -f -- /root/update_geo.sh; then
+        error "无法删除 Geo 更新脚本 /root/update_geo.sh，请手动检查。"
+        return 1
+    fi
+}
+
 uninstall_mihomo() {
     if [[ ! -f "$mihomo_binary_path" ]]; then error "Mihomo 未安装" && return; fi
     read -p "确定卸载 Mihomo 吗？配置会先自动备份。[y/N]: " confirm
@@ -1335,6 +1489,7 @@ uninstall_mihomo() {
     rm -f "$mihomo_binary_path"
     rm -rf "$mihomo_config_dir"
     rm -f ~/mihomo_anytls_link_*.txt ~/mihomo_anytls_proxies_*.yaml /root/mihomo_anytls_node_*.json
+    remove_geo_updater || true
     success "Mihomo 已成功卸载；配置备份: $config_archive"
 }
 
@@ -1397,6 +1552,20 @@ main_menu() {
 }
 
 main() {
+    if [[ ${1:-} == "install" ]]; then
+        local arg skip_value=false
+        for arg in "${@:2}"; do
+            if [[ "$skip_value" == true ]]; then skip_value=false; continue; fi
+            case "$arg" in
+                --port|--mode|--password|--dest|--sni|--alpn|--proxy|--rate-limit|--padding-file|--jls-user|--jls-password|--cert|--key)
+                    skip_value=true ;;
+                --quiet|-q)
+                    is_quiet=true
+                    exec 3>&1 1>&2
+                    break ;;
+            esac
+        done
+    fi
     pre_check
     if [[ $# -gt 0 && "$1" == "install" ]]; then
         shift
@@ -1461,7 +1630,7 @@ main() {
             ANYTLS_KEY=$(stage_certificate "$key_path" "key" "$port") || exit 1
         fi
         run_install "$port" "$mode" "$password" "$jls_user" "$jls_password" \
-            "$dest" "$sni" "$alpn" "$proxy" "$rate_limit" "$padding_file"
+            "$dest" "$sni" "$alpn" "$proxy" "$rate_limit" "$padding_file" "$ANYTLS_CERT" "$ANYTLS_KEY"
     else
         main_menu
     fi

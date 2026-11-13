@@ -1,7 +1,7 @@
 #!/bin/bash
 # ==============================================================================
 # Caesar 蜜汁 Mihomo 配置还原工具
-# 功能：从 URL 下载或手动粘贴 config.yaml，并提供测试功能
+# 功能：从 URL、手动粘贴或本地备份归档还原，并提供测试功能
 # ==============================================================================
 
 # --- 全局设置 ---
@@ -16,6 +16,7 @@ PLAIN='\033[0m'
 SCRIPT_PATH="/usr/bin/mihomo-restore"
 CONFIG_DIR="/usr/local/etc/mihomo"
 CONFIG_FILE="${CONFIG_DIR}/config.yaml"
+CLIENT_STATE_DIR="/root"
 MIHOMO_BIN="/usr/local/bin/mihomo"
 
 # --- Github 更新地址 ---
@@ -30,7 +31,7 @@ info() { echo -e "${GREEN}[INFO] $*${PLAIN}"; }
 warn() { echo -e "${YELLOW}[WARN] $*${PLAIN}"; }
 
 validate_config_file() {
-    local candidate="$1"
+    local candidate="$1" config_dir="${2:-$CONFIG_DIR}"
     if [[ ! -s "$candidate" ]]; then
         warn "配置文件为空。"
         return 1
@@ -40,7 +41,7 @@ validate_config_file() {
         return 1
     fi
     if [[ -x "$MIHOMO_BIN" ]]; then
-        if ! "$MIHOMO_BIN" -t -d "$CONFIG_DIR" -f "$candidate"; then
+        if ! "$MIHOMO_BIN" -t -d "$config_dir" -f "$candidate"; then
             warn "Mihomo 配置测试失败，拒绝覆盖正式配置。"
             return 1
         fi
@@ -228,6 +229,138 @@ update_script() {
     fi
 }
 
+# 与统一卸载脚本使用相同的归档布局。
+backup_mihomo_archive() (
+    local cfg_dir="$1" state_dir="$2" archive="$3" tmp file
+    local -a entries=(client-state)
+    umask 077
+    tmp=$(mktemp -d) || return 1
+    trap 'rm -rf -- "$tmp"' EXIT
+    mkdir -p "$tmp/client-state" || return 1
+    if [[ -d "$cfg_dir" ]]; then
+        mkdir -p "$tmp/mihomo" || return 1
+        cp -a "$cfg_dir/." "$tmp/mihomo/" || return 1
+        entries=(mihomo client-state)
+    fi
+    for file in "$state_dir"/mihomo_ss_link_*.txt \
+                "$state_dir"/mihomo_vless_reality_link_*.txt \
+                "$state_dir"/mihomo_reality_pubkey_*.txt \
+                "$state_dir"/mihomo_vless_encryption_link_*.txt \
+                "$state_dir"/mihomo_vless_encryption_client_key_*.txt \
+                "$state_dir"/mihomo_anytls_link_*.txt \
+                "$state_dir"/mihomo_anytls_node_*.json \
+                "$state_dir"/mihomo_anytls_proxies_*.yaml \
+                "$state_dir"/inbound_address.txt; do
+        [[ -f "$file" ]] || continue
+        cp -pL -- "$file" "$tmp/client-state/" || return 1
+    done
+    if ! tar -czf "$archive" -C "$tmp" "${entries[@]}" || ! chmod 600 "$archive"; then
+        rm -f -- "$archive"
+        return 1
+    fi
+)
+
+# --- 功能 5: 从本地归档还原 ---
+restore_archive() (
+    local archive="$1" tmp member backup previous="" file target failed=false
+    [[ -f "$archive" ]] || { warn "归档文件不存在：$archive"; return 1; }
+    umask 077
+    tmp=$(mktemp -d) || { warn "无法创建临时目录。"; return 1; }
+    trap 'rm -rf -- "$tmp"' EXIT
+    if ! tar -tzf "$archive" > "$tmp/list"; then
+        warn "无法读取 tar.gz 归档。"
+        return 1
+    fi
+    while IFS= read -r member; do
+        case "$member" in
+            /*|../*|*/../*|*/..) warn "归档包含不安全的路径：$member"; return 1 ;;
+        esac
+    done < "$tmp/list"
+    if ! tar -xzf "$archive" -C "$tmp" || [[ ! -d "$tmp/mihomo" || -L "$tmp/mihomo" ]]; then
+        warn "归档解压失败，或不包含 mihomo/ 目录。"
+        return 1
+    fi
+    if [[ ! -s "$tmp/mihomo/config.yaml" ]] || ! grep -qE '^(mode:|listeners:|rules:|proxies:|log-level:)' "$tmp/mihomo/config.yaml"; then
+        warn "归档中的 config.yaml 为空或不具备常见的 Mihomo 顶级配置项。"
+        return 1
+    fi
+    if [[ -e "$tmp/client-state" && ( ! -d "$tmp/client-state" || -L "$tmp/client-state" ) ]]; then
+        warn "归档中的 client-state 不是普通目录。"
+        return 1
+    fi
+
+    backup=$(mktemp "${CLIENT_STATE_DIR}/mihomo-restore-before-$(date +%Y%m%d-%H%M%S).XXXXXX.tar.gz") || return 1
+    if ! backup_mihomo_archive "$CONFIG_DIR" "$CLIENT_STATE_DIR" "$backup"; then
+        rm -f -- "$backup"
+        warn "备份现有配置和客户端状态失败，未执行恢复。"
+        return 1
+    fi
+    info "现有配置及客户端状态已备份：$backup"
+
+    if [[ -d "$CONFIG_DIR" ]]; then
+        previous=$(mktemp -d "${CONFIG_DIR}.previous.XXXXXX") || return 1
+        rmdir "$previous" || return 1
+        if ! mv -- "$CONFIG_DIR" "$previous"; then
+            warn "无法暂存现有配置，未执行恢复。"
+            return 1
+        fi
+    fi
+    if ! cp -a "$tmp/mihomo" "$CONFIG_DIR" || ! validate_config_file "$CONFIG_FILE"; then
+        rm -rf -- "$CONFIG_DIR"
+        if [[ -n "$previous" ]] && ! mv -- "$previous" "$CONFIG_DIR"; then
+            warn "原配置自动还原失败，请从 $backup 或 $previous 恢复。"
+        else
+            warn "归档配置安装或校验失败，已恢复原配置。"
+        fi
+        return 1
+    fi
+    [[ -n "$previous" ]] && rm -rf -- "$previous"
+
+    if [[ -d "$tmp/client-state" ]]; then
+        for file in "$tmp/client-state"/mihomo_ss_link_*.txt \
+                    "$tmp/client-state"/mihomo_vless_reality_link_*.txt \
+                    "$tmp/client-state"/mihomo_reality_pubkey_*.txt \
+                    "$tmp/client-state"/mihomo_vless_encryption_link_*.txt \
+                    "$tmp/client-state"/mihomo_vless_encryption_client_key_*.txt \
+                    "$tmp/client-state"/mihomo_anytls_link_*.txt \
+                    "$tmp/client-state"/mihomo_anytls_node_*.json \
+                    "$tmp/client-state"/mihomo_anytls_proxies_*.yaml \
+                    "$tmp/client-state"/inbound_address.txt; do
+            [[ -e "$file" || -L "$file" ]] || continue
+            target="$CLIENT_STATE_DIR/${file##*/}"
+            # 地址由 Realm/Snell 共用，迁移到另一台机器时优先保留现有设置。
+            if [[ "${file##*/}" == "inbound_address.txt" && -e "$target" ]]; then
+                info "保留当前连接地址：$target"
+                continue
+            fi
+            if [[ ! -f "$file" || -L "$file" ]] || ! install -m 0600 -- "$file" "$target"; then
+                warn "客户端状态恢复失败：${file##*/}"
+                failed=true
+            fi
+        done
+    else
+        info "这是不含客户端状态的旧备份，现有客户端状态保持不变。"
+    fi
+    if $failed; then
+        warn "配置已恢复，部分客户端状态未恢复；原有状态备份在 $backup。"
+        return 1
+    fi
+    info "归档恢复完成。请按需手动重启 Mihomo（systemctl restart mihomo 或 rc-service mihomo restart）。"
+)
+
+restore_from_archive() {
+    local archive
+    echo "================ 从本地备份归档还原 ================"
+    read -r -p "请输入本地 .tar.gz 路径: " archive
+    if [[ -z "$archive" ]]; then
+        warn "路径不能为空。"
+        return
+    fi
+    restore_archive "$archive" || true
+    echo
+    read -n 1 -s -r -p "按任意键返回主菜单..." || true
+}
+
 # --- 主菜单 ---
 show_menu() {
     clear
@@ -238,16 +371,18 @@ show_menu() {
     echo -e "  ${GREEN}2.${PLAIN} 手动粘贴 config.yaml (Nano)"
     echo -e "  ${YELLOW}3.${PLAIN} 试运行测试配置文件 (Debug)"
     echo -e "  ${CYAN}4.${PLAIN} 更新此还原脚本"
+    echo -e "  ${GREEN}5.${PLAIN} 从本地 .tar.gz 备份还原"
     echo -e "  ${RED}0.${PLAIN} 退出脚本"
     echo -e "${CYAN}=================================================${PLAIN}"
     
-    read -rp " 请输入选项 [0-4]: " choice
+    read -rp " 请输入选项 [0-5]: " choice
     
     case "$choice" in
         1) restore_from_url ;;
         2) restore_manual ;;
         3) test_config ;;
         4) update_script ;;
+        5) restore_from_archive ;;
         0) echo -e "${GREEN}感谢使用本脚本，再见！${PLAIN}"; exit 0 ;;
         *) echo -e "${RED}无效输入，请重新选择。${PLAIN}"; sleep 1 ;;
     esac

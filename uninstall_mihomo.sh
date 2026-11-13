@@ -7,6 +7,10 @@ PURGE=false
 ASSUME_YES=false
 CONFIG_REMOVED=false
 CONFIG_BACKUP=""
+REMOVE_CLIENT_STATE=false
+CONFIG_DIR="/usr/local/etc/mihomo"
+CLIENT_STATE_DIR="/root"
+GEO_UPDATER="/root/update_geo.sh"
 
 die()  { echo -e "\e[31m[ERROR]\e[0m $*" >&2; exit 1; }
 info() { echo -e "\e[32m[INFO]\e[0m $*"; }
@@ -123,30 +127,66 @@ remove_openrc_files() {
   [[ -f /run/mihomo.pid ]] && rm -f /run/mihomo.pid || true
 }
 
-backup_and_remove_config() {
-  local cfg_dir="/usr/local/etc/mihomo"
+# 归档布局也可供各协议安装器的卸载备份复用。
+# 参数：配置目录、客户端状态目录、归档路径。失败时调用方不得删除原文件。
+backup_mihomo_archive() (
+  local cfg_dir="$1" state_dir="$2" archive="$3" tmp file
+  local -a entries=(client-state)
+  umask 077
+  tmp=$(mktemp -d) || return 1
+  trap 'rm -rf -- "$tmp"' EXIT
+  mkdir -p "$tmp/client-state" || return 1
   if [[ -d "$cfg_dir" ]]; then
-    local ts backup
-    ts="$(date +%Y%m%d-%H%M%S)"
-    backup="/root/mihomo-config-backup-${ts}-$$.tar.gz"
-    info "备份配置目录到 $backup"
-    if ! tar -czf "$backup" -C "$(dirname "$cfg_dir")" "$(basename "$cfg_dir")"; then
-      warn "配置备份失败，出于安全考虑不会删除 $cfg_dir"
-      rm -f "$backup" 2>/dev/null || true
-      return 1
-    fi
-    chmod 600 "$backup" || { warn "无法收紧备份文件权限，配置目录不会删除。"; return 1; }
-    info "删除配置目录 $cfg_dir"
-    if ! rm -rf "$cfg_dir"; then
-      warn "配置目录删除失败：$cfg_dir"
+    mkdir -p "$tmp/mihomo" || return 1
+    cp -a "$cfg_dir/." "$tmp/mihomo/" || return 1
+    entries=(mihomo client-state)
+  fi
+  for file in "$state_dir"/mihomo_ss_link_*.txt \
+              "$state_dir"/mihomo_vless_reality_link_*.txt \
+              "$state_dir"/mihomo_reality_pubkey_*.txt \
+              "$state_dir"/mihomo_vless_encryption_link_*.txt \
+              "$state_dir"/mihomo_vless_encryption_client_key_*.txt \
+              "$state_dir"/mihomo_anytls_link_*.txt \
+              "$state_dir"/mihomo_anytls_node_*.json \
+              "$state_dir"/mihomo_anytls_proxies_*.yaml \
+              "$state_dir"/inbound_address.txt; do
+    [[ -f "$file" ]] || continue
+    cp -pL -- "$file" "$tmp/client-state/" || return 1
+  done
+  if ! tar -czf "$archive" -C "$tmp" "${entries[@]}" || ! chmod 600 "$archive"; then
+    rm -f -- "$archive"
+    return 1
+  fi
+)
+
+backup_config() {
+  local backup
+  backup=$(mktemp "${CLIENT_STATE_DIR}/mihomo-config-backup-$(date +%Y%m%d-%H%M%S).XXXXXX.tar.gz") || {
+    warn "无法创建备份文件，配置和客户端状态将保留。"
+    return 1
+  }
+  info "备份配置及客户端状态到 $backup"
+  if ! backup_mihomo_archive "$CONFIG_DIR" "$CLIENT_STATE_DIR" "$backup"; then
+    rm -f -- "$backup"
+    warn "备份失败，配置和客户端状态将保留。"
+    return 1
+  fi
+  CONFIG_BACKUP="$backup"
+  echo -e "\e[34m[NOTE]\e[0m 备份已保存：$backup"
+}
+
+remove_config() {
+  if [[ -d "$CONFIG_DIR" ]]; then
+    info "删除配置目录 $CONFIG_DIR"
+    if ! rm -rf -- "$CONFIG_DIR"; then
+      warn "配置目录删除失败，客户端状态将保留：$CONFIG_DIR"
       return 1
     fi
     CONFIG_REMOVED=true
-    CONFIG_BACKUP="$backup"
-    echo -e "\e[34m[NOTE]\e[0m 备份已保存：$backup"
   else
-    warn "未找到配置目录：$cfg_dir"
+    warn "未找到配置目录：$CONFIG_DIR"
   fi
+  REMOVE_CLIENT_STATE=true
 }
 
 remove_binary_and_misc() {
@@ -162,15 +202,54 @@ remove_binary_and_misc() {
   done
   [[ -d /var/log/mihomo ]] && { info "删除日志目录 /var/log/mihomo"; rm -rf /var/log/mihomo || true; }
 
-  # 清理脚本生成的各种链接文件
-  rm -f /root/mihomo_ss_link_*.txt 2>/dev/null || true
-  rm -f /root/mihomo_vless_reality_link_*.txt 2>/dev/null || true
-  rm -f /root/mihomo_vless_encryption_link_*.txt 2>/dev/null || true
-  rm -f /root/mihomo_anytls_link_*.txt 2>/dev/null || true
-  rm -f /root/mihomo_anytls_proxies_*.yaml 2>/dev/null || true
-  rm -f /root/mihomo_anytls_node_*.json 2>/dev/null || true
-  rm -f /root/mihomo_reality_pubkey_*.txt 2>/dev/null || true
-  rm -f /root/inbound_address.txt 2>/dev/null || true
+  # 只有备份成功后才清理这些客户端文件；共享地址始终保留。
+  if $REMOVE_CLIENT_STATE; then
+    rm -f "$CLIENT_STATE_DIR"/mihomo_ss_link_*.txt \
+      "$CLIENT_STATE_DIR"/mihomo_vless_reality_link_*.txt \
+      "$CLIENT_STATE_DIR"/mihomo_reality_pubkey_*.txt \
+      "$CLIENT_STATE_DIR"/mihomo_vless_encryption_link_*.txt \
+      "$CLIENT_STATE_DIR"/mihomo_vless_encryption_client_key_*.txt \
+      "$CLIENT_STATE_DIR"/mihomo_anytls_link_*.txt \
+      "$CLIENT_STATE_DIR"/mihomo_anytls_proxies_*.yaml \
+      "$CLIENT_STATE_DIR"/mihomo_anytls_node_*.json 2>/dev/null || true
+  fi
+}
+
+remove_geo_updater() {
+  local cron_file filtered_file
+  if command -v crontab >/dev/null 2>&1; then
+    cron_file=$(mktemp) || { warn "无法创建临时文件，Geo 定时任务未清理。"; return 1; }
+    filtered_file=$(mktemp) || { rm -f "$cron_file"; warn "无法创建临时文件，Geo 定时任务未清理。"; return 1; }
+    if crontab -l > "$cron_file" 2>/dev/null; then
+      # 匹配项目写入的绝对路径，不影响其他 update_geo.sh 或注释行。
+      if ! awk '$0 !~ /^[[:space:]]*#/ && $0 ~ /(^|[[:space:]])\/root\/update_geo[.]sh([[:space:]]|$)/ { next } { print }' \
+        "$cron_file" > "$filtered_file"; then
+        rm -f "$cron_file" "$filtered_file"
+        warn "无法筛选 crontab，Geo 定时任务未清理。"
+        return 1
+      fi
+      if ! cmp -s "$cron_file" "$filtered_file"; then
+        if ! crontab "$filtered_file"; then
+          rm -f "$cron_file" "$filtered_file"
+          warn "无法更新 crontab，Geo 更新脚本已保留。"
+          return 1
+        fi
+        info "已移除 Mihomo Geo 更新的 crontab 行。"
+      fi
+    else
+      rm -f "$cron_file" "$filtered_file"
+      warn "未能读取 crontab；Geo 更新脚本已保留，请手动检查定时任务。"
+      return 1
+    fi
+    rm -f "$cron_file" "$filtered_file"
+  else
+    warn "未找到 crontab 命令；如存在 Geo 定时任务，请手动检查。"
+    return 1
+  fi
+  if [[ -e "$GEO_UPDATER" ]]; then
+    rm -f -- "$GEO_UPDATER" || { warn "无法删除 Geo 更新脚本：$GEO_UPDATER"; return 1; }
+    info "已删除 Geo 更新脚本：$GEO_UPDATER"
+  fi
 }
 
 remove_user_group_if_purge() {
@@ -197,12 +276,14 @@ summary() {
   echo "====== 卸载完成 ======"
   echo "已停止并移除 systemd/OpenRC 服务，并删除 Mihomo 二进制。"
   if $CONFIG_REMOVED; then
-    echo "配置已删除，备份保存在：$CONFIG_BACKUP"
-  elif [[ -d /usr/local/etc/mihomo ]]; then
-    echo "配置仍保留在 /usr/local/etc/mihomo（备份或删除未成功）。"
+    echo "配置已删除。"
+  elif [[ -d "$CONFIG_DIR" ]]; then
+    echo "配置仍保留在 $CONFIG_DIR（备份或删除未成功）。"
   else
     echo "未发现 Mihomo 配置目录。"
   fi
+  [[ -n "$CONFIG_BACKUP" ]] && echo "配置及客户端状态备份：$CONFIG_BACKUP"
+  echo "共享地址文件 /root/inbound_address.txt 已保留。"
   if $PURGE; then
     echo "已尝试删除 mihomo 用户与组。"
   else
@@ -220,13 +301,15 @@ main() {
   require_root
   confirm_uninstall
   detect_os
+  backup_config || die "备份失败，已取消卸载。"
 
   stop_disable_systemd_units
   remove_systemd_files
   stop_disable_openrc
   remove_openrc_files
-  backup_and_remove_config || true
+  remove_config || true
   remove_binary_and_misc
+  remove_geo_updater || true
   remove_user_group_if_purge
   has_systemd && systemctl daemon-reload || true
 
