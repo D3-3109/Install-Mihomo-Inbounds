@@ -32,10 +32,11 @@ curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/m
 mihomo-manager
 ```
 
-在 `mihomo-manager` 菜单中可以调用主要功能，无需再单独下载脚本。Snell 和 DNAT 转发可单独运行：
+在 `mihomo-manager` 菜单中可以调用主要功能，无需再单独下载脚本。Snell 和 DNAT 转发可单独运行。Snell v6 如果被机房防火墙阻断，改用 v4/v5 脚本；两套可以同时安装，互不覆盖：
 
 ```bash
 curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/install_snell.sh -o install_snell.sh && chmod +x install_snell.sh && sudo ./install_snell.sh
+curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/install_snell_legacy.sh -o install_snell_legacy.sh && chmod +x install_snell_legacy.sh && sudo ./install_snell_legacy.sh
 curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/install_dnat.sh -o install_dnat.sh && chmod +x install_dnat.sh && sudo ./install_dnat.sh
 ```
 
@@ -72,6 +73,35 @@ curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/i
 > **内核要求**: JLS 支持随 mihomo **v1.19.29** 引入（`feat: support jls for anytls outbound and listener`）。脚本会检查版本，低版本直接拒绝安装，而不是写出一份静默失效的配置。
 >
 > **注意**: AnyTLS 的 URI 格式只定义了 `sni` 与 `insecure` 两个参数，无法表达 JLS 凭据，因此脚本输出的是一段 **`proxies:` 片段**而不是分享链接；客户端需手工导入，且必须是 mihomo >= 1.19.29（Clash Party / FlClash 表单已支持 `jls-opts`）。
+
+### Snell v4/v5 服务端 (与 v6 共存)
+
+`install_snell.sh` 安装的是 Snell **v6**。部分机房会按 v6 的流量特征拦截，这时用 `install_snell_legacy.sh` 安装官方 **v4.1.1 / v5.0.1**（交互时默认 v5）。两套脚本的二进制、配置目录和服务名都分开，可以同时跑，卸载也只删自己的文件。
+
+| | v6 `install_snell.sh` | v4/v5 `install_snell_legacy.sh` |
+|---|---|---|
+| 二进制 | `/usr/local/bin/snell-server` | `/usr/local/bin/snell-server-legacy` |
+| 配置 | `/usr/local/etc/snell/` | `/usr/local/etc/snell-legacy/` |
+| systemd | `snell@<port>` | `snell-legacy@<port>` |
+| OpenRC | `/etc/init.d/snell.<port>` | `/etc/init.d/snell-legacy.<port>` |
+
+```bash
+curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/install_snell_legacy.sh -o install_snell_legacy.sh && chmod +x install_snell_legacy.sh && sudo ./install_snell_legacy.sh
+```
+
+非交互安装（默认协议 v5，默认端口 6160；若 6160 已被 v6 占用会直接拒绝）：
+
+```bash
+sudo ./install_snell_legacy.sh install --protocol 5 --port 6161
+```
+
+> **版本**: 官方下载没有 `latest` 短链。脚本钉住知识库里的最新构建：v4 为 `v4.1.1`，v5 为 `v5.0.1`（<https://kb.nssurge.com/surge-knowledge-base/release-notes/snell>，包地址形如 `https://dl.nssurge.com/snell/snell-server-v5.0.1-linux-amd64.zip`）。
+>
+> **配置**: v4/v5 的 `listen` 只能写一个地址。`obfs` 只有在选择 `http` 时才会写入（v4.1.1 和 v5.0.1 都只会真正启用 `http`）。`dns` 从 v4.1.0 起可用，必须是 IP。`egress-interface` 只有 v5 会写。不会写入 v6 才有的 `mode` / `dns-ip-preference`。日志等级默认 `warning`，可在安装或修改时调整。
+>
+> **客户端**: 安装完成后同时给出 Surge 行（`snell, ..., version=4` 或 `version=5`）和 Mihomo YAML。v5 会在同一端口监听 UDP 做 QUIC Proxy，防火墙需要放行 UDP；不需要 QUIC 时，客户端可以继续用 `version=4`，v5 服务端向下兼容。
+>
+> **卸载**: 菜单第 4 项只删除 legacy 自己的文件，不会动 v6，也不会删共用的 `/root/inbound_address.txt`。`uninstall_mihomo.sh` 同样不会碰这两套 Snell。
 
 ### 5. Realm 端口转发 (独立服务)
 安装 [realm](https://github.com/zhboner/realm) 做纯 TCP/UDP 端口转发，与 Mihomo **并行运行**：独立的二进制（`/usr/local/bin/realm`）、配置目录（`/usr/local/etc/realm/`）和 systemd/OpenRC 服务单元，互不干扰。典型场景是把中转机的端口转发到落地机的 Mihomo 节点端口。
@@ -131,6 +161,8 @@ sudo ./mihomo_cli.sh address   my.ddns.net     # 设置 NAT/DDNS 连接地址，
 | `install_vless_reality.sh` | `install_vless_reality.sh` | VLESS-Reality 节点管理 |
 | `install_ss2022.sh` | `install_ss2022.sh` | Shadowsocks 2022 节点管理 |
 | `——` | `install_anytls.sh` | AnyTLS (JLS 握手伪装) 节点管理 |
+| `——` | `install_snell.sh` | Snell v6 服务端 (独立服务) |
+| `——` | `install_snell_legacy.sh` | Snell v4/v5 服务端 (与 v6 共存) |
 | `——` | `install_realm.sh` | Realm 端口转发 (独立服务) |
 | `xray_manager.sh` | `mihomo_manager.sh` | 统一管理菜单 |
 | `xray_routing.sh` | `mihomo_routing.sh` | 服务端分流配置 |

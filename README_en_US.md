@@ -33,7 +33,13 @@ After the unified management tool is installed, it will automatically register a
 mihomo-manager
 ```
 
-Within the `mihomo-manager` menu, you can invoke the main features without downloading each script individually. Snell and DNAT forwarding can also be run separately using `install_snell.sh` and `install_dnat.sh`.
+Within the `mihomo-manager` menu, you can invoke the main features without downloading each script individually. Snell and DNAT forwarding can also be run separately. If a datacenter firewall blocks Snell v6, use the v4/v5 script; the two installs can run side by side.
+
+```bash
+curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/install_snell.sh -o install_snell.sh && chmod +x install_snell.sh && sudo ./install_snell.sh
+curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/install_snell_legacy.sh -o install_snell_legacy.sh && chmod +x install_snell_legacy.sh && sudo ./install_snell_legacy.sh
+curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/install_dnat.sh -o install_dnat.sh && chmod +x install_dnat.sh && sudo ./install_dnat.sh
+```
 
 -----
 
@@ -76,6 +82,35 @@ curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/i
 > **Core requirement**: JLS support landed in mihomo **v1.19.29** (`feat: support jls for anytls outbound and listener`). The script checks the version and refuses to install on older cores rather than writing a config that silently fails.
 >
 > **Note**: The AnyTLS URI scheme defines only `sni` and `insecure`, so it cannot carry JLS credentials. The script therefore prints a **`proxies:` snippet** instead of a share link; import it manually on a client that runs mihomo >= 1.19.29 (Clash Party and FlClash already expose `jls-opts` in their forms).
+
+### Snell v4/v5 Server (coexists with v6)
+
+`install_snell.sh` installs Snell **v6**. Some datacenter firewalls block that traffic shape. `install_snell_legacy.sh` installs the official **v4.1.1 / v5.0.1** builds instead (v5 is the default). The binary, config directory, and service name are all separate, so both stacks can run on one machine, and uninstalling one does not touch the other.
+
+| | v6 `install_snell.sh` | v4/v5 `install_snell_legacy.sh` |
+|---|---|---|
+| Binary | `/usr/local/bin/snell-server` | `/usr/local/bin/snell-server-legacy` |
+| Config | `/usr/local/etc/snell/` | `/usr/local/etc/snell-legacy/` |
+| systemd | `snell@<port>` | `snell-legacy@<port>` |
+| OpenRC | `/etc/init.d/snell.<port>` | `/etc/init.d/snell-legacy.<port>` |
+
+```bash
+curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/install_snell_legacy.sh -o install_snell_legacy.sh && chmod +x install_snell_legacy.sh && sudo ./install_snell_legacy.sh
+```
+
+Non-interactive install (protocol defaults to v5, port defaults to 6160; the script refuses the port when v6 already owns it):
+
+```bash
+sudo ./install_snell_legacy.sh install --protocol 5 --port 6161
+```
+
+> **Versions**: There is no `latest` shortcut. The script pins the newest builds listed in the [Snell release notes](https://kb.nssurge.com/surge-knowledge-base/release-notes/snell): `v4.1.1` and `v5.0.1`. Archives look like `https://dl.nssurge.com/snell/snell-server-v5.0.1-linux-amd64.zip`.
+>
+> **Config**: v4/v5 accept a single `listen` address. `obfs` is written only when set to `http` (that is the only value v4.1.1 and v5.0.1 actually enable). `dns` has been supported since v4.1.0 and must be a list of IPs. `egress-interface` is written only for v5. v6-only keys (`mode`, `dns-ip-preference`) are never written. The log level defaults to `warning`.
+>
+> **Clients**: After install the script prints a Surge proxy line (`snell, ..., version=4` or `version=5`) and a Mihomo YAML snippet. v5 also binds UDP on the same port for QUIC Proxy, so the firewall has to allow UDP. A client can stay on `version=4`; a v5 server still accepts v4 clients.
+>
+> **Uninstall**: Menu item 4 removes only this stack. It does not touch v6, and it does not remove the shared `/root/inbound_address.txt`. `uninstall_mihomo.sh` leaves both Snell stacks alone.
 
 ### 5\. Realm Port Forwarding (standalone service)
 
@@ -127,6 +162,8 @@ curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/u
 | `install_vless_reality.sh` | `install_vless_reality.sh` | VLESS-Reality Node Mgmt |
 | `install_ss2022.sh` | `install_ss2022.sh` | Shadowsocks 2022 Node Mgmt |
 | `——` | `install_anytls.sh` | AnyTLS (JLS) Node Mgmt |
+| `——` | `install_snell.sh` | Snell v6 Server |
+| `——` | `install_snell_legacy.sh` | Snell v4/v5 Server (coexists with v6) |
 | `——` | `install_realm.sh` | Realm Port Forwarding |
 | `xray_manager.sh` | `mihomo_manager.sh` | Unified Management Menu |
 | `xray_routing.sh` | `mihomo_routing.sh` | Server Routing Config |
