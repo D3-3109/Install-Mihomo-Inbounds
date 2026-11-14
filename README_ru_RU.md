@@ -77,6 +77,27 @@ curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/i
 >
 > **Примечание**: URI-схема AnyTLS определяет только `sni` и `insecure`, поэтому не может передать данные JLS. Скрипт выводит **фрагмент `proxies:`**, а не ссылку для общего доступа; импортируйте его вручную в клиент с mihomo >= 1.19.29 (в формах Clash Party и FlClash есть `jls-opts`).
 
+### Остальные listener Mihomo
+
+Скрипты ниже дописывают listener в тот же `config.yaml`, что и VLESS / SS / AnyTLS. У каждого есть меню и неинтерактивный режим `install`. Отдельных скриптов для `redir`, `tproxy` и `tun` нет: это локальный прозрачный прокси. Snell по-прежнему ставится официальным `snell-server`.
+
+| Скрипт | listener | Порт по умолчанию |
+|---|---|---|
+| `install_http.sh` | `http` | 8080 |
+| `install_socks.sh` | `socks` | 1080 |
+| `install_mixed.sh` | `mixed` | 10810 |
+| `install_tunnel.sh` | `tunnel` | 10816 |
+| `install_vmess.sh` | `vmess` | 16823 |
+| `install_trojan.sh` | `trojan` | 443 |
+| `install_hysteria2.sh` | `hysteria2` | 443/UDP |
+| `install_shadowquic.sh` | `shadowquic` | 443/UDP |
+| `install_mieru.sh` | `mieru` | 2999 |
+| `install_sudoku.sh` | `sudoku` | 443 |
+| `install_trusttunnel.sh` | `trusttunnel` | 443 |
+| `install_hysteria2_realm.sh` | `hysteria2-realm` | 2080 |
+
+`install_hysteria2_realm.sh` — это сервер rendezvous для `realm-opts`, а не узел Hysteria2. `install_tunnel.sh` только пересылает порт на фиксированный `host:port` и не выдаёт ссылку.
+
 ### 5\. Проброс портов realm (отдельный сервис)
 
 Устанавливает [realm](https://github.com/zhboner/realm) для простого TCP/UDP-проброса портов, работающий **параллельно** с Mihomo: собственный бинарник (`/usr/local/bin/realm`), каталог конфигурации (`/usr/local/etc/realm/`) и юнит systemd/OpenRC, поэтому они не мешают друг другу. Типовой случай — проброс порта релейной машины на порт узла Mihomo на конечной машине.
@@ -127,6 +148,16 @@ curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/u
 | `install_vless_reality.sh` | `install_vless_reality.sh` | Управление узлами VLESS-Reality |
 | `install_ss2022.sh` | `install_ss2022.sh` | Управление узлами Shadowsocks 2022 |
 | `——` | `install_anytls.sh` | Управление узлами AnyTLS (JLS) |
+| `——` | `install_http.sh` / `install_socks.sh` / `install_mixed.sh` | Входы HTTP / SOCKS5 / Mixed |
+| `——` | `install_tunnel.sh` | Проброс Tunnel |
+| `——` | `install_vmess.sh` | VMess |
+| `——` | `install_trojan.sh` | Trojan |
+| `——` | `install_hysteria2.sh` | Hysteria2 |
+| `——` | `install_shadowquic.sh` | ShadowQUIC |
+| `——` | `install_mieru.sh` | Mieru |
+| `——` | `install_sudoku.sh` | Sudoku |
+| `——` | `install_trusttunnel.sh` | TrustTunnel |
+| `——` | `install_hysteria2_realm.sh` | Служба rendezvous Hysteria2 Realm |
 | `——` | `install_realm.sh` | Проброс портов realm |
 | `xray_manager.sh` | `mihomo_manager.sh` | Единое меню управления |
 | `xray_routing.sh` | `mihomo_routing.sh` | Настройка маршрутизации сервера |

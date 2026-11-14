@@ -2,7 +2,7 @@
 
 # Caesar's Mihomo Installation & Management Toolkit (Install-Mihomo-Inbounds)
 
-This is a powerful, highly modular, and extremely compatible collection of Mihomo node installation and management scripts. It uses Mihomo (Meta Kernel) instead of Xray as the proxy server core to solve the TCP connection leak issue present in Xray. It supports the perfect co-deployment of multiple mainstream protocols (VLESS-Reality, VLESS Encryption, Shadowsocks 2022, etc.) on a single server, and provides convenient configuration backup, routing management, and Geo data update features.
+This is a powerful, highly modular, and extremely compatible collection of Mihomo node installation and management scripts. It uses Mihomo (Meta Kernel) instead of Xray as the proxy server core to solve the TCP connection leak issue present in Xray. It supports the perfect co-deployment of multiple mainstream protocols (VLESS-Reality, VLESS Encryption, Shadowsocks 2022, Trojan, Hysteria2, VMess, ShadowQUIC, Mieru, Sudoku, TrustTunnel, and others) on a single server, and provides convenient configuration backup, routing management, and Geo data update features.
 
 ## ✨ Core Features
 
@@ -103,6 +103,37 @@ sudo ./install_tuic.sh install --port 443 --congestion bbr
 >
 > **Ports**: Conflict detection looks at UDP listeners and existing listeners, not only TCP.
 
+### Other Mihomo listeners
+
+These scripts append a `listeners` entry to the same `/usr/local/etc/mihomo/config.yaml` used by VLESS, Shadowsocks, AnyTLS, and TUIC. They share the core, systemd/OpenRC unit, backup/restore, and uninstall. Each one has an interactive menu and a non-interactive `install` mode. `mihomo-manager` lists them under "more inbounds", and `mihomo_cli.sh` has a subcommand for each.
+
+| Script | Listener | Default port | Notes |
+|---|---|---|---|
+| `install_http.sh` | `http` | 8080 | Authenticated HTTP proxy. It will not write an open proxy. |
+| `install_socks.sh` | `socks` | 1080 | SOCKS5, UDP enabled |
+| `install_mixed.sh` | `mixed` | 10810 | HTTP and SOCKS5 on the same port |
+| `install_tunnel.sh` | `tunnel` | 10816 | Forwards the local port to a fixed `host:port`. Not a proxy node. |
+| `install_vmess.sh` | `vmess` | 16823 | `alterId` is 0. Plain TCP by default; TLS or WebSocket optional |
+| `install_trojan.sh` | `trojan` | 443 | TLS Trojan, self-signed certificate by default. Requires mihomo >= 1.19.3 |
+| `install_hysteria2.sh` | `hysteria2` | 443/UDP | `up`/`down` are omitted, so the server uses BBR. The username is not the client auth secret. |
+| `install_shadowquic.sh` | `shadowquic` | 443/UDP | QUIC + JLS. Unauthenticated connections fall through to a camouflage upstream. Requires mihomo >= 1.19.29 |
+| `install_mieru.sh` | `mieru` | 2999 | `transport` is TCP or UDP. Requires mihomo >= 1.19.17 |
+| `install_sudoku.sh` | `sudoku` | 443 | Server and client share one UUID as the key. Requires mihomo >= 1.19.17 |
+| `install_trusttunnel.sh` | `trusttunnel` | 443 | HTTP/2 and HTTP/3 together. Requires mihomo >= 1.19.25 |
+| `install_hysteria2_realm.sh` | `hysteria2-realm` | 2080 | Rendezvous service for Hysteria2 `realm-opts`. This is not a Hysteria2 proxy. Requires mihomo >= 1.19.25 |
+
+Replace the filename in this command:
+
+```bash
+curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/install_trojan.sh -o install_trojan.sh && chmod +x install_trojan.sh && sudo ./install_trojan.sh
+```
+
+> **Listeners without a new script**:
+>
+> * `redir`, `tproxy`, and `tun` are local transparent-proxy modes. They need iptables/nftables or a TUN device and route changes, so a standalone "share this node" installer would be misleading. The upstream docs also say the `tun` listener is for advanced users; everyone else should use the top-level `tun` block.
+> * `snell` stays on the official `snell-server` (`install_snell.sh` / `install_snell_legacy.sh`) instead of a second implementation inside mihomo.
+> * `shadowsocks`, `vless`, `tuic`, and `anytls` already have their own scripts.
+
 ### Snell v4/v5 Server (coexists with v6)
 
 `install_snell.sh` installs Snell **v6**. Some datacenter firewalls block that traffic shape. `install_snell_legacy.sh` installs the official **v4.1.1 / v5.0.1** builds instead (v5 is the default). The binary, config directory, and service name are all separate, so both stacks can run on one machine, and uninstalling one does not touch the other.
@@ -183,6 +214,18 @@ curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/u
 | `install_ss2022.sh` | `install_ss2022.sh` | Shadowsocks 2022 Node Mgmt |
 | `——` | `install_anytls.sh` | AnyTLS (JLS) Node Mgmt |
 | `——` | `install_tuic.sh` | TUIC v5 Node Mgmt (Mihomo inbound) |
+| `——` | `install_http.sh` | HTTP inbound |
+| `——` | `install_socks.sh` | SOCKS5 inbound |
+| `——` | `install_mixed.sh` | Mixed HTTP+SOCKS inbound |
+| `——` | `install_tunnel.sh` | Tunnel port forward (Mihomo listener) |
+| `——` | `install_vmess.sh` | VMess inbound |
+| `——` | `install_trojan.sh` | Trojan inbound |
+| `——` | `install_hysteria2.sh` | Hysteria2 inbound |
+| `——` | `install_shadowquic.sh` | ShadowQUIC inbound |
+| `——` | `install_mieru.sh` | Mieru inbound |
+| `——` | `install_sudoku.sh` | Sudoku inbound |
+| `——` | `install_trusttunnel.sh` | TrustTunnel inbound |
+| `——` | `install_hysteria2_realm.sh` | Hysteria2 Realm rendezvous |
 | `——` | `install_snell.sh` | Snell v6 Server |
 | `——` | `install_snell_legacy.sh` | Snell v4/v5 Server (coexists with v6) |
 | `——` | `install_realm.sh` | Realm Port Forwarding |

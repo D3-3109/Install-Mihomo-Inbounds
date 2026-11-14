@@ -2,7 +2,7 @@
 
 # Caesar 蜜汁 Mihomo 一键安装与管理工具箱 (Install-Mihomo-Inbounds)
 
-这是一个功能强大、高度模块化且极具兼容性的 Mihomo 节点安装与管理脚本集合。使用 Mihomo (Meta Kernel) 替代 Xray 作为代理服务端核心，解决 Xray 存在的 TCP 连接数泄露问题。支持在一台服务器上完美共存部署多种主流协议（VLESS-Reality、VLESS Encryption、Shadowsocks 2022 等），并提供便捷的配置备份、路由分流管理以及 Geo 数据更新功能。
+这是一个功能强大、高度模块化且极具兼容性的 Mihomo 节点安装与管理脚本集合。使用 Mihomo (Meta Kernel) 替代 Xray 作为代理服务端核心，解决 Xray 存在的 TCP 连接数泄露问题。支持在一台服务器上完美共存部署多种主流协议（VLESS-Reality、VLESS Encryption、Shadowsocks 2022、Trojan、Hysteria2、VMess、ShadowQUIC、Mieru、Sudoku、TrustTunnel 等），并提供便捷的配置备份、路由分流管理以及 Geo 数据更新功能。
 
 ## ✨ 核心特性
 
@@ -92,6 +92,48 @@ sudo ./install_tuic.sh install --port 443 --congestion bbr
 >
 > **端口**: 冲突检测看的是 UDP 监听和已有 listener，不只看 TCP。
 
+### 其他 Mihomo listener
+
+下面这些脚本和 VLESS / SS / AnyTLS / TUIC 一样，把对应的 `listeners` 项追加进同一份 `/usr/local/etc/mihomo/config.yaml`，共用核心、systemd/OpenRC、备份还原和卸载。交互菜单、非交互 `install`、`mihomo-manager` 的「更多入站协议」以及 `mihomo_cli.sh` 都能调用。
+
+| 脚本 | listener | 默认端口 | 说明 |
+|---|---|---|---|
+| `install_http.sh` | `http` | 8080 | 带用户名的 HTTP 代理，不会写成无认证开放代理 |
+| `install_socks.sh` | `socks` | 1080 | SOCKS5，同时监听 UDP |
+| `install_mixed.sh` | `mixed` | 10810 | 同一端口同时接受 HTTP 和 SOCKS5 |
+| `install_tunnel.sh` | `tunnel` | 10816 | 把本机端口原样转到固定 `host:port`，不是代理节点 |
+| `install_vmess.sh` | `vmess` | 16823 | `alterId` 固定为 0。默认明文 TCP，可选 TLS 或 WebSocket |
+| `install_trojan.sh` | `trojan` | 443 | TLS Trojan，默认自签证书。需要 mihomo >= 1.19.3 |
+| `install_hysteria2.sh` | `hysteria2` | 443/UDP | 不写 `up`/`down`，走 BBR。用户名不参与认证，客户端只填密码 |
+| `install_shadowquic.sh` | `shadowquic` | 443/UDP | QUIC + JLS，未认证连接转到伪装上游。需要 mihomo >= 1.19.29 |
+| `install_mieru.sh` | `mieru` | 2999 | `transport` 选 TCP 或 UDP。需要 mihomo >= 1.19.17 |
+| `install_sudoku.sh` | `sudoku` | 443 | 服务端和客户端共用一个 UUID 当 key。需要 mihomo >= 1.19.17 |
+| `install_trusttunnel.sh` | `trusttunnel` | 443 | 同时提供 HTTP/2 和 HTTP/3。需要 mihomo >= 1.19.25 |
+| `install_hysteria2_realm.sh` | `hysteria2-realm` | 2080 | Hysteria2 `realm-opts` 的汇合服务，**不是** Hysteria2 代理。需要 mihomo >= 1.19.25 |
+
+把脚本名换成上表里的文件即可：
+
+```bash
+curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/install_trojan.sh -o install_trojan.sh && chmod +x install_trojan.sh && sudo ./install_trojan.sh
+```
+
+非交互示例：
+
+```bash
+sudo ./install_http.sh install --port 8080
+sudo ./install_vmess.sh install --port 16823 --security tls
+sudo ./install_hysteria2.sh install --port 443 --obfs salamander
+sudo ./install_tunnel.sh install --port 10816 --target 10.0.0.2:443
+sudo ./install_shadowquic.sh install --port 443 --dest www.bing.com:443
+sudo ./install_hysteria2_realm.sh install --port 2080
+```
+
+> **没有单独写脚本的 listener**:
+>
+> * `redir`、`tproxy`、`tun` 是本机透明代理。它们要配合 iptables/nftables 或虚拟网卡改路由，不是一份可以分享的服务端节点。官方文档也写明 `listeners` 里的 `tun` 只给高级用户，普通用户应使用顶层 `tun`。
+> * `snell` 继续用官方 `snell-server`（`install_snell.sh` / `install_snell_legacy.sh`），不再在 mihomo 里套一层同名 listener。
+> * `shadowsocks`、`vless`、`tuic`、`anytls` 已经有自己的脚本。
+
 ### Snell v4/v5 服务端 (与 v6 共存)
 
 `install_snell.sh` 安装的是 Snell **v6**。部分机房会按 v6 的流量特征拦截，这时用 `install_snell_legacy.sh` 安装官方 **v4.1.1 / v5.0.1**（交互时默认 v5）。两套脚本的二进制、配置目录和服务名都分开，可以同时跑，卸载也只删自己的文件。
@@ -161,6 +203,18 @@ sudo ./mihomo_cli.sh ss        --port 2022 --method 2022-blake3-aes-256-gcm [--p
 sudo ./mihomo_cli.sh vless-enc --port 40000 [--uuid <UUID>]
 sudo ./mihomo_cli.sh anytls    --port 8443 [--dest www.bing.com:443] [--mode jls|tls]
 sudo ./mihomo_cli.sh tuic      --port 443 [--congestion bbr] [--cert-mode selfsign|file|acme]
+sudo ./mihomo_cli.sh http      --port 8080
+sudo ./mihomo_cli.sh socks     --port 1080
+sudo ./mihomo_cli.sh mixed     --port 10810
+sudo ./mihomo_cli.sh vmess     --port 16823 [--security none|tls]
+sudo ./mihomo_cli.sh trojan    --port 443
+sudo ./mihomo_cli.sh hysteria2 --port 443 [--obfs salamander]
+sudo ./mihomo_cli.sh shadowquic --port 443 [--dest www.bing.com:443]
+sudo ./mihomo_cli.sh mieru     --port 2999 [--transport TCP|UDP]
+sudo ./mihomo_cli.sh sudoku    --port 443
+sudo ./mihomo_cli.sh trusttunnel --port 443
+sudo ./mihomo_cli.sh hy2-realm --port 2080
+sudo ./mihomo_cli.sh tunnel    --port 10816 --target 10.0.0.2:443
 sudo ./mihomo_cli.sh realm     --port 8443 --remote 10.0.0.2:8443 [--no-udp]
 sudo ./mihomo_cli.sh address   my.ddns.net     # 设置 NAT/DDNS 连接地址，auto 恢复自动获取
 ```
@@ -168,7 +222,8 @@ sudo ./mihomo_cli.sh address   my.ddns.net     # 设置 NAT/DDNS 连接地址，
 * `anytls` 额外参数：`--dest`（JLS 回落目标，默认 `www.bing.com:443`）、`--mode`（`jls` 默认 / `tls` 需配 `--cert` `--key`）、`--sni`（JLS SNI 或 TLS 证书域名）、`--alpn`、`--jls-user`、`--jls-password`、`--proxy`（回落出站）、`--rate-limit`、`--padding-file`（自定义填充方案）
 * `tuic` 额外参数：`--uuid`、`--password`、`--congestion`（`bbr` 默认 / `cubic` / `new_reno`）、`--alpn`（默认 `h3`）、`--udp-relay-mode`（`native` 默认 / `quic`，只写进客户端）、`--sni`、`--cert-mode`（`selfsign` 默认 / `file` / `acme`）、`--cert`、`--key`、`--domain`、`--listen-host`
 * `--address <地址|auto>`：搭建前先设置连接地址，`auto` 为自动获取公网 IP，不传则沿用当前设置，例如 `sudo ./mihomo_cli.sh reality --address my.ddns.net`
-* `-q` / `--quiet`：标准输出只包含结果：SS、Reality 和 VLESS Encryption 的分享链接，AnyTLS 的 `proxies:` YAML，TUIC 的 Surge 行、分享链接和 YAML，或 Realm 的转发信息；运行过程中的消息输出到标准错误。
+* 新增 listener 的参数与对应 `install_*.sh --help` 一致。`tunnel` 必须带 `--target`。`hysteria2` 的用户名不参与认证。`hy2-realm` 打印的是汇合服务地址和 token，不是代理链接。
+* `-q` / `--quiet`：标准输出只包含结果：分享链接、Mihomo `proxies:` 片段，或 Tunnel / Hysteria2 Realm 的转发信息；运行过程中的消息输出到标准错误。
 * `-h` / `--help`：查看完整帮助
 
 ---
@@ -182,6 +237,18 @@ sudo ./mihomo_cli.sh address   my.ddns.net     # 设置 NAT/DDNS 连接地址，
 | `install_ss2022.sh` | `install_ss2022.sh` | Shadowsocks 2022 节点管理 |
 | `——` | `install_anytls.sh` | AnyTLS (JLS 握手伪装) 节点管理 |
 | `——` | `install_tuic.sh` | TUIC v5 节点管理 (Mihomo 入站) |
+| `——` | `install_http.sh` | HTTP 代理入站 |
+| `——` | `install_socks.sh` | SOCKS5 代理入站 |
+| `——` | `install_mixed.sh` | Mixed (HTTP+SOCKS) 入站 |
+| `——` | `install_tunnel.sh` | Tunnel 端口转发 (Mihomo listener) |
+| `——` | `install_vmess.sh` | VMess 入站 |
+| `——` | `install_trojan.sh` | Trojan 入站 |
+| `——` | `install_hysteria2.sh` | Hysteria2 入站 |
+| `——` | `install_shadowquic.sh` | ShadowQUIC 入站 |
+| `——` | `install_mieru.sh` | Mieru 入站 |
+| `——` | `install_sudoku.sh` | Sudoku 入站 |
+| `——` | `install_trusttunnel.sh` | TrustTunnel 入站 |
+| `——` | `install_hysteria2_realm.sh` | Hysteria2 Realm 汇合服务 |
 | `——` | `install_snell.sh` | Snell v6 服务端 (独立服务) |
 | `——` | `install_snell_legacy.sh` | Snell v4/v5 服务端 (与 v6 共存) |
 | `——` | `install_realm.sh` | Realm 端口转发 (独立服务) |

@@ -77,6 +77,27 @@ curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/i
 >
 > **注意**: AnyTLS の URI 形式は `sni` と `insecure` しか定義しておらず JLS の資格情報を表現できないため、出力は共有リンクではなく **`proxies:` スニペット**です。mihomo >= 1.19.29 のクライアント（Clash Party / FlClash は `jls-opts` に対応済み）へ手動で取り込んでください。
 
+### その他の Mihomo listener
+
+次のスクリプトは、VLESS / SS / AnyTLS と同じ `config.yaml` に listener を追記します。メニューからも `install` 引数からも使えます。`redir` / `tproxy` / `tun` はローカル透過プロキシなので単独のノードスクリプトはありません。Snell は公式バイナリのままです。
+
+| スクリプト | listener | 既定ポート |
+|---|---|---|
+| `install_http.sh` | `http` | 8080 |
+| `install_socks.sh` | `socks` | 1080 |
+| `install_mixed.sh` | `mixed` | 10810 |
+| `install_tunnel.sh` | `tunnel` | 10816 |
+| `install_vmess.sh` | `vmess` | 16823 |
+| `install_trojan.sh` | `trojan` | 443 |
+| `install_hysteria2.sh` | `hysteria2` | 443/UDP |
+| `install_shadowquic.sh` | `shadowquic` | 443/UDP |
+| `install_mieru.sh` | `mieru` | 2999 |
+| `install_sudoku.sh` | `sudoku` | 443 |
+| `install_trusttunnel.sh` | `trusttunnel` | 443 |
+| `install_hysteria2_realm.sh` | `hysteria2-realm` | 2080 |
+
+`install_hysteria2_realm.sh` はプロキシノードではなく、Hysteria2 `realm-opts` 用の会合サーバーです。`install_tunnel.sh` は固定の `host:port` へ転送するだけで、共有リンクは出しません。
+
 ### 5\. Realm ポート転送 (独立サービス)
 
 [realm](https://github.com/zhboner/realm) による純粋な TCP/UDP ポート転送を、Mihomo と**並行して**動作する形で導入します。専用バイナリ（`/usr/local/bin/realm`）、設定ディレクトリ（`/usr/local/etc/realm/`）、systemd/OpenRC ユニットを持ち、互いに干渉しません。中継機のポートを落地機の Mihomo ノードポートへ転送するのが典型例です。
@@ -127,6 +148,16 @@ curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/u
 | `install_vless_reality.sh` | `install_vless_reality.sh` | VLESS-Reality ノード管理 |
 | `install_ss2022.sh` | `install_ss2022.sh` | Shadowsocks 2022 ノード管理 |
 | `——` | `install_anytls.sh` | AnyTLS (JLS) ノード管理 |
+| `——` | `install_http.sh` / `install_socks.sh` / `install_mixed.sh` | HTTP / SOCKS5 / Mixed インバウンド |
+| `——` | `install_tunnel.sh` | Tunnel ポート転送 |
+| `——` | `install_vmess.sh` | VMess |
+| `——` | `install_trojan.sh` | Trojan |
+| `——` | `install_hysteria2.sh` | Hysteria2 |
+| `——` | `install_shadowquic.sh` | ShadowQUIC |
+| `——` | `install_mieru.sh` | Mieru |
+| `——` | `install_sudoku.sh` | Sudoku |
+| `——` | `install_trusttunnel.sh` | TrustTunnel |
+| `——` | `install_hysteria2_realm.sh` | Hysteria2 Realm 会合サービス |
 | `——` | `install_realm.sh` | Realm ポート転送 |
 | `xray_manager.sh` | `mihomo_manager.sh` | 統合管理メニュー |
 | `xray_routing.sh` | `mihomo_routing.sh` | サーバー側ルーティング設定 |
