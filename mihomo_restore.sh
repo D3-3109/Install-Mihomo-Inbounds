@@ -252,6 +252,30 @@ backup_mihomo_archive() (
                 "$state_dir"/mihomo_anytls_proxies_*.yaml \
                 "$state_dir"/mihomo_tuic_link_*.txt \
                 "$state_dir"/mihomo_tuic_node_*.json \
+                "$state_dir"/mihomo_http_link_*.txt \
+                "$state_dir"/mihomo_http_node_*.json \
+                "$state_dir"/mihomo_socks_link_*.txt \
+                "$state_dir"/mihomo_socks_node_*.json \
+                "$state_dir"/mihomo_mixed_link_*.txt \
+                "$state_dir"/mihomo_mixed_node_*.json \
+                "$state_dir"/mihomo_tunnel_link_*.txt \
+                "$state_dir"/mihomo_tunnel_node_*.json \
+                "$state_dir"/mihomo_vmess_link_*.txt \
+                "$state_dir"/mihomo_vmess_node_*.json \
+                "$state_dir"/mihomo_trojan_link_*.txt \
+                "$state_dir"/mihomo_trojan_node_*.json \
+                "$state_dir"/mihomo_hysteria2_link_*.txt \
+                "$state_dir"/mihomo_hysteria2_node_*.json \
+                "$state_dir"/mihomo_shadowquic_link_*.txt \
+                "$state_dir"/mihomo_shadowquic_node_*.json \
+                "$state_dir"/mihomo_mieru_link_*.txt \
+                "$state_dir"/mihomo_mieru_node_*.json \
+                "$state_dir"/mihomo_sudoku_link_*.txt \
+                "$state_dir"/mihomo_sudoku_node_*.json \
+                "$state_dir"/mihomo_trusttunnel_link_*.txt \
+                "$state_dir"/mihomo_trusttunnel_node_*.json \
+                "$state_dir"/mihomo_hy2realm_link_*.txt \
+                "$state_dir"/mihomo_hy2realm_node_*.json \
                 "$state_dir"/inbound_address.txt; do
         [[ -f "$file" ]] || continue
         cp -pL -- "$file" "$tmp/client-state/" || return 1
@@ -329,6 +353,30 @@ restore_archive() (
                     "$tmp/client-state"/mihomo_anytls_proxies_*.yaml \
                     "$tmp/client-state"/mihomo_tuic_link_*.txt \
                     "$tmp/client-state"/mihomo_tuic_node_*.json \
+                    "$tmp/client-state"/mihomo_http_link_*.txt \
+                    "$tmp/client-state"/mihomo_http_node_*.json \
+                    "$tmp/client-state"/mihomo_socks_link_*.txt \
+                    "$tmp/client-state"/mihomo_socks_node_*.json \
+                    "$tmp/client-state"/mihomo_mixed_link_*.txt \
+                    "$tmp/client-state"/mihomo_mixed_node_*.json \
+                    "$tmp/client-state"/mihomo_tunnel_link_*.txt \
+                    "$tmp/client-state"/mihomo_tunnel_node_*.json \
+                    "$tmp/client-state"/mihomo_vmess_link_*.txt \
+                    "$tmp/client-state"/mihomo_vmess_node_*.json \
+                    "$tmp/client-state"/mihomo_trojan_link_*.txt \
+                    "$tmp/client-state"/mihomo_trojan_node_*.json \
+                    "$tmp/client-state"/mihomo_hysteria2_link_*.txt \
+                    "$tmp/client-state"/mihomo_hysteria2_node_*.json \
+                    "$tmp/client-state"/mihomo_shadowquic_link_*.txt \
+                    "$tmp/client-state"/mihomo_shadowquic_node_*.json \
+                    "$tmp/client-state"/mihomo_mieru_link_*.txt \
+                    "$tmp/client-state"/mihomo_mieru_node_*.json \
+                    "$tmp/client-state"/mihomo_sudoku_link_*.txt \
+                    "$tmp/client-state"/mihomo_sudoku_node_*.json \
+                    "$tmp/client-state"/mihomo_trusttunnel_link_*.txt \
+                    "$tmp/client-state"/mihomo_trusttunnel_node_*.json \
+                    "$tmp/client-state"/mihomo_hy2realm_link_*.txt \
+                    "$tmp/client-state"/mihomo_hy2realm_node_*.json \
                     "$tmp/client-state"/inbound_address.txt; do
             [[ -e "$file" || -L "$file" ]] || continue
             target="$CLIENT_STATE_DIR/${file##*/}"

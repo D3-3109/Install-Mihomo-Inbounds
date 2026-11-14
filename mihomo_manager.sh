@@ -152,10 +152,11 @@ show_menu() {
     echo -e "  ${CYAN}10.${PLAIN} 还原 Mihomo 配置 (Restore)"
     echo "-------------------------------------------------"
     echo -e "  ${CYAN}11.${PLAIN} 更新此管理脚本"
+    echo -e "  ${GREEN}12.${PLAIN} 更多入站协议 (HTTP/SOCKS/VMess/Trojan/...)"
     echo -e "  ${CYAN}0.${PLAIN} 退出脚本"
     echo -e "${CYAN}=================================================${PLAIN}"
     
-    read -rp " 请输入选项 [0-11]: " choice
+    read -rp " 请输入选项 [0-12]: " choice
     
     case "$choice" in
         1) pull_and_run "update_geo.sh" "更新 GeoIP/GeoSite" ;;
@@ -169,9 +170,52 @@ show_menu() {
         9) pull_and_run "uninstall_mihomo.sh" "执行卸载程序" ;;
         10) pull_and_run "mihomo_restore.sh" "执行配置还原工具" ;;
         11) update_self ;;
+        12) show_more_listeners ;;
         0) echo -e "${GREEN}感谢使用此脚本，再见！${PLAIN}"; exit 0 ;;
         *) echo -e "${RED}无效输入，请重新选择。${PLAIN}"; sleep 1 ;;
     esac
+}
+
+# 其余 mihomo listener。redir/tproxy/tun 不做菜单项: 它们是本机透明代理。
+show_more_listeners() {
+    while true; do
+        clear
+        echo -e "${CYAN}=================================================${PLAIN}"
+        echo -e "${CYAN}              更多 Mihomo 入站协议               ${PLAIN}"
+        echo -e "${CYAN}=================================================${PLAIN}"
+        echo -e "  ${GREEN}1.${PLAIN} HTTP 代理"
+        echo -e "  ${GREEN}2.${PLAIN} SOCKS5 代理"
+        echo -e "  ${GREEN}3.${PLAIN} Mixed (HTTP+SOCKS)"
+        echo -e "  ${GREEN}4.${PLAIN} Tunnel 端口转发"
+        echo -e "  ${GREEN}5.${PLAIN} VMess"
+        echo -e "  ${GREEN}6.${PLAIN} Trojan"
+        echo -e "  ${GREEN}7.${PLAIN} Hysteria2"
+        echo -e "  ${GREEN}8.${PLAIN} ShadowQUIC"
+        echo -e "  ${GREEN}9.${PLAIN} Mieru"
+        echo -e "  ${GREEN}10.${PLAIN} Sudoku"
+        echo -e "  ${GREEN}11.${PLAIN} TrustTunnel"
+        echo -e "  ${GREEN}12.${PLAIN} Hysteria2 Realm 汇合服务"
+        echo "-------------------------------------------------"
+        echo -e "  ${CYAN}0.${PLAIN} 返回主菜单"
+        echo -e "${CYAN}=================================================${PLAIN}"
+        read -rp " 请输入选项 [0-12]: " choice
+        case "$choice" in
+            1) pull_and_run "install_http.sh" "执行 HTTP 入站安装向导" ;;
+            2) pull_and_run "install_socks.sh" "执行 SOCKS5 入站安装向导" ;;
+            3) pull_and_run "install_mixed.sh" "执行 Mixed 入站安装向导" ;;
+            4) pull_and_run "install_tunnel.sh" "执行 Tunnel 转发安装向导" ;;
+            5) pull_and_run "install_vmess.sh" "执行 VMess 安装向导" ;;
+            6) pull_and_run "install_trojan.sh" "执行 Trojan 安装向导" ;;
+            7) pull_and_run "install_hysteria2.sh" "执行 Hysteria2 安装向导" ;;
+            8) pull_and_run "install_shadowquic.sh" "执行 ShadowQUIC 安装向导" ;;
+            9) pull_and_run "install_mieru.sh" "执行 Mieru 安装向导" ;;
+            10) pull_and_run "install_sudoku.sh" "执行 Sudoku 安装向导" ;;
+            11) pull_and_run "install_trusttunnel.sh" "执行 TrustTunnel 安装向导" ;;
+            12) pull_and_run "install_hysteria2_realm.sh" "执行 Hysteria2 Realm 安装向导" ;;
+            0) return 0 ;;
+            *) echo -e "${RED}无效输入，请重新选择。${PLAIN}"; sleep 1 ;;
+        esac
+    done
 }
 
 # --- 入口逻辑 ---

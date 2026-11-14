@@ -50,6 +50,71 @@ Mihomo 非交互式一键搭建脚本
                 --port <端口>       默认 40000
                 --uuid <UUID>       默认随机生成
 
+  http        搭建 HTTP 代理入站 (必须带用户名)
+                --port <端口>       默认 8080
+                --username <名称>   默认随机
+                --password <密码>   默认随机
+
+  socks       搭建 SOCKS5 代理入站 (同时监听 UDP)
+                --port <端口>       默认 1080
+                --username <名称>   默认随机
+                --password <密码>   默认随机
+
+  mixed       搭建 HTTP+SOCKS 混合入站
+                --port <端口>       默认 10810
+                --username <名称>   默认随机
+                --password <密码>   默认随机
+
+  tunnel      在 mihomo 里做端口转发 (不是代理节点)
+                --port <端口>       默认 10816
+                --target <host:port> 转发目标, 必填
+                --network <列表>    默认 tcp,udp
+
+  vmess       搭建 VMess 入站 (alterId 固定 0)
+                --port <端口>       默认 16823
+                --uuid <UUID>       默认随机
+                --security <none|tls> 默认 none
+                --ws-path <路径>    留空为 TCP
+                --cert-mode <selfsign|file|acme>
+
+  trojan      搭建 Trojan 入站 (TLS, 默认自签证书)
+                --port <端口>       默认 443
+                --password <密码>   默认随机
+                --ws-path <路径>
+                --cert-mode <selfsign|file|acme>
+
+  hysteria2|hy2
+              搭建 Hysteria2 入站 (UDP/QUIC, 不写带宽则用 BBR)
+                --port <端口>       默认 443
+                --username <名称>   只用于入站规则, 默认 hy2user
+                --password <密码>   客户端认证用这个
+                --obfs <salamander|none>
+                --cert-mode <selfsign|file|acme>
+
+  shadowquic  搭建 ShadowQUIC 入站 (需要 mihomo >= 1.19.29)
+                --port <端口>       默认 443
+                --dest <host:port>  JLS 上游, 默认 www.bing.com:443
+                --zero-rtt <true|false>
+
+  mieru       搭建 Mieru 入站 (需要 mihomo >= 1.19.17)
+                --port <端口>       默认 2999
+                --transport <TCP|UDP> 默认 TCP
+
+  sudoku      搭建 Sudoku 入站 (需要 mihomo >= 1.19.17)
+                --port <端口>       默认 443
+                --key <UUID>        客户端填同一个, 默认随机
+
+  trusttunnel 搭建 TrustTunnel 入站 (HTTP/2+HTTP/3, 需要 mihomo >= 1.19.25)
+                --port <端口>       默认 443
+                --congestion <bbr|cubic|new_reno>
+                --cert-mode <selfsign|file|acme>
+
+  hy2-realm|hysteria2-realm
+              搭建 Hysteria2 realm 汇合服务 (不是代理节点)
+                --port <端口>       默认 2080
+                --token <令牌>      默认随机
+                --cert-mode <none|selfsign|file|acme> 默认 none
+
   tuic        搭建 TUIC v5 节点 (Mihomo listener, 走 UDP/QUIC)
                 --port <端口>       默认 443
                 --uuid <UUID>       默认随机生成
@@ -90,9 +155,9 @@ Mihomo 非交互式一键搭建脚本
                 --no-tcp            只转发 UDP
                 --comment <备注>    写入配置文件的注释, 默认 realm-<port>
 
-通用参数 (用于 reality / ss / vless-enc / anytls / tuic / realm):
+通用参数 (用于上面的搭建命令):
   --address <地址|auto>  搭建前先设置连接地址；auto 为自动获取公网 IP，不传则沿用当前设置
-  -q, --quiet        安静模式：stdout 仅输出链接、AnyTLS YAML 或 Realm 转发信息
+  -q, --quiet        安静模式：stdout 仅输出链接、客户端 YAML, 或 Tunnel / Realm 的转发信息
   -h, --help         显示本帮助
 
 示例:
@@ -213,6 +278,42 @@ main() {
         tuic|tuic-v5|tuic5)
             DEFAULT_PORT=443
             run_installer "install_tuic.sh" "$@" ;;
+        http)
+            DEFAULT_PORT=8080
+            run_installer "install_http.sh" "$@" ;;
+        socks|socks5)
+            DEFAULT_PORT=1080
+            run_installer "install_socks.sh" "$@" ;;
+        mixed)
+            DEFAULT_PORT=10810
+            run_installer "install_mixed.sh" "$@" ;;
+        tunnel)
+            DEFAULT_PORT=10816
+            run_installer "install_tunnel.sh" "$@" ;;
+        vmess)
+            DEFAULT_PORT=16823
+            run_installer "install_vmess.sh" "$@" ;;
+        trojan)
+            DEFAULT_PORT=443
+            run_installer "install_trojan.sh" "$@" ;;
+        hysteria2|hy2)
+            DEFAULT_PORT=443
+            run_installer "install_hysteria2.sh" "$@" ;;
+        shadowquic)
+            DEFAULT_PORT=443
+            run_installer "install_shadowquic.sh" "$@" ;;
+        mieru)
+            DEFAULT_PORT=2999
+            run_installer "install_mieru.sh" "$@" ;;
+        sudoku)
+            DEFAULT_PORT=443
+            run_installer "install_sudoku.sh" "$@" ;;
+        trusttunnel)
+            DEFAULT_PORT=443
+            run_installer "install_trusttunnel.sh" "$@" ;;
+        hy2-realm|hysteria2-realm)
+            DEFAULT_PORT=2080
+            run_installer "install_hysteria2_realm.sh" "$@" ;;
         realm)
             DEFAULT_PORT=8443
             run_installer "install_realm.sh" "$@" ;;
