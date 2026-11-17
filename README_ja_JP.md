@@ -1,196 +1,45 @@
-[中文](/README.md) | [English](/README_en_US.md) | [日本語](/README_ja_JP.md) | [Русский](/README_ru_RU.md) 
+[中文](/README.md) | [English](/README_en_US.md) | [日本語](/README_ja_JP.md) | [Русский](/README_ru_RU.md)
 
 # Caesar 特製 Mihomo ワンクリックインストール＆管理ツールボックス (Install-Mihomo-Inbounds)
 
-これは、強力でモジュール化された、非常に互換性の高い Mihomo ノードのインストールおよび管理スクリプトのコレクションです。Xray の代わりに Mihomo (Meta Kernel) をプロキシサーバーのコアとして使用することで、Xray に存在する TCP コネクションリーク問題を解決します。1つのサーバー上で複数の主要なプロトコル（VLESS-Reality、VLESS Encryption、Shadowsocks 2022 など）を完全に共存・展開することをサポートし、便利な設定バックアップ、ルーティング管理、および Geo データの更新機能を提供します。
+Xray の TCP コネクションリーク問題を解消するため Mihomo (Meta Kernel) を採用したサーバー構築・管理ツール群です。単一スクリプト `install_mihomo.sh` で **全 17 種類の Mihomo インバウンドプロトコル**（VLESS-Reality、VLESS Encryption 耐量子、Shadowsocks 2022、AnyTLS、TUIC v5、Hysteria2、Trojan、VMess、ShadowQUIC、Mieru、Sudoku、TrustTunnel、HTTP/SOCKS/Mixed、Tunnel、Hy2-Realm）の対話型導入・CLI ワンクリック構築・一括管理に対応しています。
 
-## ✨ 主な機能 (Core Features)
+## 🚀 クイックスタート
 
-  * **Mihomo コア**: Mihomo (Clash Meta) をプロキシサーバーとして使用し、Xray の TCP コネクションリークのバグを解決します。リソース消費が少なく、安定性が向上しています。また、古い CPU 向けに `amd64-compatible` アーキテクチャの命令セットへの自動フォールバック適応機能もサポートしています。
-  * **耐量子暗号化対応 (Post-Quantum)**: Xray が先駆けて開発した VLESS Encryption (ML-KEM-768, Post-Quantum) 機能をシームレスにサポートし、互換性の高い鍵の自動変換と生成を提供します。
-  * **複数プロトコルのスマートな共存**: Python を使用して YAML 設定を解析し、スマートにリスナー (listeners) を追加します。複数の異なるプロトコルや複数ポートのノードを自由自在にインストールでき、元のノード設定を**絶対に上書きしません**。
-  * **究極のシステム互換性**: Debian / Ubuntu などの Systemd ベースの主流システムを完全にサポートするだけでなく、**Alpine Linux (OpenRC) とも深く互換性があり**、極めてシンプルで軽量なシステムにも非常に適しています。
-  * **NAT / DDNS フレンドリー**: 独立した接続先アドレスのカスタマイズ機能を内蔵しています。動的ポートを持つ NAT マシンを使用している場合でも、DDNS ドメイン名による名前解決を行っている場合でも、ワンクリックで正しい共有リンクを生成できます。
-  * **一元管理**: グローバルな統合管理メニュー (`mihomo-manager`)、ルーティング設定ツール (`mihomo-routing`)、および設定のバックアップ・復元ツール (`mihomo-restore`) を提供します。
-  * **安全で正確な削除**: ポートとプロトコルに基づいて特定のノード設定を正確に識別し削除することをサポートしており、関係のない設定を誤って削除することは絶対にありません。
-
------
-
-## 🚀 クイックスタート（推奨）
-
-最も完全な管理機能を体験したい場合は、\*\*統合管理センター（Mihomo Manager）\*\*を直接インストールすることをお勧めします。
-
-以下のコマンドを実行して、グローバル管理メニューをダウンロードし、起動します。
+### 1. 統合管理メニュー (`mihomo_manager.sh`)
 
 ```bash
-curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/mihomo_manager.sh -o mihomo_manager.sh && chmod +x mihomo_manager.sh && sudo ./mihomo_manager.sh
+curl -fsSL https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/mihomo_manager.sh -o mihomo_manager.sh && chmod +x mihomo_manager.sh && sudo ./mihomo_manager.sh
 ```
 
-**💡 ヒント:**
-統合管理ツールをインストールすると、グローバルコマンドが自動的に登録されます。今後は、ターミナルで以下のコマンドを入力するだけで、いつでもメインメニューを素早く呼び出すことができます。
+導入後は `mihomo-manager` でいつでも起動できます。
+
+### 2. Mihomo 全プロトコル統合スクリプト (`install_mihomo.sh`)
 
 ```bash
-mihomo-manager
+curl -fsSL https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/install_mihomo.sh -o install_mihomo.sh && chmod +x install_mihomo.sh && sudo ./install_mihomo.sh
 ```
-
-`mihomo-manager` メニュー内では、以下のすべての独立した機能をワンクリックで直接呼び出すことができるため、スクリプトを個別にダウンロードする必要はありません。
-
------
-
-## 📦 各機能モジュールの独立インストールガイド
-
-このプロジェクトの特定の機能のみを使用したい場合は、以下の独立したインストールコマンドを直接使用することもできます。
-
-### 1\. VLESS Encryption (Post-Quantum) ノード管理
-
-最新世代の ML-KEM-768 耐量子暗号化テクノロジーをサポートします。煩雑な設定を排除し、ハンドシェイクキーだけで安全な接続を確立できます。
 
 ```bash
-curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/install_vless_encryption.sh -o install_vless_encryption.sh && chmod +x install_vless_encryption.sh && sudo ./install_vless_encryption.sh
+# 対話型メインメニュー（全17プロトコル選択・確認・変更・削除）
+sudo ./install_mihomo.sh
+
+# プロトコル名のみ指定：そのプロトコルの対話ウィザードを直接起動
+sudo ./install_mihomo.sh reality
+
+# オプション付き（または -y）：非対話で即座に構築（-q でリンク/設定のみ stdout 出力）
+sudo ./install_mihomo.sh reality -y -q
+sudo ./install_mihomo.sh reality --port 443 --sni hk.art.museum --address my.ddns.net
+sudo ./install_mihomo.sh ss --port 2022 --method 2022-blake3-aes-256-gcm -q
+sudo ./install_mihomo.sh anytls --port 8443 --dest www.bing.com:443 -q
+sudo ./install_mihomo.sh hysteria2 --port 443 --obfs salamander
+sudo ./install_mihomo.sh <プロトコル> --help
 ```
 
-### 2\. VLESS-Reality (Vision) ノード管理
+## 📦 付属・独立サービススクリプト
 
-X25519 キーペアの自動生成をサポートし、デフォルトで `xtls-rprx-vision` フロー制御を使用し、Mihomo のリスナー経由で接続します。
-
-```bash
-curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/install_vless_reality.sh -o install_vless_reality.sh && chmod +x install_vless_reality.sh && sudo ./install_vless_reality.sh
-```
-
-### 3\. Shadowsocks 2022 & 従来の SS ノード管理
-
-2022-blake3-aes などの超高速次世代暗号化プロトコルをサポートし、従来の aes-gcm 暗号化との下位互換性を保ちながら、強力なランダムパスワードを自動生成します。
-
-```bash
-curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/install_ss2022.sh -o install_ss2022.sh && chmod +x install_ss2022.sh && sudo ./install_ss2022.sh
-```
-
-### 4\. AnyTLS (JLS ハンドシェイク偽装) ノード管理
-
-Mihomo の `anytls` listener で AnyTLS を提供します。既定は JLS で、JLS 認証に失敗した接続はフォールバック先（既定 `www.bing.com:443`）へそのまま転送され、ハンドシェイクはカーネルが生成する使い捨て証明書で行われます（**自前の証明書は不要**）。自前証明書を使うネイティブ TLS モードにも切り替えられます。
-
-```bash
-curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/install_anytls.sh -o install_anytls.sh && chmod +x install_anytls.sh && sudo ./install_anytls.sh
-```
-
-> **カーネル要件**: JLS サポートは mihomo **v1.19.29** で追加されました（`feat: support jls for anytls outbound and listener`）。スクリプトはバージョンを確認し、古いカーネルでは黙って失敗する設定を書かずにインストールを拒否します。
->
-> **注意**: AnyTLS の URI 形式は `sni` と `insecure` しか定義しておらず JLS の資格情報を表現できないため、出力は共有リンクではなく **`proxies:` スニペット**です。mihomo >= 1.19.29 のクライアント（Clash Party / FlClash は `jls-opts` に対応済み）へ手動で取り込んでください。
-
-### その他の Mihomo listener
-
-次のスクリプトは、VLESS / SS / AnyTLS と同じ `config.yaml` に listener を追記します。メニューからも `install` 引数からも使えます。`redir` / `tproxy` / `tun` はローカル透過プロキシなので単独のノードスクリプトはありません。Snell は公式バイナリのままです。
-
-| スクリプト | listener | 既定ポート |
-|---|---|---|
-| `install_http.sh` | `http` | 8080 |
-| `install_socks.sh` | `socks` | 1080 |
-| `install_mixed.sh` | `mixed` | 10810 |
-| `install_tunnel.sh` | `tunnel` | 10816 |
-| `install_vmess.sh` | `vmess` | 16823 |
-| `install_trojan.sh` | `trojan` | 443 |
-| `install_hysteria2.sh` | `hysteria2` | 443/UDP |
-| `install_shadowquic.sh` | `shadowquic` | 443/UDP |
-| `install_mieru.sh` | `mieru` | 2999 |
-| `install_sudoku.sh` | `sudoku` | 443 |
-| `install_trusttunnel.sh` | `trusttunnel` | 443 |
-| `install_hysteria2_realm.sh` | `hysteria2-realm` | 2080 |
-
-`install_hysteria2_realm.sh` はプロキシノードではなく、Hysteria2 `realm-opts` 用の会合サーバーです。`install_tunnel.sh` は固定の `host:port` へ転送するだけで、共有リンクは出しません。
-
-### 5\. Realm ポート転送 (独立サービス)
-
-[realm](https://github.com/zhboner/realm) による純粋な TCP/UDP ポート転送を、Mihomo と**並行して**動作する形で導入します。専用バイナリ（`/usr/local/bin/realm`）、設定ディレクトリ（`/usr/local/etc/realm/`）、systemd/OpenRC ユニットを持ち、互いに干渉しません。中継機のポートを落地機の Mihomo ノードポートへ転送するのが典型例です。
-
-```bash
-curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/install_realm.sh -o install_realm.sh && chmod +x install_realm.sh && sudo ./install_realm.sh
-```
-
-> **注意**: realm は純粋なポート転送であり、インポート可能なノードリンクは生成しません。クライアントは元のプロトコルと認証情報のまま、サーバーアドレスだけを中継機の `IP:ポート` に変更します。
->
-> **アンインストーラに含めない理由**: `install_realm.sh` 自身がアンインストール項目（メニュー 4）を持ち、`uninstall_mihomo.sh` は realm のファイルに一切触れません。Mihomo の削除が転送設定を巻き込むことはありません。
-
-### 6\. サーバー側ルーティングツール (Mihomo Routing)
-
-強力なサーバー側のアウトバウンド（送信）ルーティングコントロールパネルです。SS や VLESS の共有リンクの解析をサポートし、ルーティングルールを視覚的に設定できます。
-
-```bash
-curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/mihomo_routing.sh -o mihomo_routing.sh && chmod +x mihomo_routing.sh && sudo ./mihomo_routing.sh
-```
-
-*インストール後は、いつでも `mihomo-routing` コマンドで呼び出すことができます。*
-
-### 7\. バックアップと復元ツール (Mihomo Restore)
-
-誤って設定を変更してしまった場合や、設定を移行したい場合に最適です。このツールを使用すると、直接の URL 経由で設定ファイルをインポートしたり、コンソールを開いて手動で `config.yaml` を貼り付けたりすることができます。エラーを防ぐ安全テスト機能が組み込まれています。
-
-```bash
-curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/mihomo_restore.sh -o mihomo_restore.sh && chmod +x mihomo_restore.sh && sudo ./mihomo_restore.sh
-```
-
-*インストール後は、いつでも `mihomo-restore` コマンドで呼び出すことができます。*
-
-### 8\. 完全アンインストールツール
-
-解決できない深刻な問題が発生した場合や、サーバーを完全にクリーンアップしたい場合は、このスクリプトを使用できます。システムサービス (Systemd/OpenRC)、バイナリファイル、ログ、および残留設定を極めてクリーンに消去します。
-
-```bash
-curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/uninstall_mihomo.sh -o uninstall_mihomo.sh && chmod +x uninstall_mihomo.sh && sudo ./uninstall_mihomo.sh
-```
-
------
-
-## 🔄 Xray バージョンとの対応関係
-
-| Xray スクリプト | Mihomo スクリプト | 機能 |
-|---|---|---|
-| `install_vless_encryption.sh` | `install_vless_encryption.sh` | VLESS Encryption (PQ) ノード管理 |
-| `install_vless_reality.sh` | `install_vless_reality.sh` | VLESS-Reality ノード管理 |
-| `install_ss2022.sh` | `install_ss2022.sh` | Shadowsocks 2022 ノード管理 |
-| `——` | `install_anytls.sh` | AnyTLS (JLS) ノード管理 |
-| `——` | `install_http.sh` / `install_socks.sh` / `install_mixed.sh` | HTTP / SOCKS5 / Mixed インバウンド |
-| `——` | `install_tunnel.sh` | Tunnel ポート転送 |
-| `——` | `install_vmess.sh` | VMess |
-| `——` | `install_trojan.sh` | Trojan |
-| `——` | `install_hysteria2.sh` | Hysteria2 |
-| `——` | `install_shadowquic.sh` | ShadowQUIC |
-| `——` | `install_mieru.sh` | Mieru |
-| `——` | `install_sudoku.sh` | Sudoku |
-| `——` | `install_trusttunnel.sh` | TrustTunnel |
-| `——` | `install_hysteria2_realm.sh` | Hysteria2 Realm 会合サービス |
-| `——` | `install_realm.sh` | Realm ポート転送 |
-| `xray_manager.sh` | `mihomo_manager.sh` | 統合管理メニュー |
-| `xray_routing.sh` | `mihomo_routing.sh` | サーバー側ルーティング設定 |
-| `xray_restore.sh` | `mihomo_restore.sh` | 設定のバックアップと復元 |
-| `uninstall_xray.sh` | `uninstall_mihomo.sh` | 完全アンインストール |
-| `update_geo.sh` | `update_geo.sh` | Geo データの更新 |
-
-> **ヒント**: Mihomo は、Reality や ML-KEM-768 ベースの Encryption プロトコルを含む VLESS の新機能を全面的にサポートするようになりました。このツールボックスのすべてのコンポーネントは、このフレームワークの下で正常に機能します。
-
------
-
-## 🛠️ よくある質問 (FAQ)
-
-**Q: なぜ Xray から Mihomo に移行するのですか？**
-
-**A:** Xray プロキシサーバーには、深刻な TCP コネクションリークのバグが存在します。Mihomo (Meta Kernel) にはこの問題がなく、リソース消費と安定性の面で優れており、特に同時接続数の多い商用環境や共有（合乗り）サーバーに最適です。
-
-**Q: 私のサーバーは NAT VPS であるか、または入口（Ingress）IP と出口（Egress）IP が異なります。生成されたノードが繋がらない場合はどうすればよいですか？**
-
-**A:** 任意のインストールメニューで **「接続アドレスの設定 (NAT/DDNS)」(设置连接地址 (NAT/DDNS))** オプションを選択してください。実際に外部接続に使用している IP アドレスまたは DDNS ドメイン名を入力してください。
-
-**Q: 私の古い E5 プロセッサに新しいバージョンをインストールできず、v3 アーキテクチャがサポートされていないというエラーが出ます。どうすればよいですか？**
-
-**A:** 本リポジトリのインストールスクリプトは、CPU アーキテクチャの認識をスマートに最適化しています。AVX2 命令セットをサポートしていない古いハードウェア（一部の E5 v2 や Atom プロセッサなど）に対して、スクリプトは自動的に `amd64-compatible` 互換バージョンのカーネルを取得し、インストールの失敗を防ぎます。
-
-**Q: Mihomo の実行ログを表示するにはどうすればよいですか？**
-
-**A:** 各インストールおよび管理スクリプトのメニューには、**「ログの表示」(查看日志)** オプションがあります。これを選択すると、実行ログをリアルタイムで表示できます。`Ctrl + C` を押すと停止します。
-
-**Q: GeoIP と GeoSite ルーティングルールファイルを更新するにはどうすればよいですか？**
-
-**A:** `mihomo-routing`（サーバー側ルーティングツール）内のワンクリック自動 Cron ジョブ設定機能を使用すると、毎日未明に自動的に更新されます。また、メイン管理ツール (`mihomo-manager`) から手動で即時更新を実行することもできます。
-
-**Q: Mihomo の設定ファイルはどこにありますか？**
-
-**A:** 設定ファイルは `/usr/local/etc/mihomo/config.yaml` にあります。Mihomo は Xray の JSON 形式ではなく YAML 形式を使用します。
+* `mihomo_routing.sh` (`mihomo-routing`)：アウトバウンド追加・ルーティング設定
+* `mihomo_restore.sh` (`mihomo-restore`)：設定のバックアップ復元・テスト
+* `update_geo.sh` / `uninstall_mihomo.sh`：Geo 更新 / バックアップ付き完全削除
+* `install_realm.sh` / `install_dnat.sh`：独立 Realm 転送 / カーネル DNAT 転送
+* `install_snell.sh` / `install_snell_legacy.sh`：公式 Snell v6 / Snell v4・v5 共存スクリプト

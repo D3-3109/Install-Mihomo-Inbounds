@@ -260,13 +260,6 @@ snell_tag_for_protocol() {
     esac
 }
 
-assert_legacy_paths() {
-    [[ "$snell_binary_path" == "/usr/local/bin/snell-server-legacy" ]] || return 1
-    [[ "$snell_config_dir" == "/usr/local/etc/snell-legacy" ]] || return 1
-    [[ "$snell_service_prefix" == "snell-legacy" ]] || return 1
-    [[ "$snell_v6_config_dir" == "/usr/local/etc/snell" ]] || return 1
-}
-
 # --- 核心安装逻辑 ---
 install_snell_core() {
     local protocol=$1
@@ -493,10 +486,6 @@ service_is_active() {
 
 service_stop_disable() {
     local port=$1
-    if ! assert_legacy_paths; then
-        error "服务前缀异常, 已中止, 不会改动 Snell v6。"
-        return 1
-    fi
     if ! is_valid_port "$port"; then
         error "拒绝操作非法端口: $port"
         return 1
@@ -959,7 +948,11 @@ print("\n".join(lines))' "$link_name" "$ip" "$target_port" "$psk" "$protocol" "$
     chmod 600 "$save_file"
 
     if [[ "$is_quiet" == true ]]; then
-        printf '%s\n\n%s\n' "$surge_line" "$client_yaml"
+        if { true >&3; } 2>/dev/null; then
+            printf '%s\n\n%s\n' "$surge_line" "$client_yaml" >&3
+        else
+            printf '%s\n\n%s\n' "$surge_line" "$client_yaml"
+        fi
         return 0
     fi
 
@@ -1461,10 +1454,6 @@ update_or_switch_snell() {
 
 uninstall_snell() {
     if [[ ! -f "$snell_binary_path" ]]; then error "snell-server-legacy 未安装" && return; fi
-    if ! assert_legacy_paths; then
-        error "路径异常, 已中止卸载, 不会删除 Snell v6 的文件。"
-        return 1
-    fi
     local confirm
     read -r -p "确定卸载 snell-server-legacy (v4/v5) 吗? 不会删除 Snell v6。配置会先自动备份。[y/N]: " confirm
     if [[ ! "$confirm" =~ ^[yY]$ ]]; then info "已取消。"; return; fi
@@ -1694,6 +1683,16 @@ main() {
     if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
         usage
         exit 0
+    fi
+    if [[ "${1:-}" == "install" ]]; then
+        local arg
+        for arg in "${@:2}"; do
+            case "$arg" in
+                -h|--help) usage; exit 0 ;;
+                -q|--quiet) is_quiet=true ;;
+            esac
+        done
+        [[ "$is_quiet" == true ]] && exec 3>&1 1>&2
     fi
     pre_check
     if [[ $# -gt 0 && "$1" == "install" ]]; then

@@ -242,41 +242,13 @@ backup_mihomo_archive() (
         cp -a "$cfg_dir/." "$tmp/mihomo/" || return 1
         entries=(mihomo client-state)
     fi
-    for file in "$state_dir"/mihomo_ss_link_*.txt \
-                "$state_dir"/mihomo_vless_reality_link_*.txt \
-                "$state_dir"/mihomo_reality_pubkey_*.txt \
-                "$state_dir"/mihomo_vless_encryption_link_*.txt \
-                "$state_dir"/mihomo_vless_encryption_client_key_*.txt \
-                "$state_dir"/mihomo_anytls_link_*.txt \
-                "$state_dir"/mihomo_anytls_node_*.json \
-                "$state_dir"/mihomo_anytls_proxies_*.yaml \
-                "$state_dir"/mihomo_tuic_link_*.txt \
-                "$state_dir"/mihomo_tuic_node_*.json \
-                "$state_dir"/mihomo_http_link_*.txt \
-                "$state_dir"/mihomo_http_node_*.json \
-                "$state_dir"/mihomo_socks_link_*.txt \
-                "$state_dir"/mihomo_socks_node_*.json \
-                "$state_dir"/mihomo_mixed_link_*.txt \
-                "$state_dir"/mihomo_mixed_node_*.json \
-                "$state_dir"/mihomo_tunnel_link_*.txt \
-                "$state_dir"/mihomo_tunnel_node_*.json \
-                "$state_dir"/mihomo_vmess_link_*.txt \
-                "$state_dir"/mihomo_vmess_node_*.json \
-                "$state_dir"/mihomo_trojan_link_*.txt \
-                "$state_dir"/mihomo_trojan_node_*.json \
-                "$state_dir"/mihomo_hysteria2_link_*.txt \
-                "$state_dir"/mihomo_hysteria2_node_*.json \
-                "$state_dir"/mihomo_shadowquic_link_*.txt \
-                "$state_dir"/mihomo_shadowquic_node_*.json \
-                "$state_dir"/mihomo_mieru_link_*.txt \
-                "$state_dir"/mihomo_mieru_node_*.json \
-                "$state_dir"/mihomo_sudoku_link_*.txt \
-                "$state_dir"/mihomo_sudoku_node_*.json \
-                "$state_dir"/mihomo_trusttunnel_link_*.txt \
-                "$state_dir"/mihomo_trusttunnel_node_*.json \
-                "$state_dir"/mihomo_hy2realm_link_*.txt \
-                "$state_dir"/mihomo_hy2realm_node_*.json \
-                "$state_dir"/inbound_address.txt; do
+    for file in \
+        "$state_dir"/mihomo_*_link_*.txt \
+        "$state_dir"/mihomo_*_node_*.json \
+        "$state_dir"/mihomo_*_proxies_*.yaml \
+        "$state_dir"/mihomo_reality_pubkey_*.txt \
+        "$state_dir"/mihomo_vless_encryption_client_key_*.txt \
+        "$state_dir"/inbound_address.txt; do
         [[ -f "$file" ]] || continue
         cp -pL -- "$file" "$tmp/client-state/" || return 1
     done
@@ -343,41 +315,13 @@ restore_archive() (
     [[ -n "$previous" ]] && rm -rf -- "$previous"
 
     if [[ -d "$tmp/client-state" ]]; then
-        for file in "$tmp/client-state"/mihomo_ss_link_*.txt \
-                    "$tmp/client-state"/mihomo_vless_reality_link_*.txt \
-                    "$tmp/client-state"/mihomo_reality_pubkey_*.txt \
-                    "$tmp/client-state"/mihomo_vless_encryption_link_*.txt \
-                    "$tmp/client-state"/mihomo_vless_encryption_client_key_*.txt \
-                    "$tmp/client-state"/mihomo_anytls_link_*.txt \
-                    "$tmp/client-state"/mihomo_anytls_node_*.json \
-                    "$tmp/client-state"/mihomo_anytls_proxies_*.yaml \
-                    "$tmp/client-state"/mihomo_tuic_link_*.txt \
-                    "$tmp/client-state"/mihomo_tuic_node_*.json \
-                    "$tmp/client-state"/mihomo_http_link_*.txt \
-                    "$tmp/client-state"/mihomo_http_node_*.json \
-                    "$tmp/client-state"/mihomo_socks_link_*.txt \
-                    "$tmp/client-state"/mihomo_socks_node_*.json \
-                    "$tmp/client-state"/mihomo_mixed_link_*.txt \
-                    "$tmp/client-state"/mihomo_mixed_node_*.json \
-                    "$tmp/client-state"/mihomo_tunnel_link_*.txt \
-                    "$tmp/client-state"/mihomo_tunnel_node_*.json \
-                    "$tmp/client-state"/mihomo_vmess_link_*.txt \
-                    "$tmp/client-state"/mihomo_vmess_node_*.json \
-                    "$tmp/client-state"/mihomo_trojan_link_*.txt \
-                    "$tmp/client-state"/mihomo_trojan_node_*.json \
-                    "$tmp/client-state"/mihomo_hysteria2_link_*.txt \
-                    "$tmp/client-state"/mihomo_hysteria2_node_*.json \
-                    "$tmp/client-state"/mihomo_shadowquic_link_*.txt \
-                    "$tmp/client-state"/mihomo_shadowquic_node_*.json \
-                    "$tmp/client-state"/mihomo_mieru_link_*.txt \
-                    "$tmp/client-state"/mihomo_mieru_node_*.json \
-                    "$tmp/client-state"/mihomo_sudoku_link_*.txt \
-                    "$tmp/client-state"/mihomo_sudoku_node_*.json \
-                    "$tmp/client-state"/mihomo_trusttunnel_link_*.txt \
-                    "$tmp/client-state"/mihomo_trusttunnel_node_*.json \
-                    "$tmp/client-state"/mihomo_hy2realm_link_*.txt \
-                    "$tmp/client-state"/mihomo_hy2realm_node_*.json \
-                    "$tmp/client-state"/inbound_address.txt; do
+        for file in \
+            "$tmp/client-state"/mihomo_*_link_*.txt \
+            "$tmp/client-state"/mihomo_*_node_*.json \
+            "$tmp/client-state"/mihomo_*_proxies_*.yaml \
+            "$tmp/client-state"/mihomo_reality_pubkey_*.txt \
+            "$tmp/client-state"/mihomo_vless_encryption_client_key_*.txt \
+            "$tmp/client-state"/inbound_address.txt; do
             [[ -e "$file" || -L "$file" ]] || continue
             target="$CLIENT_STATE_DIR/${file##*/}"
             # 地址由 Realm/Snell 共用，迁移到另一台机器时优先保留现有设置。

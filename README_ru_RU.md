@@ -1,196 +1,45 @@
-[中文](/README.md) | [English](/README_en_US.md) | [日本語](/README_ja_JP.md) | [Русский](/README_ru_RU.md) 
+[中文](/README.md) | [English](/README_en_US.md) | [日本語](/README_ja_JP.md) | [Русский](/README_ru_RU.md)
 
-# Универсальный набор инструментов Caesar для установки и управления Mihomo (Install-Mihomo-Inbounds)
+# Универсальный набор инструментов Mihomo (Install-Mihomo-Inbounds)
 
-Это мощный, высокомодульный и максимально совместимый набор скриптов для установки и управления узлами Mihomo. Использование Mihomo (Meta Kernel) в качестве ядра прокси-сервера вместо Xray решает проблему утечки TCP-соединений, присутствующую в Xray. Инструментарий поддерживает идеальное сосуществование нескольких популярных протоколов (VLESS-Reality, VLESS Encryption, Shadowsocks 2022 и др.) на одном сервере, а также предлагает удобные функции резервного копирования конфигурации, управления маршрутизацией (маршрутами) и обновления данных Geo.
+Серверный инструментарий на базе ядра Mihomo (Meta Kernel) без утечек TCP-соединений, характерных для Xray. Единый автономный скрипт `install_mihomo.sh` объединяет установку и управление **всеми 17 входящими протоколами Mihomo** (VLESS-Reality, VLESS Encryption ML-KEM-768, Shadowsocks 2022, AnyTLS, TUIC v5, Hysteria2, Trojan, VMess, ShadowQUIC, Mieru, Sudoku, TrustTunnel, HTTP/SOCKS/Mixed, Tunnel, Hy2-Realm) как через интерактивное меню, так и через аргументы командной строки.
 
-## ✨ Ключевые особенности
+## 🚀 Быстрый старт
 
-  * **Ядро Mihomo**: Использование Mihomo (Clash Meta) в качестве прокси-сервера устраняет баг утечки TCP-соединений Xray, снижает потребление ресурсов и повышает стабильность. Также поддерживается автоматическая адаптация архитектуры `amd64-compatible` для старых процессоров (CPU).
-  * **Поддержка постквантового шифрования**: Бесшовная поддержка передовой функции VLESS Encryption (ML-KEM-768, Post-Quantum), впервые представленной в Xray, с автоматической генерацией и конвертацией ключей для максимальной совместимости.
-  * **Умное сосуществование протоколов**: Использует Python для парсинга конфигураций YAML и интеллектуального добавления слушателей (listeners). Вы можете устанавливать узлы с различными протоколами или на разных портах, и это **ни в коем случае не перезапишет** ваши существующие конфигурации.
-  * **Максимальная совместимость с ОС**: Идеальная поддержка не только популярных систем на базе Systemd (Debian / Ubuntu), но и **глубокая совместимость с Alpine Linux (OpenRC)**, что делает скрипт отлично подходящим для минималистичных и легковесных систем.
-  * **Поддержка NAT / DDNS**: Встроенная функция настройки пользовательских адресов подключения. Независимо от того, используете ли вы NAT-сервер с динамическими портами или подключение через домен DDNS, вы сможете сгенерировать правильную ссылку-приглашение в один клик.
-  * **Управление «Всё в одном»**: Единое глобальное меню управления (`mihomo-manager`), инструмент настройки маршрутизации (`mihomo-routing`) и инструмент для резервного копирования/восстановления конфигураций (`mihomo-restore`).
-  * **Безопасное и точное удаление**: Поддержка точного распознавания и удаления конкретных узлов по портам и протоколам, исключающая случайное удаление других конфигураций.
-
------
-
-## 🚀 Быстрый старт (Рекомендуется)
-
-Если вы хотите получить доступ ко всем функциям управления, рекомендуется сразу установить **Единый центр управления (Mihomo Manager)**.
-
-Выполните следующую команду для загрузки и запуска глобального меню управления:
+### 1. Глобальное меню (`mihomo_manager.sh`)
 
 ```bash
-curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/mihomo_manager.sh -o mihomo_manager.sh && chmod +x mihomo_manager.sh && sudo ./mihomo_manager.sh
+curl -fsSL https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/mihomo_manager.sh -o mihomo_manager.sh && chmod +x mihomo_manager.sh && sudo ./mihomo_manager.sh
 ```
 
-**💡 Полезный совет:**
-После установки инструмента управления в системе автоматически зарегистрируется глобальная команда. В дальнейшем вы сможете в любой момент быстро вызвать главное меню, введя в терминале:
+После установки меню доступно по команде `mihomo-manager`.
+
+### 2. Единый скрипт входящих протоколов (`install_mihomo.sh`)
 
 ```bash
-mihomo-manager
+curl -fsSL https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/install_mihomo.sh -o install_mihomo.sh && chmod +x install_mihomo.sh && sudo ./install_mihomo.sh
 ```
-
-Через меню `mihomo-manager` вы сможете запускать все перечисленные ниже независимые функции в один клик, без необходимости скачивать каждый скрипт отдельно.
-
------
-
-## 📦 Руководство по независимой установке модулей
-
-Если вам нужна только какая-то конкретная функция из этого проекта, вы можете использовать следующие команды для их независимой установки.
-
-### 1\. Управление узлами VLESS Encryption (Post-Quantum)
-
-Поддержка технологии постквантового шифрования нового поколения ML-KEM-768. Избавьтесь от громоздких конфигураций — безопасное соединение устанавливается только с помощью ключей рукопожатия (handshake keys).
 
 ```bash
-curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/install_vless_encryption.sh -o install_vless_encryption.sh && chmod +x install_vless_encryption.sh && sudo ./install_vless_encryption.sh
+# Интерактивное меню (выбор любого из 17 протоколов, просмотр/изменение/удаление узлов)
+sudo ./install_mihomo.sh
+
+# Только имя протокола: переход сразу к интерактивному мастеру этого протокола
+sudo ./install_mihomo.sh reality
+
+# Протокол + параметры (или -y): автоматическая установка (-q выводит только ссылку/YAML)
+sudo ./install_mihomo.sh reality -y -q
+sudo ./install_mihomo.sh reality --port 443 --sni hk.art.museum --address my.ddns.net
+sudo ./install_mihomo.sh ss --port 2022 --method 2022-blake3-aes-256-gcm -q
+sudo ./install_mihomo.sh anytls --port 8443 --dest www.bing.com:443 -q
+sudo ./install_mihomo.sh hysteria2 --port 443 --obfs salamander
+sudo ./install_mihomo.sh <протокол> --help
 ```
 
-### 2\. Управление узлами VLESS-Reality (Vision)
+## 📦 Дополнительные и автономные скрипты
 
-Поддержка автоматической генерации пар ключей X25519, использование управления потоком `xtls-rprx-vision` по умолчанию и подключение через listeners в Mihomo.
-
-```bash
-curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/install_vless_reality.sh -o install_vless_reality.sh && chmod +x install_vless_reality.sh && sudo ./install_vless_reality.sh
-```
-
-### 3\. Управление узлами Shadowsocks 2022 и классическим SS
-
-Поддержка сверхбыстрых протоколов шифрования нового поколения, таких как 2022-blake3-aes, с обратной совместимостью с традиционным шифрованием aes-gcm, а также автоматическая генерация надежных случайных паролей.
-
-```bash
-curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/install_ss2022.sh -o install_ss2022.sh && chmod +x install_ss2022.sh && sudo ./install_ss2022.sh
-```
-
-### 4\. Управление узлами AnyTLS (маскировка рукопожатия JLS)
-
-AnyTLS обслуживается через `anytls` listener Mihomo, по умолчанию в режиме JLS: соединения, не прошедшие аутентификацию JLS, передаются без изменений на fallback-адрес (по умолчанию `www.bing.com:443`), а рукопожатие несёт одноразовый сертификат, который ядро генерирует само — **свой сертификат не нужен**. Доступен и режим обычного TLS с вашим сертификатом.
-
-```bash
-curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/install_anytls.sh -o install_anytls.sh && chmod +x install_anytls.sh && sudo ./install_anytls.sh
-```
-
-> **Требование к ядру**: поддержка JLS появилась в mihomo **v1.19.29** (`feat: support jls for anytls outbound and listener`). Скрипт проверяет версию и отказывается устанавливать на старом ядре, вместо того чтобы записать конфигурацию, которая молча не работает.
->
-> **Примечание**: URI-схема AnyTLS определяет только `sni` и `insecure`, поэтому не может передать данные JLS. Скрипт выводит **фрагмент `proxies:`**, а не ссылку для общего доступа; импортируйте его вручную в клиент с mihomo >= 1.19.29 (в формах Clash Party и FlClash есть `jls-opts`).
-
-### Остальные listener Mihomo
-
-Скрипты ниже дописывают listener в тот же `config.yaml`, что и VLESS / SS / AnyTLS. У каждого есть меню и неинтерактивный режим `install`. Отдельных скриптов для `redir`, `tproxy` и `tun` нет: это локальный прозрачный прокси. Snell по-прежнему ставится официальным `snell-server`.
-
-| Скрипт | listener | Порт по умолчанию |
-|---|---|---|
-| `install_http.sh` | `http` | 8080 |
-| `install_socks.sh` | `socks` | 1080 |
-| `install_mixed.sh` | `mixed` | 10810 |
-| `install_tunnel.sh` | `tunnel` | 10816 |
-| `install_vmess.sh` | `vmess` | 16823 |
-| `install_trojan.sh` | `trojan` | 443 |
-| `install_hysteria2.sh` | `hysteria2` | 443/UDP |
-| `install_shadowquic.sh` | `shadowquic` | 443/UDP |
-| `install_mieru.sh` | `mieru` | 2999 |
-| `install_sudoku.sh` | `sudoku` | 443 |
-| `install_trusttunnel.sh` | `trusttunnel` | 443 |
-| `install_hysteria2_realm.sh` | `hysteria2-realm` | 2080 |
-
-`install_hysteria2_realm.sh` — это сервер rendezvous для `realm-opts`, а не узел Hysteria2. `install_tunnel.sh` только пересылает порт на фиксированный `host:port` и не выдаёт ссылку.
-
-### 5\. Проброс портов realm (отдельный сервис)
-
-Устанавливает [realm](https://github.com/zhboner/realm) для простого TCP/UDP-проброса портов, работающий **параллельно** с Mihomo: собственный бинарник (`/usr/local/bin/realm`), каталог конфигурации (`/usr/local/etc/realm/`) и юнит systemd/OpenRC, поэтому они не мешают друг другу. Типовой случай — проброс порта релейной машины на порт узла Mihomo на конечной машине.
-
-```bash
-curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/install_realm.sh -o install_realm.sh && chmod +x install_realm.sh && sudo ./install_realm.sh
-```
-
-> **Примечание**: realm — это чистый проброс портов, он не создаёт импортируемых ссылок на узлы. Клиенты сохраняют исходный протокол и учётные данные; меняется только адрес сервера на `IP:порт` релея.
->
-> **Почему не включено в деинсталлятор**: у `install_realm.sh` есть собственный пункт удаления (меню 4), а `uninstall_mihomo.sh` никогда не трогает файлы realm, поэтому удаление Mihomo не может незаметно унести с собой проброс.
-
-### 6\. Инструмент маршрутизации сервера (Mihomo Routing)
-
-Мощная панель управления исходящим трафиком (маршрутами) сервера. Поддерживает парсинг ссылок SS и VLESS, а также визуальную настройку правил маршрутизации.
-
-```bash
-curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/mihomo_routing.sh -o mihomo_routing.sh && chmod +x mihomo_routing.sh && sudo ./mihomo_routing.sh
-```
-
-*После установки инструмент можно в любой момент вызвать командой `mihomo-routing`.*
-
-### 7\. Инструмент резервного копирования и восстановления (Mihomo Restore)
-
-Случайно испортили конфигурацию? Хотите перенести настройки на другой сервер? Этот инструмент позволяет импортировать конфигурационные файлы по прямой ссылке (URL) или вручную вставив `config.yaml` в консоль. Встроена функция проверки безопасности во избежание фатальных ошибок.
-
-```bash
-curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/mihomo_restore.sh -o mihomo_restore.sh && chmod +x mihomo_restore.sh && sudo ./mihomo_restore.sh
-```
-
-*После установки инструмент можно в любой момент вызвать командой `mihomo-restore`.*
-
-### 8\. Инструмент полного удаления
-
-Если вы столкнулись с неразрешимой проблемой или хотите полностью очистить сервер, используйте этот скрипт. Он максимально чисто удаляет системные службы (Systemd/OpenRC), бинарные файлы, логи и остаточные конфигурации.
-
-```bash
-curl -L https://raw.githubusercontent.com/D3-3109/Install-Mihomo-Inbounds/main/uninstall_mihomo.sh -o uninstall_mihomo.sh && chmod +x uninstall_mihomo.sh && sudo ./uninstall_mihomo.sh
-```
-
------
-
-## 🔄 Таблица соответствия версиям Xray
-
-| Скрипт Xray | Скрипт Mihomo | Функция |
-|---|---|---|
-| `install_vless_encryption.sh` | `install_vless_encryption.sh` | Управление узлами VLESS Encryption (PQ) |
-| `install_vless_reality.sh` | `install_vless_reality.sh` | Управление узлами VLESS-Reality |
-| `install_ss2022.sh` | `install_ss2022.sh` | Управление узлами Shadowsocks 2022 |
-| `——` | `install_anytls.sh` | Управление узлами AnyTLS (JLS) |
-| `——` | `install_http.sh` / `install_socks.sh` / `install_mixed.sh` | Входы HTTP / SOCKS5 / Mixed |
-| `——` | `install_tunnel.sh` | Проброс Tunnel |
-| `——` | `install_vmess.sh` | VMess |
-| `——` | `install_trojan.sh` | Trojan |
-| `——` | `install_hysteria2.sh` | Hysteria2 |
-| `——` | `install_shadowquic.sh` | ShadowQUIC |
-| `——` | `install_mieru.sh` | Mieru |
-| `——` | `install_sudoku.sh` | Sudoku |
-| `——` | `install_trusttunnel.sh` | TrustTunnel |
-| `——` | `install_hysteria2_realm.sh` | Служба rendezvous Hysteria2 Realm |
-| `——` | `install_realm.sh` | Проброс портов realm |
-| `xray_manager.sh` | `mihomo_manager.sh` | Единое меню управления |
-| `xray_routing.sh` | `mihomo_routing.sh` | Настройка маршрутизации сервера |
-| `xray_restore.sh` | `mihomo_restore.sh` | Резервное копирование и восстановление |
-| `uninstall_xray.sh` | `uninstall_mihomo.sh` | Полное удаление |
-| `update_geo.sh` | `update_geo.sh` | Обновление баз данных Geo |
-
-> **Примечание**: Mihomo теперь полностью поддерживает все новые функции VLESS, включая Reality и протокол Encryption на базе ML-KEM-768. Все компоненты данного набора инструментов стабильно работают в рамках этой архитектуры.
-
------
-
-## 🛠️ Часто задаваемые вопросы (FAQ)
-
-**В: Зачем переходить с Xray на Mihomo?**
-
-**О:** В ядре Xray присутствует серьезный баг утечки TCP-соединений. В Mihomo (Meta Kernel) эта проблема отсутствует, кроме того, он показывает лучшие результаты по потреблению ресурсов и стабильности, что делает его особенно подходящим для высоконагруженных коммерческих сред или совместного использования (в складчину).
-
-**В: Мой сервер работает за NAT, или IP-адрес входа отличается от адреса выхода. Что делать, если созданные узлы не подключаются?**
-
-**О:** В любом из меню установки выберите пункт **«Настроить адрес подключения (NAT/DDNS)» (设置连接地址 (NAT/DDNS))**. Введите IP-адрес или домен DDNS, который вы фактически используете для внешнего подключения.
-
-**В: На мой старый процессор E5 не устанавливается новая версия, выдает ошибку об отсутствии поддержки архитектуры v3. Что делать?**
-
-**О:** Установочные скрипты в этом репозитории имеют оптимизированную систему распознавания архитектуры CPU. Для старого оборудования без поддержки набора команд AVX2 (например, некоторые процессоры E5 v2 или Atom) скрипт автоматически скачивает совместимую версию ядра `amd64-compatible`, предотвращая сбой установки.
-
-**В: Как посмотреть логи работы Mihomo?**
-
-**О:** В меню каждого скрипта установки и управления есть опция **«Просмотр логов» (查看日志)**. Выбрав её, вы сможете просматривать логи в режиме реального времени. Нажмите `Ctrl + C`, чтобы остановить просмотр.
-
-**В: Как обновить файлы правил маршрутизации GeoIP и GeoSite?**
-
-**О:** Используйте функцию автоматической настройки заданий cron в инструменте `mihomo-routing` (Инструмент маршрутизации сервера), и базы будут обновляться автоматически каждую ночь. Вы также можете запустить моментальное обновление вручную из главного меню управления (`mihomo-manager`).
-
-**В: Где находится конфигурационный файл Mihomo?**
-
-**О:** Конфигурационный файл находится по пути `/usr/local/etc/mihomo/config.yaml`. Mihomo использует формат YAML вместо JSON, который используется в Xray.
+* `mihomo_routing.sh` (`mihomo-routing`) — настройка исходящих прокси и правил маршрутизации
+* `mihomo_restore.sh` (`mihomo-restore`) — восстановление и проверка конфигурации из URL или архива `.tar.gz`
+* `update_geo.sh` / `uninstall_mihomo.sh` — обновление баз Geo / полное удаление с резервной копией
+* `install_realm.sh` / `install_dnat.sh` — автономный проброс портов Realm / ядерный DNAT (`iptables`/`nftables`)
+* `install_snell.sh` / `install_snell_legacy.sh` — официальный Snell v6 / Snell v4.1.1 и v5.0.1

@@ -826,13 +826,13 @@ install_forward() {
         if [[ "$yn2" =~ ^[yY]$ ]]; then use_udp=true; no_tcp=true; fi
     fi
 
+    if [[ ! -x "$realm_binary_path" ]]; then
+        install_realm_core || return 1
+    fi
+
     local comment="realm-${listen_port}"
     if ! append_endpoint "$listen_addr" "$remote_addr" "$use_udp" "$no_tcp" "$comment"; then
         return 1
-    fi
-
-    if [[ ! -x "$realm_binary_path" ]]; then
-        install_realm_core || return 1
     fi
 
     # 顺序要紧: 探测必须早于 setup_service / restart_realm。
@@ -1073,11 +1073,11 @@ main() {
         if is_port_in_use "$port"; then error "端口 $port 已被占用。" && exit 1; fi
         [[ -z "$comment" ]] && comment="realm-${port}"
 
-        if ! append_endpoint "$listen_addr" "$remote_addr" "$use_udp" "$no_tcp" "$comment"; then
-            exit 1
-        fi
         if [[ ! -x "$realm_binary_path" ]]; then
             install_realm_core || exit 1
+        fi
+        if ! append_endpoint "$listen_addr" "$remote_addr" "$use_udp" "$no_tcp" "$comment"; then
+            exit 1
         fi
 
         # 顺序要紧: 探测必须早于 setup_service, 服务起来后会占住真实端口。

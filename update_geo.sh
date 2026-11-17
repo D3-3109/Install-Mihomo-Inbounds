@@ -55,34 +55,31 @@ chmod 0644 "$tmp_dir/geoip.metadb" "$tmp_dir/geosite.dat"
 mv -f "$tmp_dir/geoip.metadb" "$GEO_DIR/geoip.metadb"
 mv -f "$tmp_dir/geosite.dat" "$GEO_DIR/geosite.dat"
 
-# --- 2. 重启 Mihomo 服务 ---
-log "正在重启 Mihomo 服务..."
-
+# --- 2. 按需重启已运行的 Mihomo 服务 ---
 if command -v systemctl >/dev/null 2>&1 && [[ -d /run/systemd/system ]]; then
-    if ! systemctl restart mihomo; then
-        log "Error: Mihomo (systemd) 重启命令执行失败"
-        exit 1
-    fi
-    if systemctl is-active --quiet mihomo; then
+    if systemctl is-active --quiet mihomo || systemctl is-enabled --quiet mihomo 2>/dev/null; then
+        log "正在重启 Mihomo 服务..."
+        systemctl restart mihomo && systemctl is-active --quiet mihomo || {
+            log "Error: Mihomo (systemd) 重启失败，请检查日志"
+            exit 1
+        }
         log "Mihomo (systemd) 重启成功"
     else
-        log "Error: Mihomo 重启失败，请检查日志"
-        exit 1
+        log "Mihomo 服务尚未启用，仅完成 Geo 文件更新"
     fi
 elif command -v rc-service >/dev/null 2>&1; then
-    if ! rc-service mihomo restart; then
-        log "Error: Mihomo (OpenRC) 重启命令执行失败"
-        exit 1
-    fi
-    if rc-service mihomo status | grep -q "started"; then
+    if [[ -f /etc/init.d/mihomo ]] && rc-service mihomo status 2>/dev/null | grep -qi "started"; then
+        log "正在重启 Mihomo 服务..."
+        rc-service mihomo restart && rc-service mihomo status 2>/dev/null | grep -qi "started" || {
+            log "Error: Mihomo (OpenRC) 重启失败"
+            exit 1
+        }
         log "Mihomo (OpenRC) 重启成功"
     else
-        log "Error: Mihomo 重启失败"
-        exit 1
+        log "Mihomo 服务未运行，仅完成 Geo 文件更新"
     fi
 else
-    log "Error: 未找到 systemctl 或 rc-service，无法重启 Mihomo"
-    exit 1
+    log "未检测到服务管理器，仅完成 Geo 文件更新"
 fi
 
 log "更新流程结束"

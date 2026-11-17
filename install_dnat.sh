@@ -374,7 +374,17 @@ EOF
         cat > /etc/init.d/dnat-mihomo <<EOF
 #!/sbin/openrc-run
 description="Mihomo DNAT rules restore"
-command="${RESTORE_SCRIPT}"
+
+depend() {
+    need net
+    after firewall
+}
+
+start() {
+    ebegin "Restoring Mihomo DNAT rules"
+    "${RESTORE_SCRIPT}"
+    eend \$?
+}
 EOF
         chmod +x /etc/init.d/dnat-mihomo
         rc-update add dnat-mihomo default >/dev/null 2>&1 || true
@@ -408,24 +418,24 @@ sync_persist() {
 add_dnat_rule() {
     echo "================ 添加 DNAT 端口转发 ================"
     read -rp "请输入规则标签 (唯一标识, 如 relay_443): " label
-    is_valid_label "$label" || die "标签无效：仅允许字母、数字和下划线。"
-    rule_label_exists "$label" && die "标签已存在: $label"
+    is_valid_label "$label" || { warn "标签无效：仅允许字母、数字和下划线。"; pause; return 1; }
+    rule_label_exists "$label" && { warn "标签已存在: $label"; pause; return 1; }
 
     read -rp "请输入协议 (tcp/udp/both, 默认 both): " proto
     proto="${proto:-both}"
-    [[ "$proto" =~ ^(tcp|udp|both)$ ]] || die "协议无效，仅支持 tcp / udp / both。"
+    [[ "$proto" =~ ^(tcp|udp|both)$ ]] || { warn "协议无效，仅支持 tcp / udp / both。"; pause; return 1; }
 
     read -rp "请输入本机监听端口 (1-65535): " lport
-    is_valid_port "$lport" || die "监听端口无效。"
+    is_valid_port "$lport" || { warn "监听端口无效。"; pause; return 1; }
     port_in_use "$lport" && warn "警告：端口 ${lport} 已被本机服务占用，转发可能不生效！"
     lport_exists "$lport" && warn "警告：端口 ${lport} 已被其他 DNAT 规则使用，两条规则同时命中时先添加者优先。"
 
     read -rp "请输入目标地址 (IPv4/IPv6，暂不支持域名): " dest
-    is_valid_ip "$dest" || die "目标地址无效（请填写纯 IP，域名请先自行解析）。"
-    is_ip_family_supported "$dest" || die "目标地址族不受支持。"
+    is_valid_ip "$dest" || { warn "目标地址无效（请填写纯 IP，域名请先自行解析）。"; pause; return 1; }
+    is_ip_family_supported "$dest" || { pause; return 1; }
 
     read -rp "请输入目标端口 (1-65535): " dport
-    is_valid_port "$dport" || die "目标端口无效。"
+    is_valid_port "$dport" || { warn "目标端口无效。"; pause; return 1; }
 
     echo "-------------------------------------------"
     echo "  标签:     $label"
@@ -513,7 +523,7 @@ delete_dnat_rule() {
         return "$failed"
     fi
 
-    rule_label_exists "$label" || die "标签不存在: $label"
+    rule_label_exists "$label" || { warn "标签不存在: $label"; pause; return 1; }
 
     local line
     line=$(awk -F'|' -v l="$label" '$1 == l {print; exit}' "$RULES_FILE")

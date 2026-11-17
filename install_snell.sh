@@ -674,9 +674,15 @@ print("\n".join(lines))' "$link_name" "$ip" "$target_port" "$psk" "$mode" 2>/dev
     }
 
     local save_file="/root/mihomo_snell_link_${target_port}.txt"
+    printf '%s\n' "$client_yaml" > "$save_file"
+    chmod 600 "$save_file"
 
     if [[ "$is_quiet" == true ]]; then
-        printf '%s\n' "$client_yaml"
+        if { true >&3; } 2>/dev/null; then
+            printf '%s\n' "$client_yaml" >&3
+        else
+            printf '%s\n' "$client_yaml"
+        fi
         return
     fi
 
@@ -693,8 +699,6 @@ print("\n".join(lines))' "$link_name" "$ip" "$target_port" "$psk" "$mode" 2>/dev
     echo -e "${yellow}[!] 需要 mihomo >= 1.19.34; Surge 客户端请在 GUI 中手动添加。"
     echo -e "    mode 需与服务端一致 (default 可省略不写)。${none}"
     echo "----------------------------------------------------------------"
-    printf '%s\n' "$client_yaml" > "$save_file"
-    chmod 600 "$save_file"
 }
 
 # --- 交互向导 ---
@@ -1152,6 +1156,13 @@ install_snell_noninteractive() {
 }
 
 main() {
+    if [[ "${1:-}" == "install" ]]; then
+        local arg
+        for arg in "${@:2}"; do
+            [[ "$arg" == "-q" || "$arg" == "--quiet" ]] && is_quiet=true
+        done
+        [[ "$is_quiet" == true ]] && exec 3>&1 1>&2
+    fi
     pre_check
     if [[ $# -gt 0 && "$1" == "install" ]]; then
         shift

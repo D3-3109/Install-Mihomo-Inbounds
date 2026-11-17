@@ -141,41 +141,13 @@ backup_mihomo_archive() (
     cp -a "$cfg_dir/." "$tmp/mihomo/" || return 1
     entries=(mihomo client-state)
   fi
-  for file in "$state_dir"/mihomo_ss_link_*.txt \
-              "$state_dir"/mihomo_vless_reality_link_*.txt \
-              "$state_dir"/mihomo_reality_pubkey_*.txt \
-              "$state_dir"/mihomo_vless_encryption_link_*.txt \
-              "$state_dir"/mihomo_vless_encryption_client_key_*.txt \
-              "$state_dir"/mihomo_anytls_link_*.txt \
-              "$state_dir"/mihomo_anytls_node_*.json \
-              "$state_dir"/mihomo_anytls_proxies_*.yaml \
-              "$state_dir"/mihomo_tuic_link_*.txt \
-              "$state_dir"/mihomo_tuic_node_*.json \
-              "$state_dir"/mihomo_http_link_*.txt \
-              "$state_dir"/mihomo_http_node_*.json \
-              "$state_dir"/mihomo_socks_link_*.txt \
-              "$state_dir"/mihomo_socks_node_*.json \
-              "$state_dir"/mihomo_mixed_link_*.txt \
-              "$state_dir"/mihomo_mixed_node_*.json \
-              "$state_dir"/mihomo_tunnel_link_*.txt \
-              "$state_dir"/mihomo_tunnel_node_*.json \
-              "$state_dir"/mihomo_vmess_link_*.txt \
-              "$state_dir"/mihomo_vmess_node_*.json \
-              "$state_dir"/mihomo_trojan_link_*.txt \
-              "$state_dir"/mihomo_trojan_node_*.json \
-              "$state_dir"/mihomo_hysteria2_link_*.txt \
-              "$state_dir"/mihomo_hysteria2_node_*.json \
-              "$state_dir"/mihomo_shadowquic_link_*.txt \
-              "$state_dir"/mihomo_shadowquic_node_*.json \
-              "$state_dir"/mihomo_mieru_link_*.txt \
-              "$state_dir"/mihomo_mieru_node_*.json \
-              "$state_dir"/mihomo_sudoku_link_*.txt \
-              "$state_dir"/mihomo_sudoku_node_*.json \
-              "$state_dir"/mihomo_trusttunnel_link_*.txt \
-              "$state_dir"/mihomo_trusttunnel_node_*.json \
-              "$state_dir"/mihomo_hy2realm_link_*.txt \
-              "$state_dir"/mihomo_hy2realm_node_*.json \
-              "$state_dir"/inbound_address.txt; do
+  for file in \
+      "$state_dir"/mihomo_*_link_*.txt \
+      "$state_dir"/mihomo_*_node_*.json \
+      "$state_dir"/mihomo_*_proxies_*.yaml \
+      "$state_dir"/mihomo_reality_pubkey_*.txt \
+      "$state_dir"/mihomo_vless_encryption_client_key_*.txt \
+      "$state_dir"/inbound_address.txt; do
     [[ -f "$file" ]] || continue
     cp -pL -- "$file" "$tmp/client-state/" || return 1
   done
@@ -218,6 +190,7 @@ remove_config() {
 remove_binary_and_misc() {
   local bin="/usr/local/bin/mihomo"
   [[ -f "$bin" ]] && { info "删除二进制文件 $bin"; rm -f "$bin" || true; } || warn "未找到二进制文件：$bin"
+  [[ -f /usr/bin/mihomo-inbounds ]] && { info "删除快捷命令 /usr/bin/mihomo-inbounds"; rm -f /usr/bin/mihomo-inbounds || true; }
 
   for d in /usr/local/share/mihomo /usr/share/mihomo /var/lib/mihomo; do
     [[ -d "$d" ]] && { info "删除数据目录 $d"; rm -rf "$d" || true; }
@@ -230,73 +203,28 @@ remove_binary_and_misc() {
 
   # 只有备份成功后才清理这些客户端文件；共享地址始终保留。
   if $REMOVE_CLIENT_STATE; then
-    rm -f "$CLIENT_STATE_DIR"/mihomo_ss_link_*.txt \
-      "$CLIENT_STATE_DIR"/mihomo_vless_reality_link_*.txt \
+    rm -f \
+      "$CLIENT_STATE_DIR"/mihomo_*_link_*.txt \
+      "$CLIENT_STATE_DIR"/mihomo_*_node_*.json \
+      "$CLIENT_STATE_DIR"/mihomo_*_proxies_*.yaml \
       "$CLIENT_STATE_DIR"/mihomo_reality_pubkey_*.txt \
-      "$CLIENT_STATE_DIR"/mihomo_vless_encryption_link_*.txt \
-      "$CLIENT_STATE_DIR"/mihomo_vless_encryption_client_key_*.txt \
-      "$CLIENT_STATE_DIR"/mihomo_anytls_link_*.txt \
-      "$CLIENT_STATE_DIR"/mihomo_anytls_proxies_*.yaml \
-      "$CLIENT_STATE_DIR"/mihomo_anytls_node_*.json \
-      "$CLIENT_STATE_DIR"/mihomo_tuic_link_*.txt \
-      "$CLIENT_STATE_DIR"/mihomo_tuic_node_*.json \
-      "$CLIENT_STATE_DIR"/mihomo_http_link_*.txt \
-      "$CLIENT_STATE_DIR"/mihomo_http_node_*.json \
-      "$CLIENT_STATE_DIR"/mihomo_socks_link_*.txt \
-      "$CLIENT_STATE_DIR"/mihomo_socks_node_*.json \
-      "$CLIENT_STATE_DIR"/mihomo_mixed_link_*.txt \
-      "$CLIENT_STATE_DIR"/mihomo_mixed_node_*.json \
-      "$CLIENT_STATE_DIR"/mihomo_tunnel_link_*.txt \
-      "$CLIENT_STATE_DIR"/mihomo_tunnel_node_*.json \
-      "$CLIENT_STATE_DIR"/mihomo_vmess_link_*.txt \
-      "$CLIENT_STATE_DIR"/mihomo_vmess_node_*.json \
-      "$CLIENT_STATE_DIR"/mihomo_trojan_link_*.txt \
-      "$CLIENT_STATE_DIR"/mihomo_trojan_node_*.json \
-      "$CLIENT_STATE_DIR"/mihomo_hysteria2_link_*.txt \
-      "$CLIENT_STATE_DIR"/mihomo_hysteria2_node_*.json \
-      "$CLIENT_STATE_DIR"/mihomo_shadowquic_link_*.txt \
-      "$CLIENT_STATE_DIR"/mihomo_shadowquic_node_*.json \
-      "$CLIENT_STATE_DIR"/mihomo_mieru_link_*.txt \
-      "$CLIENT_STATE_DIR"/mihomo_mieru_node_*.json \
-      "$CLIENT_STATE_DIR"/mihomo_sudoku_link_*.txt \
-      "$CLIENT_STATE_DIR"/mihomo_sudoku_node_*.json \
-      "$CLIENT_STATE_DIR"/mihomo_trusttunnel_link_*.txt \
-      "$CLIENT_STATE_DIR"/mihomo_trusttunnel_node_*.json \
-      "$CLIENT_STATE_DIR"/mihomo_hy2realm_link_*.txt \
-      "$CLIENT_STATE_DIR"/mihomo_hy2realm_node_*.json 2>/dev/null || true
+      "$CLIENT_STATE_DIR"/mihomo_vless_encryption_client_key_*.txt 2>/dev/null || true
   fi
 }
 
 remove_geo_updater() {
-  local cron_file filtered_file
   if command -v crontab >/dev/null 2>&1; then
-    cron_file=$(mktemp) || { warn "无法创建临时文件，Geo 定时任务未清理。"; return 1; }
-    filtered_file=$(mktemp) || { rm -f "$cron_file"; warn "无法创建临时文件，Geo 定时任务未清理。"; return 1; }
+    local cron_file filtered_file
+    cron_file=$(mktemp) || return 1
+    filtered_file=$(mktemp) || { rm -f "$cron_file"; return 1; }
     if crontab -l > "$cron_file" 2>/dev/null; then
-      # 匹配项目写入的绝对路径，不影响其他 update_geo.sh 或注释行。
-      if ! awk '$0 !~ /^[[:space:]]*#/ && $0 ~ /(^|[[:space:]])\/root\/update_geo[.]sh([[:space:]]|$)/ { next } { print }' \
-        "$cron_file" > "$filtered_file"; then
-        rm -f "$cron_file" "$filtered_file"
-        warn "无法筛选 crontab，Geo 定时任务未清理。"
-        return 1
-      fi
-      if ! cmp -s "$cron_file" "$filtered_file"; then
-        if ! crontab "$filtered_file"; then
-          rm -f "$cron_file" "$filtered_file"
-          warn "无法更新 crontab，Geo 更新脚本已保留。"
-          return 1
-        fi
+      if awk '$0 !~ /^[[:space:]]*#/ && $0 ~ /(^|[[:space:]])\/root\/update_geo[.]sh([[:space:]]|$)/ { next } { print }' \
+        "$cron_file" > "$filtered_file" && ! cmp -s "$cron_file" "$filtered_file"; then
+        crontab "$filtered_file" || warn "无法更新 crontab，请手动检查。"
         info "已移除 Mihomo Geo 更新的 crontab 行。"
       fi
-    else
-      rm -f "$cron_file" "$filtered_file"
-      warn "未能读取 crontab；Geo 更新脚本已保留，请手动检查定时任务。"
-      return 1
     fi
     rm -f "$cron_file" "$filtered_file"
-  else
-    warn "未找到 crontab 命令；如存在 Geo 定时任务，请手动检查。"
-    return 1
   fi
   if [[ -e "$GEO_UPDATER" ]]; then
     rm -f -- "$GEO_UPDATER" || { warn "无法删除 Geo 更新脚本：$GEO_UPDATER"; return 1; }
